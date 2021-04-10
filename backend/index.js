@@ -4,7 +4,7 @@ const bodParser = require('body-parser')
 let cors = require('cors')
 
 const app = express()
-//const parser = require('./analizador')
+const parser = require('./analizador')
 
 app.use(bodParser.json({limit:'50mb', extended:true}))
 app.use(bodParser.urlencoded({limit:'50mb', extended:true}))
@@ -17,7 +17,7 @@ app.get('/',(req,res)=>{
     res.send(respuesta)
 })
 
-//const analizar = require('./endpoints/analizadores')(parser, app)
+const analizar = require('./endpoints/analizadores')(parser, app)
 app.listen('3000', ()=>{
     console.log("Servidor en puerto 3000")
 })
