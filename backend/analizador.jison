@@ -124,6 +124,7 @@ METFUNC:TIPO identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$=[$6];}
         |void identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$=[$6];}
         |void identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$=[$7];}
 ;
+
 LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS
                 | PARAMETROS
 ;
