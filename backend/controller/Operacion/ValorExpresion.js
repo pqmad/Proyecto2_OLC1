@@ -10,6 +10,14 @@ function ValorExpresion(_expresion, _ambito){
             columna: _expresion.columna
         }
     }
+    else if(_expresion.tipo === TIPO_VALOR.ENTERO){
+        return {
+            valor: Number(_expresion.valor),
+            tipo: TIPO_DATO.ENTERO,
+            linea: _expresion.linea,
+            columna: _expresion.columna
+        }
+    }
     else if(_expresion.tipo === TIPO_VALOR.BANDERA){
         return {
             valor: Boolean(_expresion.valor),
@@ -26,6 +34,14 @@ function ValorExpresion(_expresion, _ambito){
             columna: _expresion.columna
         }
     }
+    else if(_expresion.tipo === TIPO_VALOR.CARACTER){
+        return {
+            valor: _expresion.valor.substring(1, _expresion.valor.length-1),
+            tipo: TIPO_DATO.CARACTER,
+            linea: _expresion.linea,
+            columna: _expresion.columna
+        }
+    }
     else if(_expresion.tipo === TIPO_VALOR.IDENTIFICADOR){
         const simbolo = _ambito.getSimbolo(_expresion.valor)
         if(simbolo!=null){
@@ -37,7 +53,7 @@ function ValorExpresion(_expresion, _ambito){
             }
         }
         return {
-            valor: "Error: la variable '"+_expresion.valor+"' no existe... Linea: "+_expresion.linea+" Columna: "+_expresion.columna,
+            valor: "Error: la variable '"+_expresion.valor+"' no existe...\nLinea: "+_expresion.linea+" Columna: "+_expresion.columna,
             tipo: null,
             linea: _expresion.linea,
             columna: _expresion.columna

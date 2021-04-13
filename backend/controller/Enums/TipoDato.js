@@ -1,9 +1,9 @@
 const TIPO_DATO = {
-    DECIMAL: 'Double',
-    CADENA: 'String',
-    BANDERA: 'Boolean',
-    ENTERO: 'int',
-    CARACTER: 'Char'
+    DECIMAL: 'DOUBLE',
+    CADENA: 'STRING',
+    BANDERA: 'BOOLEAN',
+    ENTERO: 'INT',
+    CARACTER: 'CHAR'
 }
 
 module.exports = TIPO_DATO

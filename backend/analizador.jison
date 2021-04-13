@@ -61,11 +61,11 @@
 "("                   return 'parenA'
 ")"                   return 'parenC'
 //OPERADORES ARITMETICOS
+"^"                   return 'exponente'
 "-"                   return 'resta'
 "+"                   return 'suma'
 "*"                   return 'multi'
 "/"                   return 'division'
-"^"                   return 'potencia'
 "%"                   return 'modulo'
 //CARACTERES DE FINALIZACION O ENCAPSULAMIENTO
 ";"                   return 'ptcoma'
@@ -76,7 +76,7 @@
 "]"                   return 'corcheteC'
 ","                   return 'coma'
 //identificadores
-[0-9]+("."[0-9]+)?\b  	        return 'decimal';
+[0-9]+("."[0-9]+)\b  	        return 'decimal';
 [0-9]+\b			return 'entero';
 ([a-zA-Z])([a-zA-Z0-9_])*       return 'identificador'
 ["\""]([^"\""])*["\""]          return 'cadenatexto'
@@ -87,7 +87,7 @@
 %{
 	const TIPO_OPERACION	= require('./controller/Enums/TipoOperacion');
 	const TIPO_VALOR 	= require('./controller/Enums/TipoValor');
-	const TIPO_DATO		= require('./controller/Enums/TipoDato'); //para jalar el tipo de dato
+	const TIPO_DATO		= require('./controller/Enums/TipoDato'); 
 	const INSTRUCCION	= require('./controller/Instruccion/Instruccion');
 %}
 
@@ -98,31 +98,32 @@
 %left 'igualacion' 'diferenciacion' 'menor' 'menorigual' 'mayor' 'mayorigual'
 %left 'suma' 'resta'
 %left 'multi' 'division' 'modulo'
-%left 'potencia'
+%left 'exponente'
+%left 'parenA' 'parenC'
 %left umenos
 
 %start INICIO
 
 %% /* GRAMATICA */
 //CLASE 
-INICIO: llaveA OPCUERPO llaveC EOF{return $2;}
+INICIO: OPCUERPO  EOF{return $1;}
 ;
 
-OPCUERPO: OPCUERPO CUERPO {$1.push($2); $$=$1;}
-        | CUERPO {$$=[$1];}
-        | exec identificador parenA parenC ptcoma
-        | exec identificador parenA LISTAPARAMETROS parenC ptcoma
+OPCUERPO: OPCUERPO CUERPO {$1.push($2); $$ = $1;} 
+        | CUERPO {$$ = [$1];}
 ;
 
-CUERPO:DEC_VAR {$$=$1}
-        |METFUNC{$$=$1}
+CUERPO: DEC_VAR {$$ = $1;}
+        |METFUNC {$$ = $1;}
+        | exec identificador parenA parenC ptcoma {$$ = $1;}
+        | exec identificador parenA LISTAPARAMETROS parenC ptcoma {$$ = $1;}
 ;
 
 //METODOS Y FUNCIONES
-METFUNC:TIPO identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$=[$6];}
-        |TIPO identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$=[$7];}
-        |void identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$=[$6];}
-        |void identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$=[$7];}
+METFUNC:TIPO identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = $6;}
+        |TIPO identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = $7;}
+        |void identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = $6;}
+        |void identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = $7;}
 ;
 
 LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS
@@ -131,17 +132,39 @@ LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS
 PARAMETROS: TIPO identificador
 ;
 
-OPCIONESCUERPO: OPCIONESCUERPO CUERPOMETFUNC {$1.push($2); $$=$1;}
-                | CUERPOMETFUNC {$$=[$1];}
+OPCIONESCUERPO: OPCIONESCUERPO CUERPOMETFUNC
+                | CUERPOMETFUNC 
 ;
 
-CUERPOMETFUNC: DEC_VAR {$$=$1}
-        | WHILE {$$=$1}
-        | IMPRIMIR {$$=$1}
+CUERPOMETFUNC: DEC_VAR 
+        | CICLOS
+        | SENTENCIATRANS
+        | FUNCIONES
+        | CAMBIARVALOR_VAR
 ;
 
-DEC_VAR: TIPO identificador ptcoma {$$ = INSTRUCCION.nuevaDeclaracion($2, null, $1, this._$.first_line,this._$.first_column+1)}
-        | TIPO identificador signoigual EXPRESION ptcoma {$$ = INSTRUCCION.nuevaDeclaracion($2, $4, $1, this._$.first_line,this._$.first_column+1)}
+FUNCIONES: IMPRIMIR {$$ = $1;}
+        | toLower parenA cadenatexto parenC ptcoma
+        | toUpper parenA cadenatexto parenC ptcoma
+;
+
+CICLOS: WHILEC
+        |IFC
+        |FORC
+        |SWITCHC
+        |DOC
+;
+
+SENTENCIATRANS: break
+        |continue
+        |return
+;
+
+
+DEC_VAR: TIPO identificador ptcoma 
+        | TIPO identificador signoigual EXPRESION ptcoma 
+;
+CAMBIARVALOR_VAR: identificador signoigual EXPRESION ptcoma
 ;
 
 TIPO: Double {$$ = TIPO_DATO.DECIMAL}
@@ -151,21 +174,21 @@ TIPO: Double {$$ = TIPO_DATO.DECIMAL}
         | Char {$$ = TIPO_DATO.CADENA}
 ;
 
-IMPRIMIR: print parenA EXPRESION parenC ptcoma{$$ = new INSTRUCCION.nuevoCout($3, this._$.first_line,this._$.first_column+1)}
+IMPRIMIR: print parenA EXPRESION parenC ptcoma { $$ = new INSTRUCCION.nuevoPRINT($3, this._$.first_line, (this._$.first_column+1))}
 ;
 
-WHILE: while parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC
+WHILEC: while parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC
 ;
 
 
-EXPRESION: EXPRESION suma EXPRESION {$$= INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.SUMA,this._$.first_line,this._$.first_column+1);}
-        | EXPRESION resta EXPRESION {$$= INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.RESTA,this._$.first_line,this._$.first_column+1);}
-        | EXPRESION multi EXPRESION
-        | EXPRESION division EXPRESION
-        | EXPRESION potencia EXPRESION
+EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1))}
+        | EXPRESION resta EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1))}
+        | EXPRESION multi EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.MULTIPLICACION, this._$.first_line, (this._$.first_column+1))}
+        | EXPRESION division EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.DIVISION, this._$.first_line, (this._$.first_column+1))}
+        | EXPRESION exponente EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.POTENCIA, this._$.first_line, (this._$.first_column+1))}
         | EXPRESION modulo EXPRESION
         | resta EXPRESION %prec umenos
-        | parenA EXPRESION parenC {$$=$2}
+        | parenA EXPRESION parenC
         | EXPRESION igualacion EXPRESION
         | EXPRESION diferenciacion EXPRESION
         | EXPRESION menor EXPRESION
@@ -175,10 +198,10 @@ EXPRESION: EXPRESION suma EXPRESION {$$= INSTRUCCION.nuevaOperacionBinaria($1,$3
         | EXPRESION or EXPRESION
         | EXPRESION and EXPRESION
         | not EXPRESION
-        | decimal {$$ = INSTRUCCION.nuevoValor(Number($1), TIPO_VALOR.DECIMAL, this._$.first_line,this._$.first_column+1)}
-        | true {$$ = INSTRUCCION.nuevoValor(Boolean($1), TIPO_VALOR.BANDERA, this._$.first_line,this._$.first_column+1)}
-        | false {$$ = INSTRUCCION.nuevoValor(Boolean($1), TIPO_VALOR.BANDERA, this._$.first_line,this._$.first_column+1)}
-        | cadenatexto {$$ = INSTRUCCION.nuevoValor($1, TIPO_VALOR.CADENA, this._$.first_line,this._$.first_column+1)}
-        | identificador {$$ = INSTRUCCION.nuevoValor($1, TIPO_VALOR.IDENTIFICADOR, this._$.first_line,this._$.first_column+1)}
-        | entero {$$ = INSTRUCCION.nuevoValor(Number($1), TIPO_VALOR.ENTERO, this._$.first_line,this._$.first_column+1)}
+        | entero {$$ = INSTRUCCION.nuevoVALOR( Number($1), TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1))}
+        | true {$$ = INSTRUCCION.nuevoVALOR( Boolean($1), TIPO_VALOR.BANDERA, this._$.first_line, (this._$.first_column+1))}
+        | false {$$ = INSTRUCCION.nuevoVALOR( Boolean($1), TIPO_VALOR.BANDERA,this._$.first_line, (this._$.first_column+1))}
+        | cadenatexto {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.CADENA, this._$.first_line, (this._$.first_column+1))}
+        | identificador {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1))}
+        | decimal {$$ = INSTRUCCION.nuevoVALOR(Number($1), TIPO_VALOR.DECIMAL,this._$.first_line, (this._$.first_column+1))}
 ;

@@ -3,12 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 //importamos para el editor
 import { filter, take } from 'rxjs/operators';
-import {
-  MonacoEditorComponent,
-  MonacoEditorConstructionOptions,
-  MonacoEditorLoaderService,
-  MonacoStandaloneCodeEditor
-} from '@materia-ui/ngx-monaco-editor';
+import {MonacoEditorComponent,MonacoEditorConstructionOptions,MonacoEditorLoaderService,MonacoStandaloneCodeEditor} from '@materia-ui/ngx-monaco-editor';
 import { AnalizarService } from 'src/app/services/analizar.service';
 
 @Component({

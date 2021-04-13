@@ -1,0 +1,9 @@
+.Productos{
+    background: #1b1b1a;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #1b1b1a, #1b1b1a);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #1b1b1a, #1b1b1a);
+    height: 100%;
+
+}

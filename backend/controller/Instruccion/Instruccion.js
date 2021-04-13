@@ -1,4 +1,6 @@
 const TIPO_INSTRUCCION = require("../Enums/TipoInstruccion")
+
+
 function nuevaOperacion(_opIzq, _opDer, _tipo, _linea, _columna){
     return {
         opIzq: _opIzq,
@@ -8,16 +10,19 @@ function nuevaOperacion(_opIzq, _opDer, _tipo, _linea, _columna){
         columna: _columna
     }
 }
+
+
 const Instruccion = {
-    nuevoCout: function(_expresion, _linea, _columna){
+    nuevoPRINT: function(_expresion, _linea, _columna){
         return {
-            tipo: TIPO_INSTRUCCION.COUT,
+            tipo: TIPO_INSTRUCCION.PRINT,
             expresion: _expresion,
             linea: _linea,
             columna: _columna 
         }
     },
-    nuevoValor:function(_valor, _tipo, _linea, _columna){
+
+    nuevoVALOR:function(_valor, _tipo, _linea, _columna){
         return{
             tipo: _tipo,
             valor: _valor,
@@ -25,10 +30,12 @@ const Instruccion = {
             columna: _columna
         }
     },
+
     nuevaOperacionBinaria: function(_opIzq, _opDer, _tipo, _linea, _columna){
         return nuevaOperacion(_opIzq, _opDer, _tipo, _linea, _columna)
     },
-    nuevaDeclaracion: function(_id, _valor, _tipo, _linea, _columna){
+
+    nuevaDECLARACION: function(_id, _valor, _tipo, _linea, _columna){
         return{
             tipo: TIPO_INSTRUCCION.DECLARACION,
             id: _id,
@@ -38,7 +45,8 @@ const Instruccion = {
             columna: _columna
         }
     },
-    nuevaAsignacion: function(_id, _expresion, _linea, _columna){
+    
+    nuevaASIGNACION: function(_id, _expresion, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.ASIGNACION,
             id: _id,
