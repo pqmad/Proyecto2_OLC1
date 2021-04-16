@@ -29,38 +29,34 @@
             <div class="col-md-12">
                 <br>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-11">
                         <div class="card text-white bg-secondary mb-3">
                             <div class="card-header">Ingrese texto:</div>
-                            <div class="card-body">
-                                <div style="width: auto; height: 350px;">
+                            
+                                <div style="width: auto; height: 275px;">
                                     <ngx-monaco-editor [formControl]="editorTexto" [options]="editorOptions"
                                         [(ngModel)]="code" (init)="editorInit($event)"></ngx-monaco-editor>
                                 </div>
-                            </div>
                             <br>
                         </div>
                     </div>
                     <div class="col-md-1">
-                        <br><br><br><br><br><br><br><br><br>
+                        <br><br><br><br><br><br>
                         <div class="d-grid gap-2">
                             <button type="button" (click)="analizar()" class="btn btn-outline-warning center">Ejecutar</button>
                         </div>
                     </div>
-                    <div class="col-md-5">
-                        <div class="card text-white bg-warning mb-5" >
+                    <div class="col-md-12">
                             <div class="card-header">Consola</div>
-                            <div class="card-body">
-                                <div style="width: auto; height: 350px;">
+                                <div style="width: auto; height: 200px;">
                                     <ngx-monaco-editor 
                                         [formControl]="consola" [options]="consoleOptions"
                                         [(ngModel)]="console" (init)="editorInit($event)" aria-readonly="true">
                                     </ngx-monaco-editor>
                                 </div>
-                            </div>
                             <br>
-                        </div>
-                    </div>
+                            </div>
+                    
                 </div>
             </div>
         </div>    

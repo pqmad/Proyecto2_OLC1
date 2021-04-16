@@ -26,9 +26,9 @@ function TipoResultado(_tipo1, _tipo2, _operacion){
         if(_tipo1 === TIPO_DATO.ENTERO && _tipo2 === TIPO_DATO.ENTERO){ return TIPO_DATO.ENTERO}
         else { return TIPO_DATO.DECIMAL}
     }
-    else if( _operacion==="negacion" && _tipo1!==TIPO_DATO.CADENA && _tipo2!==TIPO_DATO.CADENA  && _tipo1!==TIPO_DATO.BANDERA && _tipo2!==TIPO_DATO.BANDERA && _tipo1!==TIPO_DATO.CARACTER && _tipo2!==TIPO_DATO.CARACTER){
+    else if( _operacion==="negacion" && (_tipo1===TIPO_DATO.ENTERO ||_tipo1===TIPO_DATO.DECIMAL) ){
         if(_tipo1 === TIPO_DATO.ENTERO){ return TIPO_DATO.ENTERO}
-        else { return TIPO_DATO.DECIMAL}
+        else if(_tipo1 === TIPO_DATO.DECIMAL){ return TIPO_DATO.DECIMAL}
     }
     return null
 }

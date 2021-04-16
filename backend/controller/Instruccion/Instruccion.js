@@ -11,7 +11,6 @@ function nuevaOperacion(_opIzq, _opDer, _tipo, _linea, _columna){
     }
 }
 
-
 const Instruccion = {
     nuevoPRINT: function(_expresion, _linea, _columna){
         return {
@@ -50,6 +49,28 @@ const Instruccion = {
         return {
             tipo: TIPO_INSTRUCCION.ASIGNACION,
             id: _id,
+            expresion: _expresion,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    nuevaMETODO: function(_id, _parametros, _expresion, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.DECLARACION_M,
+            id: _id,
+            parametros:_parametros,
+            expresion: _expresion,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    nuevaFUNCION: function(_id, _parametros, _expresion, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.DECLARACION_F,
+            id: _id,
+            parametros:_parametros,
             expresion: _expresion,
             linea: _linea,
             columna: _columna

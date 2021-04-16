@@ -120,10 +120,10 @@ CUERPO: DEC_VAR {$$ = $1;}
 ;
 
 //METODOS Y FUNCIONES
-METFUNC:TIPO identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = $6;}
-        |TIPO identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = $7;}
-        |void identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = $6;}
-        |void identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = $7;}
+METFUNC:TIPO identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaFUNCION($2, null, $6, this._$.first_line, (this._$.first_column+1));}
+        |TIPO identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaFUNCION($2, $4, $7, this._$.first_line, (this._$.first_column+1));}
+        |void identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaMETODO($2, null, $6, this._$.first_line, (this._$.first_column+1));}
+        |void identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaMETODO($2, $4, $7, this._$.first_line, (this._$.first_column+1));}
 ;
 
 LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS
@@ -132,15 +132,15 @@ LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS
 PARAMETROS: TIPO identificador
 ;
 
-OPCIONESCUERPO: OPCIONESCUERPO CUERPOMETFUNC
-                | CUERPOMETFUNC 
+OPCIONESCUERPO: OPCIONESCUERPO CUERPOMETFUNC {$1.push($2); $$ = $1;} 
+                | CUERPOMETFUNC {$$ = [$1];}
 ;
 
-CUERPOMETFUNC: DEC_VAR 
-        | CICLOS
-        | SENTENCIATRANS
-        | FUNCIONES
-        | CAMBIARVALOR_VAR
+CUERPOMETFUNC: DEC_VAR {$$ = $1;}
+        | CICLOS {$$ = $1;}
+        | SENTENCIATRANS {$$ = $1;}
+        | FUNCIONES {$$ = $1;}
+        | CAMBIARVALOR_VAR {$$ = $1;}
 ;
 
 FUNCIONES: IMPRIMIR {$$ = $1;}
@@ -161,10 +161,11 @@ SENTENCIATRANS: break
 ;
 
 
-DEC_VAR: TIPO identificador ptcoma 
-        | TIPO identificador signoigual EXPRESION ptcoma 
+DEC_VAR: TIPO identificador ptcoma {$$ = INSTRUCCION.nuevaDECLARACION($2, null, $1, this._$.first_line, (this._$.first_column+1));}
+        | TIPO identificador signoigual EXPRESION ptcoma {$$ = INSTRUCCION.nuevaDECLARACION($2, $4, $1, this._$.first_line, (this._$.first_column+1));}
 ;
-CAMBIARVALOR_VAR: identificador signoigual EXPRESION ptcoma
+
+CAMBIARVALOR_VAR: identificador signoigual EXPRESION ptcoma {$$ = INSTRUCCION.nuevaASIGNACION($1, $3, this._$.first_line, (this._$.first_column+1));}
 ;
 
 TIPO: Double {$$ = TIPO_DATO.DECIMAL}
@@ -174,34 +175,34 @@ TIPO: Double {$$ = TIPO_DATO.DECIMAL}
         | Char {$$ = TIPO_DATO.CADENA}
 ;
 
-IMPRIMIR: print parenA EXPRESION parenC ptcoma { $$ = new INSTRUCCION.nuevoPRINT($3, this._$.first_line, (this._$.first_column+1))}
+IMPRIMIR: print parenA EXPRESION parenC ptcoma { $$ = new INSTRUCCION.nuevoPRINT($3, this._$.first_line, (this._$.first_column+1));}
 ;
 
 WHILEC: while parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC
 ;
 
 
-EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1))}
-        | EXPRESION resta EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1))}
-        | EXPRESION multi EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.MULTIPLICACION, this._$.first_line, (this._$.first_column+1))}
-        | EXPRESION division EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.DIVISION, this._$.first_line, (this._$.first_column+1))}
-        | EXPRESION exponente EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.POTENCIA, this._$.first_line, (this._$.first_column+1))}
-        | EXPRESION modulo EXPRESION
-        | resta EXPRESION %prec umenos
-        | parenA EXPRESION parenC
+EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1));}
+        | EXPRESION resta EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1));}
+        | EXPRESION multi EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.MULTIPLICACION, this._$.first_line, (this._$.first_column+1));}
+        | EXPRESION division EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.DIVISION, this._$.first_line, (this._$.first_column+1));}
+        | EXPRESION exponente EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.POTENCIA, this._$.first_line, (this._$.first_column+1));}
+        | EXPRESION modulo EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.MODULO, this._$.first_line, (this._$.first_column+1));}
+        | resta EXPRESION %prec umenos {$$ = INSTRUCCION.nuevaOperacionBinaria($2,$2,TIPO_OPERACION.NEGACION, this._$.first_line, (this._$.first_column+1));}
+        | parenA EXPRESION parenC {$$=$2}
         | EXPRESION igualacion EXPRESION
         | EXPRESION diferenciacion EXPRESION
         | EXPRESION menor EXPRESION
         | EXPRESION menorigual EXPRESION
         | EXPRESION mayor EXPRESION
         | EXPRESION mayorigual EXPRESION
-        | EXPRESION or EXPRESION
-        | EXPRESION and EXPRESION
-        | not EXPRESION
-        | entero {$$ = INSTRUCCION.nuevoVALOR( Number($1), TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1))}
-        | true {$$ = INSTRUCCION.nuevoVALOR( Boolean($1), TIPO_VALOR.BANDERA, this._$.first_line, (this._$.first_column+1))}
-        | false {$$ = INSTRUCCION.nuevoVALOR( Boolean($1), TIPO_VALOR.BANDERA,this._$.first_line, (this._$.first_column+1))}
-        | cadenatexto {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.CADENA, this._$.first_line, (this._$.first_column+1))}
-        | identificador {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1))}
-        | decimal {$$ = INSTRUCCION.nuevoVALOR(Number($1), TIPO_VALOR.DECIMAL,this._$.first_line, (this._$.first_column+1))}
+        | EXPRESION or EXPRESION {$$= INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.OR,this._$.first_line,this._$.first_column+1);}
+        | EXPRESION and EXPRESION {$$= INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.AND,this._$.first_line,this._$.first_column+1);}
+        | not EXPRESION {$$= INSTRUCCION.nuevaOperacionBinaria($2,$2, TIPO_OPERACION.NOT,this._$.first_line,this._$.first_column+1);}
+        | entero {$$ = INSTRUCCION.nuevoVALOR( Number($1), TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1));}
+        | true {$$ = INSTRUCCION.nuevoVALOR( Boolean($1), TIPO_VALOR.BANDERA, this._$.first_line, (this._$.first_column+1));}
+        | false {$$ = INSTRUCCION.nuevoVALOR( Boolean($1), TIPO_VALOR.BANDERA,this._$.first_line, (this._$.first_column+1));}
+        | cadenatexto {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.CADENA, this._$.first_line, (this._$.first_column+1));}
+        | identificador {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1));}
+        | decimal {$$ = INSTRUCCION.nuevoVALOR(Number($1), TIPO_VALOR.DECIMAL,this._$.first_line, (this._$.first_column+1));}
 ;

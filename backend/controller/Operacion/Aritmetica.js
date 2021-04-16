@@ -12,20 +12,26 @@ function Aritmetica(_expresion, _ambito){
     ){
         return ValorExpresion(_expresion, _ambito)
     }
-    else if(_expresion.tipo === TIPO_OPERACION.SUMA){// 2+6+7+2+9+10
+    else if(_expresion.tipo === TIPO_OPERACION.SUMA){
         return suma(_expresion.opIzq, _expresion.opDer, _ambito)
     }
-    else if(_expresion.tipo === TIPO_OPERACION.RESTA){// 2+6+7+2+9+10
+    else if(_expresion.tipo === TIPO_OPERACION.RESTA){
         return resta(_expresion.opIzq, _expresion.opDer, _ambito)
     }
-    else if(_expresion.tipo === TIPO_OPERACION.MULTIPLICACION){// 2+6+7+2+9+10
+    else if(_expresion.tipo === TIPO_OPERACION.MULTIPLICACION){
         return multiplicacion(_expresion.opIzq, _expresion.opDer, _ambito)
     }
-    else if(_expresion.tipo === TIPO_OPERACION.DIVISION){// 2+6+7+2+9+10
+    else if(_expresion.tipo === TIPO_OPERACION.DIVISION){
         return division(_expresion.opIzq, _expresion.opDer, _ambito)
     }
-    else if(_expresion.tipo === TIPO_OPERACION.POTENCIA){// 2+6+7+2+9+10
+    else if(_expresion.tipo === TIPO_OPERACION.POTENCIA){
         return potencia(_expresion.opIzq, _expresion.opDer, _ambito)
+    }
+    else if(_expresion.tipo === TIPO_OPERACION.MODULO){
+        return modulo(_expresion.opIzq, _expresion.opDer, _ambito)
+    }
+    else if(_expresion.tipo === TIPO_OPERACION.NEGACION){
+        return negacion(_expresion.opIzq, _ambito)
     }
 }
 
@@ -135,14 +141,16 @@ function division(_opIzq, _opDer, _ambito){
 }
 
 function potencia(_opIzq, _opDer, _ambito){
+    
     const opIzq = Aritmetica(_opIzq,_ambito)
     const opDer = Aritmetica(_opDer,_ambito)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "potencia")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
-            const resultado=Number(opIzq.valor);
-            for (let index = 1; index < Number(opDer.valor); index++) {
-                resultado = resultado * Number(opIzq.valor);
+            var resultado=Number(opIzq.valor);
+            var i 
+            for (i=1; i<opDer.valor; i++) {
+                resultado = resultado * opIzq.valor;
             }
             return{
                 valor: resultado,
@@ -160,4 +168,52 @@ function potencia(_opIzq, _opDer, _ambito){
         columna: _opIzq.columna
     }
 }
+
+function modulo(_opIzq, _opDer, _ambito){
+    const opIzq = Aritmetica(_opIzq,_ambito)
+    const opDer = Aritmetica(_opDer,_ambito)
+    const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "modulo")
+    if(tipoRes!=null){
+        if(tipoRes === TIPO_DATO.DECIMAL){
+            const resultado = Number(opIzq.valor) % Number(opDer.valor);
+            return{
+                valor: parseFloat(resultado),
+                tipo: tipoRes,
+                linea: _opIzq.linea,
+                columna: _opIzq.columna
+            }
+        }
+    }
+    var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
+    return{
+        valor: respuesta+'\nError semántico: no se puede realizar la operacion suma... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
+        tipo: null,
+        linea: _opIzq.linea,
+        columna: _opIzq.columna
+    }
+}
+
+function negacion(_opIzq, _ambito){
+    const opIzq = Aritmetica(_opIzq,_ambito)
+    const tipoRes = TipoResultado(opIzq.tipo,opIzq.tipo, "negacion")
+    if(tipoRes!=null){
+        if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
+            var resultado = -Number(opIzq.valor);
+            return{
+                valor: resultado,
+                tipo: tipoRes,
+                linea: _opIzq.linea,
+                columna: _opIzq.columna
+            }
+        }
+    }
+    var respuesta = (opIzq.tipo===null ? opIzq.valor: "")
+    return{
+        valor: respuesta+'\nError semántico: no se puede realizar la operacion suma... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
+        tipo: null,
+        linea: _opIzq.linea,
+        columna: _opIzq.columna
+    }
+}
+
 module.exports = Aritmetica

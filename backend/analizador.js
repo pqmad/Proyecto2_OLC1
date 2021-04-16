@@ -86,13 +86,13 @@ switch (yystate) {
 case 1:
 return $$[$0-1];
 break;
-case 2:
+case 2: case 15:
 $$[$0-1].push($$[$0]); this.$ = $$[$0-1];
 break;
-case 3:
+case 3: case 16:
 this.$ = [$$[$0]];
 break;
-case 4: case 5: case 22:
+case 4: case 5: case 17: case 18: case 19: case 20: case 21: case 22:
 this.$ = $$[$0];
 break;
 case 6:
@@ -101,8 +101,26 @@ break;
 case 7:
 this.$ = $$[$0-5];
 break;
-case 8: case 9: case 10: case 11:
-this.$ = $$[$0-1];
+case 8:
+this.$ = INSTRUCCION.nuevaFUNCION($$[$0-5], null, $$[$0-1], this._$.first_line, (this._$.first_column+1));
+break;
+case 9:
+this.$ = INSTRUCCION.nuevaFUNCION($$[$0-6], $$[$0-4], $$[$0-1], this._$.first_line, (this._$.first_column+1));
+break;
+case 10:
+this.$ = INSTRUCCION.nuevaMETODO($$[$0-5], null, $$[$0-1], this._$.first_line, (this._$.first_column+1));
+break;
+case 11:
+this.$ = INSTRUCCION.nuevaMETODO($$[$0-6], $$[$0-4], $$[$0-1], this._$.first_line, (this._$.first_column+1));
+break;
+case 33:
+this.$ = INSTRUCCION.nuevaDECLARACION($$[$0-1], null, $$[$0-2], this._$.first_line, (this._$.first_column+1));
+break;
+case 34:
+this.$ = INSTRUCCION.nuevaDECLARACION($$[$0-3], $$[$0-1], $$[$0-4], this._$.first_line, (this._$.first_column+1));
+break;
+case 35:
+this.$ = INSTRUCCION.nuevaASIGNACION($$[$0-3], $$[$0-1], this._$.first_line, (this._$.first_column+1));
 break;
 case 36:
 this.$ = TIPO_DATO.DECIMAL
@@ -117,40 +135,46 @@ case 39:
 this.$ = TIPO_DATO.ENTERO
 break;
 case 41:
- this.$ = new INSTRUCCION.nuevoPRINT($$[$0-2], this._$.first_line, (this._$.first_column+1))
+ this.$ = new INSTRUCCION.nuevoPRINT($$[$0-2], this._$.first_line, (this._$.first_column+1));
 break;
 case 43:
-this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1));
 break;
 case 44:
-this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1));
 break;
 case 45:
-this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.MULTIPLICACION, this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.MULTIPLICACION, this._$.first_line, (this._$.first_column+1));
 break;
 case 46:
-this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.DIVISION, this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.DIVISION, this._$.first_line, (this._$.first_column+1));
 break;
 case 47:
-this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.POTENCIA, this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.POTENCIA, this._$.first_line, (this._$.first_column+1));
+break;
+case 48:
+this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0-2],$$[$0],TIPO_OPERACION.MODULO, this._$.first_line, (this._$.first_column+1));
+break;
+case 49:
+this.$ = INSTRUCCION.nuevaOperacionBinaria($$[$0],$$[$0],TIPO_OPERACION.NEGACION, this._$.first_line, (this._$.first_column+1));
 break;
 case 60:
-this.$ = INSTRUCCION.nuevoVALOR( Number($$[$0]), TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevoVALOR( Number($$[$0]), TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1));
 break;
 case 61:
-this.$ = INSTRUCCION.nuevoVALOR( Boolean($$[$0]), TIPO_VALOR.BANDERA, this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevoVALOR( Boolean($$[$0]), TIPO_VALOR.BANDERA, this._$.first_line, (this._$.first_column+1));
 break;
 case 62:
-this.$ = INSTRUCCION.nuevoVALOR( Boolean($$[$0]), TIPO_VALOR.BANDERA,this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevoVALOR( Boolean($$[$0]), TIPO_VALOR.BANDERA,this._$.first_line, (this._$.first_column+1));
 break;
 case 63:
-this.$ = INSTRUCCION.nuevoVALOR( $$[$0], TIPO_VALOR.CADENA, this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevoVALOR( $$[$0], TIPO_VALOR.CADENA, this._$.first_line, (this._$.first_column+1));
 break;
 case 64:
-this.$ = INSTRUCCION.nuevoVALOR( $$[$0], TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevoVALOR( $$[$0], TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1));
 break;
 case 65:
-this.$ = INSTRUCCION.nuevoVALOR(Number($$[$0]), TIPO_VALOR.DECIMAL,this._$.first_line, (this._$.first_column+1))
+this.$ = INSTRUCCION.nuevoVALOR(Number($$[$0]), TIPO_VALOR.DECIMAL,this._$.first_line, (this._$.first_column+1));
 break;
 }
 },

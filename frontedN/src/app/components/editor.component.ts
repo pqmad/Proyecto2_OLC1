@@ -83,7 +83,7 @@ export class EditorComponent implements OnInit {
       console.log(res)
       this.consola.setValue(res.consola);
     }, err=>{
-      console.log(err)
+      console.log("ERROR: "+err)
     });
   }
 

@@ -1,14 +1,14 @@
 class Ambito{
-    constructor(_anterior){ //ambito anterior
+    constructor(_anterior){
         this.anterior = _anterior
         this.tablaSimbolos = new Map();
     }
-// AGREGAR SIMBOLO
-    addSimbolo(_s, _simbolo){ //id, simbolo  
+
+    addSimbolo(_s, _simbolo){
         this.tablaSimbolos.set(_s.toLowerCase(), _simbolo)
     }
-// DEVOLVER SIMBOLO
-    getSimbolo(_s){ //clave
+
+    getSimbolo(_s){ 
         for(let e=this; e!=null; e=e.anterior){
             var encontrado = e.tablaSimbolos.get(_s.toLowerCase()) 
             if(encontrado!=null){
@@ -17,16 +17,17 @@ class Ambito{
         }
         return null
     }
-// VER SI EXISTE SIMBOLO
+    
     existeSimbolo(_s){
         for(let e=this; e!=null; e=e.anterior){
-            var encontrado = e.tablaSimbolos.get(_s.toLowerCase()) //hola<=>HoLA
+            var encontrado = e.tablaSimbolos.get(_s.toLowerCase())
             if(encontrado!=null){
                 return true
             }
         }
         return false
     }
+    
     actualizar(_s, _simbolo){
         for(let e=this; e!=null; e=e.anterior){
             var encontrado = e.tablaSimbolos.get(_s.toLowerCase());

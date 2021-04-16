@@ -6,6 +6,7 @@ const TIPO_OPERACION = {
     POTENCIA: 'POTENCIA',
     MODULO: 'MODULO',
     NEGACION: 'NEGACION',
+    //---------------------------------------------
     IGUALIGUAL: 'IGUALIGUAL',
     DIFERENTE: 'DIFERENTE',
     MENOR: 'MENOR',
