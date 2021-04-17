@@ -1,6 +1,6 @@
 const Operacion = require("../Operacion/Operacion");
 
-function Incre_Decre(_instruccion, _ambito){
+function Asignacion(_instruccion, _ambito){
     const id = _instruccion.id;
     const existe = _ambito.existeSimbolo(id)
     if(existe){
@@ -20,4 +20,4 @@ function Incre_Decre(_instruccion, _ambito){
     return `Error: la variable '${String(id)}' no existe... Linea: ${_instruccion.linea} Columna: ${_instruccion.columna}`
 }
 
-module.exports = Incre_Decre
+module.exports = Asignacion

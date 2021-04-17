@@ -55,23 +55,63 @@ const Instruccion = {
         }
     },
 
-    nuevaMETODO: function(_id, _parametros, _expresion, _linea, _columna){
+    nuevoWhile: function(_expresion, _instrucciones, _linea, _columna){
         return {
-            tipo: TIPO_INSTRUCCION.DECLARACION_M,
-            id: _id,
-            parametros:_parametros,
+            tipo: TIPO_INSTRUCCION.WHILE,
             expresion: _expresion,
+            instrucciones: _instrucciones,
             linea: _linea,
             columna: _columna
         }
     },
 
-    nuevaFUNCION: function(_id, _parametros, _expresion, _linea, _columna){
+    nuevaMETODO: function(_id,_parametros,_instrucciones, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.DECLARACION_M,
+            id: _id,
+            parametros: _parametros,
+            instrucciones: _instrucciones,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    nuevaFUNCION: function(_id, _valor, _tipo, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.DECLARACION_F,
             id: _id,
-            parametros:_parametros,
-            expresion: _expresion,
+            parametros: _parametros,
+            instrucciones: _instrucciones,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    nuevaPARAMETRO: function(_id,_tipo, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.DECLARACION,
+            id: _id,
+            tipo_dato: _tipo,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    Exec: function(_id,_parametros, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.EXEC,
+            id: _id,
+            parametros: _parametros,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    Llamadas: function(_id,_parametros, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.LLAMADA,
+            id: _id,
+            parametros: _parametros,
             linea: _linea,
             columna: _columna
         }

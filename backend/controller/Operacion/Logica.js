@@ -7,7 +7,9 @@ const ValorExpresion = require("./ValorExpresion")
 function Logica(_expresion, _ambito){
     //true || false
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.BANDERA ||
-        _expresion.tipo === TIPO_VALOR.CADENA || _expresion.tipo === TIPO_VALOR.IDENTIFICADOR){
+        _expresion.tipo === TIPO_VALOR.CADENA || _expresion.tipo === TIPO_VALOR.IDENTIFICADOR
+        || _expresion.tipo === TIPO_VALOR.ENTERO || _expresion.tipo === TIPO_VALOR.CARACTER
+    ){
         return ValorExpresion(_expresion, _ambito)
     }
     else if(_expresion.tipo === TIPO_OPERACION.IGUALIGUAL || _expresion.tipo === TIPO_OPERACION.DIFERENTE ||
@@ -16,24 +18,38 @@ function Logica(_expresion, _ambito){
         return Relacional(_expresion, _ambito)
     }
     else if(_expresion.tipo === TIPO_OPERACION.OR){
+        /*
+        1 || 1 = 1
+        1 || 0 = 1
+        0 || 1 = 1
+        0 || 0 = 0
+        */
         return or(_expresion.opIzq, _expresion.opDer, _ambito)
     }
     else if(_expresion.tipo === TIPO_OPERACION.AND){
+        /*
+        1 && 1 = 1
+        1 && 0 = 0
+        0 && 1 = 0
+        0 && 0 = 0
+        */
         return and(_expresion.opIzq, _expresion.opDer, _ambito)
     }
-    // a<5 || b>10
+    else if(_expresion.tipo === TIPO_OPERACION.NOT){
+        /*
+        1 && 1 = 1
+        1 && 0 = 0
+        0 && 1 = 0
+        0 && 0 = 0
+        */
+        return not(_expresion.opIzq, _ambito)
+    }
 }
 
 function or(_opIzq, _opDer, _ambito){
     const opIzq = Logica(_opIzq, _ambito)
     const opDer = Logica(_opDer, _ambito)
-    //console.log(_opDer)
-    /*
-    1 || 1 = 1
-    1 || 0 = 1
-    0 || 1 = 1
-    0 || 0 = 0
-    */
+    
     if(opIzq.tipo == opDer.tipo && opIzq.tipo === TIPO_DATO.BANDERA){
         var resultado = false
         if(opIzq.valor || opDer.valor){
@@ -54,16 +70,10 @@ function or(_opIzq, _opDer, _ambito){
         columna: _opIzq.columna
     }
 }
+
 function and(_opIzq, _opDer, _ambito){
     const opIzq = Logica(_opIzq, _ambito)
     const opDer = Logica(_opDer, _ambito)
-    //console.log(_opDer)
-    /*
-    1 && 1 = 1
-    1 && 0 = 0
-    0 && 1 = 0
-    0 && 0 = 0
-    */
     if(opIzq.tipo == opDer.tipo && opIzq.tipo === TIPO_DATO.BANDERA){
         var resultado = false
         if(opIzq.valor && opDer.valor){
@@ -79,6 +89,34 @@ function and(_opIzq, _opDer, _ambito){
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
     return{
         valor: respuesta+ `\nError semántico: no se puede comparar el valor de tipo ${opIzq.tipo} \ncon el valor de tipo ${opDer.tipo}... Linea: +${_opIzq.linea}+" Columna: "+${_opIzq.columna}`,
+        tipo: null,
+        linea: _opIzq.linea,
+        columna: _opIzq.columna
+    }
+}
+function not(_opIzq, _ambito){
+    const opIzq = Logica(_opIzq, _ambito)
+    if(opIzq.tipo === TIPO_DATO.BANDERA){
+        if(opIzq.valor === true){
+            return {
+                valor: false,
+                tipo: TIPO_DATO.BANDERA,
+                linea: _opIzq.linea,
+                columna: _opIzq.columna
+            }
+        }
+        else {
+            return {
+                valor: true,
+                tipo: TIPO_DATO.BANDERA,
+                linea: _opIzq.linea,
+                columna: _opIzq.columna
+            }
+        }
+    }
+    var respuesta = (opIzq.tipo===null ? opIzq.valor: "") //true+5+10+5
+    return{
+        valor: respuesta+ `\nError semántico: no se puede invertir el valor de tipo ${opIzq.tipo}... Linea: +${_opIzq.linea}+" Columna: "+${_opIzq.columna}`,
         tipo: null,
         linea: _opIzq.linea,
         columna: _opIzq.columna

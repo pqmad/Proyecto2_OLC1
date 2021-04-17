@@ -10,7 +10,7 @@ module.exports=(parser, app)=>{
             //const AmbitoGlobal = new Ambito_MF(null)
             //const AmbitoP = new Ambito(AmbitoGlobal)
             const AmbitoP = new Ambito(null)
-            var cadena = Bloque(ast, AmbitoP)
+            var cadena = Bloque(ast, AmbitoP,ast)
             var resultado = {
                 arbol: ast,
                 consola: cadena

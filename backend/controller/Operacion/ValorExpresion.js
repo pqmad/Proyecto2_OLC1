@@ -44,9 +44,14 @@ function ValorExpresion(_expresion, _ambito){
     }
     else if(_expresion.tipo === TIPO_VALOR.IDENTIFICADOR){
         const simbolo = _ambito.getSimbolo(_expresion.valor)
+        var simboloo = simbolo.valor
+        if(simbolo.valor[0]==="\""){
+            simboloo= simbolo.valor.substring(1, simbolo.valor.length-1)
+        }
+
         if(simbolo!=null){
             return {
-                valor: simbolo.valor,
+                valor: simboloo,
                 tipo: simbolo.tipo,
                 linea: simbolo.linea,
                 columna: simbolo.columna

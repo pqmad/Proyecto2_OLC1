@@ -5,7 +5,7 @@ const TipoResultado = require("./TipoResultado")
 const ValorExpresion = require("./ValorExpresion")
 
 function Aritmetica(_expresion, _ambito){
-
+    console.log("aritmetica------------>"+_expresion+"<---->"+_expresion.tipo)
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.BANDERA ||
         _expresion.tipo === TIPO_VALOR.CADENA || _expresion.tipo === TIPO_VALOR.IDENTIFICADOR
         || _expresion.tipo === TIPO_VALOR.ENTERO || _expresion.tipo === TIPO_VALOR.CARACTER

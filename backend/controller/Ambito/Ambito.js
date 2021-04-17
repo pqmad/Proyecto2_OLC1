@@ -11,6 +11,10 @@ class Ambito{
     getSimbolo(_s){ 
         for(let e=this; e!=null; e=e.anterior){
             var encontrado = e.tablaSimbolos.get(_s.toLowerCase()) 
+            /*console.log("***********************************")
+            console.log(_s)
+            console.log(encontrado)
+            console.log("***********************************")*/
             if(encontrado!=null){
                 return encontrado
             }
