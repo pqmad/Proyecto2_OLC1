@@ -17,11 +17,13 @@ function Metodo_Funcion(miId, _ambito, _instruccion, _parametros,orig){
     });
     var nuevoAmbito = new Ambito(_ambito);
     var para=null;
-    if(_parametros.tipo === TIPO_VALOR.IDENTIFICADOR){
-        var param=_ambito.getSimbolo(_parametros.valor);
-        para=param.valor
-    }else{
-        para=_parametros.valor;
+    if(_parametros!=null){
+        if(_parametros.tipo === TIPO_VALOR.IDENTIFICADOR){
+            var param=_ambito.getSimbolo(_parametros.valor);
+            para=param.valor
+        }else{
+            para=_parametros.valor;
+        }
     }
     if (orig[i].parametros!=null)
     orig[i].parametros.forEach(parametro => {

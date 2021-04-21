@@ -65,6 +65,49 @@ const Instruccion = {
         }
     },
 
+    nuevoIf: function(_expresion, _instrucciones, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.IF,
+            expresion: _expresion,
+            instrucciones: _instrucciones,
+            linea: _linea,
+            columna: _columna,
+            valor:false
+        }
+    },
+
+    nuevoElse: function(_expresionLogica, _instruccionesIfVerdadero, _instruccionesIfFalso,_linea,_columna) {
+        return {
+            tipo: TIPO_INSTRUCCION.ELSE,
+            expresionLogica: _expresionLogica,
+			instruccionesIfVerdadero: _instruccionesIfVerdadero,
+			instruccionesIfFalso: _instruccionesIfFalso,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+    nuevoElseIf: function(_expresion, _instrucciones, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.IF,
+            expresion: _expresion,
+            instrucciones: _instrucciones,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    nuevoFOR: function(_valorVariable, _expresionLogica, _aumento, _instrucciones, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.FOR,
+            expresionLogica: _expresionLogica,
+			instrucciones: _instrucciones,
+			aumento: _aumento,
+			valorVariable: _valorVariable,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
     nuevaMETODO: function(_id,_parametros,_instrucciones, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.DECLARACION_M,

@@ -4,13 +4,17 @@ const Cout = require("./Print");
 const metfun = require("./Metodo_Funcion");
 const Declaracion = require("./Declaracion");
 const CicloWhile = require("./while");
+const Sentencia_if = require("./if");
+const Sentencia_else = require("./else");
+const sentencia_elseif = require("./else");
+const Ciclofor = require("./for");
 const verificaparamaetros = require("./VerificarParametros");
 
 function Bloque(_instrucciones, _ambito,original){
     var cadena = ""
-//    console.log(_instrucciones)
+    console.log(_instrucciones)
     /*console.log(_instrucciones[0])
-console.log("******************************************************")
+    console.log("******************************************************")
     console.log(_instrucciones[1])
     console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++")
     console.log(_instrucciones[2])*/
@@ -39,23 +43,48 @@ console.log("******************************************************")
                 cadena+=mensaje+'\n'
             }
         }
-        else if(instruccion.tipo === TIPO_INSTRUCCION.EXEC || instruccion.tipo === TIPO_INSTRUCCION.LLAMADA){
-            //console.log("entrando");
-            var mensaje1=verificaparamaetros(instruccion.parametros,instruccion.id,_instrucciones)
-            //console.log("**entrando**");
-            if(mensaje1!=null){
-                cadena+=mensaje1+'\n'
-            }
-            //console.log("mierdita")
-            //console.log (instruccion)
-            var mensaje = metfun(instruccion.id, _ambito,_instrucciones,instruccion.parametros,original)
+
+        else if(instruccion.tipo === TIPO_INSTRUCCION.IF){
+            var mensaje = Sentencia_if(instruccion, _ambito,original)
             if(mensaje!=null){
                 cadena+=mensaje+'\n'
             }
-            
         }
 
+        else if(instruccion.tipo === TIPO_INSTRUCCION.ELSE){
+            var mensaje = Sentencia_else(instruccion, _ambito,original)
+            if(mensaje!=null){
+                cadena+=mensaje+'\n'
+            }
+        }
+        /*FALTAAAAAAAAAA
+        else if(instruccion.tipo === TIPO_INSTRUCCION.ELSEIF){
+            var mensaje = sentencia_elseif(instruccion, _ambito,original)
+            if(mensaje!=null){
+                cadena+=mensaje+'\n'
+            }
+        }*/
 
+        else if(instruccion.tipo === TIPO_INSTRUCCION.FOR){
+            var mensaje = Ciclofor(instruccion, _ambito, original)
+            if(mensaje!=null){
+                cadena+=mensaje+'\n'
+            }
+        }
+
+        else if(instruccion.tipo === TIPO_INSTRUCCION.EXEC || instruccion.tipo === TIPO_INSTRUCCION.LLAMADA){
+            var mensaje1=verificaparamaetros(instruccion.parametros,instruccion.id,_instrucciones)
+            if(mensaje1!=null){
+                cadena+=mensaje1+'\n'
+            }else{ //para que no ejecute el metoo o funcion hasta que se cumpla con los parametros correctos
+                //console.log("mierdita")
+                //console.log (instruccion)
+                var mensaje = metfun(instruccion.id, _ambito,_instrucciones,instruccion.parametros,original)
+                if(mensaje!=null){
+                    cadena+=mensaje+'\n'
+                }
+            }
+        }
     });
     return cadena
 }

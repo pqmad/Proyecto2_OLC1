@@ -60,6 +60,8 @@
 // SIGNOS DE AGRUPACION
 "("                   return 'parenA'
 ")"                   return 'parenC'
+"++"                   return 'masmas'
+"--"                   return 'menosmenos'
 //OPERADORES ARITMETICOS
 "^"                   return 'exponente'
 "-"                   return 'resta'
@@ -97,7 +99,7 @@
 %left 'and'
 %right 'not'
 %left 'igualacion' 'diferenciacion' 'menor' 'menorigual' 'mayor' 'mayorigual'
-%left 'suma' 'resta'
+%left 'suma' 'resta' 'masmas' 'menosmenos'
 %left 'multi' 'division' 'modulo'
 %left 'exponente'
 %left 'parenA' 'parenC'
@@ -133,9 +135,7 @@ LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS {$1.push($2); $$ = $1;}
 ;
 PARAMETROS: TIPO identificador {$$ = INSTRUCCION.nuevaPARAMETRO($2,$1, this._$.first_line, (this._$.first_column+1));}
 ;
-LISTAEXPRESION:LISTAEXPRESION coma EXPRESION {$1.push($2); $$ = $1;} 
-                | EXPRESION {$$ = [$1];}
-;
+
 OPCIONESCUERPO: OPCIONESCUERPO CUERPOMETFUNC {$1.push($2); $$ = $1;} 
                 | CUERPOMETFUNC {$$ = [$1];}
 ;
@@ -149,8 +149,8 @@ CUERPOMETFUNC: DEC_VAR {$$ = $1;}
         | INCRE_DECRE {$$=$1;}
 ;
 
-INCRE_DECRE: identificador suma suma ptcoma {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
-        | identificador resta resta ptcoma {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
+INCRE_DECRE: identificador masmas ptcoma {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
+        | identificador menosmenos ptcoma {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
 ;
 
 LLAMADA: identificador parenA EXPRESION parenC ptcoma{$$ = INSTRUCCION.Llamadas($1, $3,this._$.first_line, (this._$.first_column+1));}
@@ -162,9 +162,10 @@ FUNCIONES: IMPRIMIR {$$ = $1;}
         | toUpper parenA cadenatexto parenC ptcoma
 ;
 
-CICLOS: WHILEC
-        |IFC
-        |FORC
+CICLOS: WHILEC {$$ = $1;}
+        |ELSEC {$$ = $1;}
+        |IFC {$$ = $1;}
+        |FORC {$$ = $1;}
         |SWITCHC
         |DOC
 ;
@@ -195,8 +196,26 @@ IMPRIMIR: print parenA EXPRESION parenC ptcoma { $$ = new INSTRUCCION.nuevoPRINT
 WHILEC: while parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoWhile($3, $6 , this._$.first_line,(this._$.first_column+1));}
 ;
 
+IFC: if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoIf($3, $6 , this._$.first_line,(this._$.first_column+1));}
+;
 
-EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1));}
+ELSEC: if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC else llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoElse($3, $6,$10 , this._$.first_line,(this._$.first_column+1));}
+;
+
+FORC: for parenA FOR_DECAS EXPRESION ptcoma FOR_ACT parenC llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoFOR($3,$4, $6,$9 , this._$.first_line,(this._$.first_column+1));}
+;
+
+FOR_DECAS: DEC_VAR
+        |CAMBIARVALOR_VAR
+;
+FOR_ACT: identificador signoigual EXPRESION {$$ = INSTRUCCION.nuevaASIGNACION($1, $3, this._$.first_line, (this._$.first_column+1));}
+        |identificador masmas {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
+        | identificador menosmenos {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
+;
+
+EXPRESION: EXPRESION masmas {$$ = INSTRUCCION.nuevaOperacionBinaria($1,INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1));}
+        | EXPRESION menosmenos {$$ = INSTRUCCION.nuevaOperacionBinaria($1,INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1));}
+        | EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1));}
         | EXPRESION resta EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1));}
         | EXPRESION multi EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.MULTIPLICACION, this._$.first_line, (this._$.first_column+1));}
         | EXPRESION division EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3,TIPO_OPERACION.DIVISION, this._$.first_line, (this._$.first_column+1));}
@@ -219,5 +238,5 @@ EXPRESION: EXPRESION suma EXPRESION {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$
         | cadenatexto {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.CADENA, this._$.first_line, (this._$.first_column+1));}
         | identificador {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1));}
         | decimal {$$ = INSTRUCCION.nuevoVALOR(Number($1), TIPO_VALOR.DECIMAL,this._$.first_line, (this._$.first_column+1));}
-        |caracter {$$ = INSTRUCCION.nuevoVALOR(Number($1), TIPO_VALOR.CARACTER,this._$.first_line, (this._$.first_column+1));}
+        | caracter {$$ = INSTRUCCION.nuevoVALOR($1, TIPO_VALOR.CARACTER,this._$.first_line, (this._$.first_column+1));}
 ;
