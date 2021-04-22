@@ -1,14 +1,3 @@
-<ul class="nav nav-tabs bg-warning ">
-        <li class="nav-item active">
-            <a class="nav-link active" data-toggle="tab" href="#tabconsola">-----> Código</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#">-----> Tablas</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#">-----> Arbol AST</a>
-        </li>
-</ul>
 <div id="tabconsola">
 <ul class="nav nav-tabs justify-content-center">
     <li class="nav-item active">
@@ -29,24 +18,30 @@
             <div class="col-md-12">
                 <br>
                 <div class="row">
-                    <div class="col-md-11">
+                    <div class="col-md-10">
                         <div class="card text-white bg-secondary mb-3">
                             <div class="card-header">Ingrese texto:</div>
                             
-                                <div style="width: auto; height: 275px;">
+                                <div style="width: auto; height: 250px;">
                                     <ngx-monaco-editor [formControl]="editorTexto" [options]="editorOptions"
                                         [(ngModel)]="code" (init)="editorInit($event)"></ngx-monaco-editor>
                                 </div>
                             <br>
                         </div>
                     </div>
-                    <div class="col-md-1">
-                        <br><br><br><br><br><br>
-                        <div class="d-grid gap-2">
+                    <div class="col-md-2">
+                        <br><br><br><br><br>
+                        <div class="d-grid gap-2" >
+                            <div align="center">
                             <button type="button" (click)="analizar()" class="btn btn-outline-warning center">Ejecutar</button>
-                        </div>
+                            <br><br>
+                            <button type="button" (click)="analizar()" class="btn btn-outline-warning center">Tablas</button>
+                            <br><br>
+                            <button type="button" (click)="analizar()" class="btn btn-outline-warning center">Arbol AST</button>
+                        </div></div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-10">
+                        <div  class="card text-white bg-secondary mb-3">
                             <div class="card-header">Consola</div>
                                 <div style="width: auto; height: 200px;">
                                     <ngx-monaco-editor 
@@ -56,7 +51,17 @@
                                 </div>
                             <br>
                             </div>
-                    
+                        </div>
+                        <div class="col-md-2">
+                            <br><br><br><br>
+                            <div class="d-grid gap-2" >
+                                <div align="center">
+                                <button type="button" (click)="analizar()" class="btn btn-outline-primary center">Abrir</button>
+                                <br><br>
+                                <button type="button" (click)="analizar()" class="btn btn-outline-primary center">Guardar</button>
+                                
+                            </div></div>
+                        </div>
                 </div>
             </div>
         </div>    

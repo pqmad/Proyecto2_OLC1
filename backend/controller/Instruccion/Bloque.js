@@ -6,6 +6,7 @@ const CicloWhile = require("./while");
 const CicloDo_While = require("./Do_While");
 const Sentencia_if = require("./if");
 const Sentencia_else = require("./else");
+const procesarSwitch = require("./Switch");
 //const sentencia_elseif = require("./else");
 const Ciclofor = require("./for");
 //const verificaparamaetros = require("./VerificarParametros");
@@ -76,6 +77,13 @@ function Bloque(_instrucciones, _ambito){
 
         else if(instruccion.tipo === TIPO_INSTRUCCION.FOR){
             var mensaje = Ciclofor(instruccion, _ambito)
+            if(mensaje!=null){
+                cadena+=mensaje+'\n'
+            }
+        }
+
+        else if (instruccion.tipo === TIPO_INSTRUCCION.SWITCH) {
+            var mensaje = procesarSwitch(instruccion, _ambito);
             if(mensaje!=null){
                 cadena+=mensaje+'\n'
             }

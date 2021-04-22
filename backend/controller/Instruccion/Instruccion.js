@@ -170,7 +170,39 @@ const Instruccion = {
             linea: _linea,
             columna: _columna
         }
-    }
+    },
+
+    nuevoSwitch: function(expresion, casos, _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.SWITCH,
+			expresion: expresion,
+			casos: casos,
+            linea: _linea,
+            columna: _columna
+		}
+	},
+	nuevoListaCasos: function (caso) {
+		var casos = []; 
+		casos.push(caso);
+		return casos;
+	},
+    nuevoCaso: function(expresion, instrucciones, _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.SWITCH_CASO,
+			expresion: expresion,
+			instrucciones: instrucciones,
+            linea: _linea,
+            columna: _columna
+		}
+	},
+    nuevoCasoDef: function(instrucciones, _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.SWITCH_DEFECTO,
+			instrucciones: instrucciones,
+            linea: _linea,
+            columna: _columna
+		}
+	}
 }
 
 module.exports = Instruccion
