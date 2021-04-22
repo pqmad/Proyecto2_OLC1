@@ -1,29 +1,43 @@
 const Ambito = require("../Ambito/Ambito")
 const TIPO_DATO = require("../Enums/TipoDato")
 const Operacion = require("../Operacion/Operacion")
+const TIPO_INSTRUCCION = require("../Enums/TipoInstruccion");
+const Declaracion = require("./Declaracion");
+const Asignacion = require("./Asignacion");
 
-function CicloFor(_instruccion, _ambito,_orig){
+function CicloFor(_instruccion, _ambito){
     var mensaje = ""
-    var varible=_instruccion.valorVariable;
-    var expresionlogica= _instruccion.expresionLogica;
-    var aumento=_instruccion.aumento;
-    console.log("varible")
-    console.log(varible)
-    console.log("expresionlogica")
-    console.log(expresionlogica)
-    console.log("aumento")
-    console.log(aumento)
-    const Bloque = require('./Bloque')
-     varible=Bloque(_instruccion.valorVariable, _ambito,_orig);
-     expresionlogica= Bloque(_instruccion.expresionLogica, _ambito,_orig);
-     aumento=Bloque(_instruccion.aumento, _ambito,_orig);
-     console.log("varible")
-    console.log(varible)
-    console.log("expresionlogica")
-    console.log(expresionlogica)
-    console.log("aumento")
-    console.log(aumento)
-    return mensaje
+    var nuevoAmbitodelfor = new Ambito(_ambito)
+    console.log("empeiza el for aumento")
+    if(_instruccion.valorVariable.tipo===TIPO_INSTRUCCION.DECLARACION){ //declara valor
+        var mensajed = Declaracion(_instruccion.valorVariable, nuevoAmbitodelfor)
+            if(mensajed!=null){
+                mensaje+=mensajed+'\n'
+            }
+    }else{ //asigna valor
+        var mensajed = Asignacion(_instruccion.valorVariable, nuevoAmbitodelfor)
+            if(mensajed!=null){
+                mensaje+=mensajed+'\n'
+            }
+    }
+    var operacion = Operacion(_instruccion.expresionLogica, nuevoAmbitodelfor)
+    if(operacion.tipo === TIPO_DATO.BANDERA){
+        while(operacion.valor){
+            var nuevoAmbito = new Ambito(nuevoAmbitodelfor)
+            const Bloque = require('./Bloque')
+            mensaje+=Bloque(_instruccion.instrucciones, nuevoAmbito)
+            console.log("mensje bloque lgica.............")
+            console.log(mensaje)
+            //actualizamos
+            Asignacion(_instruccion.aumento, nuevoAmbito)
+            operacion = Operacion(_instruccion.expresionLogica, nuevoAmbitodelfor)
+            console.log("operacion lgica.............")
+            console.log(operacion)
+        }
+        return mensaje
+    }
+    return `Error Semantico: No es una expresion de tipo BANDERA en la condicion... Linea: ${_instruccion.linea} Columna: ${_instruccion.columna}`
+
 }
 
 module.exports = CicloFor

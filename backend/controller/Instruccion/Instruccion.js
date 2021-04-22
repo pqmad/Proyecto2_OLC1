@@ -65,6 +65,16 @@ const Instruccion = {
         }
     },
 
+    nuevoDOWhile: function(_expresion, _instrucciones, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.DO_WHILE,
+            expresion: _expresion,
+            instrucciones: _instrucciones,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
     nuevoIf: function(_expresion, _instrucciones, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.IF,
@@ -86,6 +96,7 @@ const Instruccion = {
             columna: _columna
         }
     },
+    //falta el else if
     nuevoElseIf: function(_expresion, _instrucciones, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.IF,
@@ -108,23 +119,24 @@ const Instruccion = {
         }
     },
 
-    nuevaMETODO: function(_id,_parametros,_instrucciones, _linea, _columna){
+    nuevaMETODO: function(_nombre, _lista_parametros, _instrucciones, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.DECLARACION_M,
-            id: _id,
-            parametros: _parametros,
+            nombre: _nombre,
+            lista_parametros: _lista_parametros,
             instrucciones: _instrucciones,
             linea: _linea,
             columna: _columna
         }
     },
 
-    nuevaFUNCION: function(_id, _valor, _tipo, _linea, _columna){
+    nuevaFUNCION: function(_tipo,_nombre, _lista_parametros, _instrucciones, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.DECLARACION_F,
-            id: _id,
-            parametros: _parametros,
+            nombre: _nombre,
+            lista_parametros: _lista_parametros,
             instrucciones: _instrucciones,
+            devuelve: _tipo,
             linea: _linea,
             columna: _columna
         }
@@ -143,8 +155,8 @@ const Instruccion = {
     Exec: function(_id,_parametros, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.EXEC,
-            id: _id,
-            parametros: _parametros,
+            nombre: _id,
+            lista_valores: _parametros,
             linea: _linea,
             columna: _columna
         }
@@ -153,8 +165,8 @@ const Instruccion = {
     Llamadas: function(_id,_parametros, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.LLAMADA,
-            id: _id,
-            parametros: _parametros,
+            nombre: _id,
+            lista_valores: _parametros,
             linea: _linea,
             columna: _columna
         }

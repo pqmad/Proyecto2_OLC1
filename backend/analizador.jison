@@ -118,19 +118,25 @@ OPCUERPO: OPCUERPO CUERPO {$1.push($2); $$ = $1;}
 
 CUERPO: DEC_VAR {$$ = $1;}
         |METFUNC {$$ = $1;}
+        | CAMBIARVALOR_VAR {$$ = $1;}
         | exec identificador parenA parenC ptcoma {$$ = INSTRUCCION.Exec($2, null,this._$.first_line, (this._$.first_column+1));}
-        | exec identificador parenA EXPRESION parenC ptcoma {$$ = INSTRUCCION.Exec($2, $4,this._$.first_line, (this._$.first_column+1));}
+        | exec identificador parenA LISTA_VALORES parenC ptcoma {$$ = INSTRUCCION.Exec($2, $4,this._$.first_line, (this._$.first_column+1));}
 ;
 
 //METODOS Y FUNCIONES
-METFUNC:TIPO identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaFUNCION($2, null, $6, this._$.first_line, (this._$.first_column+1));}
-        |TIPO identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaFUNCION($2, $4, $7, this._$.first_line, (this._$.first_column+1));}
+METFUNC:TIPO identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaFUNCION($1,$2, null, $6, this._$.first_line, (this._$.first_column+1));}
+        |TIPO identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaFUNCION($1,$2, $4, $7, this._$.first_line, (this._$.first_column+1));}
         |void identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaMETODO($2, null, $6 , this._$.first_line,(this._$.first_column+1));}
         |void identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaMETODO($2, $4, $7, this._$.first_line, (this._$.first_column+1));}
 ;
 
+LISTA_VALORES: LISTA_VALORES coma  VALORES {$1.push($3); $$ = $1;} 
+                | VALORES {$$ = [$1];}
+;
+VALORES:EXPRESION{$$=$1}
+;
 
-LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS {$1.push($2); $$ = $1;} 
+LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS {$1.push($3); $$ = $1;} 
                 | PARAMETROS {$$ = [$1];}
 ;
 PARAMETROS: TIPO identificador {$$ = INSTRUCCION.nuevaPARAMETRO($2,$1, this._$.first_line, (this._$.first_column+1));}
@@ -153,7 +159,7 @@ INCRE_DECRE: identificador masmas ptcoma {$$ = INSTRUCCION.nuevaASIGNACION($1, I
         | identificador menosmenos ptcoma {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
 ;
 
-LLAMADA: identificador parenA EXPRESION parenC ptcoma{$$ = INSTRUCCION.Llamadas($1, $3,this._$.first_line, (this._$.first_column+1));}
+LLAMADA: identificador parenA LISTA_VALORES parenC ptcoma{$$ = INSTRUCCION.Llamadas($1, $3,this._$.first_line, (this._$.first_column+1));}
         |identificador parenA parenC ptcoma{$$ = INSTRUCCION.Llamadas($1, null,this._$.first_line, (this._$.first_column+1));}
 ;
 
@@ -167,7 +173,7 @@ CICLOS: WHILEC {$$ = $1;}
         |IFC {$$ = $1;}
         |FORC {$$ = $1;}
         |SWITCHC
-        |DOC
+        |DOWHILEC {$$ = $1;}
 ;
 
 SENTENCIATRANS: break
@@ -194,6 +200,9 @@ IMPRIMIR: print parenA EXPRESION parenC ptcoma { $$ = new INSTRUCCION.nuevoPRINT
 ;
 
 WHILEC: while parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoWhile($3, $6 , this._$.first_line,(this._$.first_column+1));}
+;
+
+DOWHILEC: do llaveA OPCIONESCUERPO llaveC while parenA EXPRESION parenC ptcoma {$$ = new INSTRUCCION.nuevoDOWhile($7, $3 , this._$.first_line,(this._$.first_column+1));}
 ;
 
 IFC: if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoIf($3, $6 , this._$.first_line,(this._$.first_column+1));}
