@@ -1,8 +1,11 @@
 const TIPO_DATO = require("../Enums/TipoDato");
 const TIPO_OPERACION = require("../Enums/TipoOperacion");
 const TIPO_VALOR = require("../Enums/TipoValor");
+const TIPO_INSTRUCCION = require("../Enums/TipoInstruccion");
 const Aritmetica = require("./Aritmetica");
 const ValorExpresion = require("./ValorExpresion");
+
+
 
 function Relacional(_expresion, _ambito){
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.BANDERA ||
@@ -14,6 +17,14 @@ function Relacional(_expresion, _ambito){
     else if(_expresion.tipo === TIPO_OPERACION.SUMA || _expresion.tipo === TIPO_OPERACION.RESTA || _expresion.tipo === TIPO_OPERACION.MULTIPLICACION ||_expresion.tipo === TIPO_OPERACION.DIVISION ||_expresion.tipo === TIPO_OPERACION.MODULO || _expresion.tipo === TIPO_OPERACION.POTENCIA ||_expresion.tipo === TIPO_OPERACION.NEGACION
     ){
         return Aritmetica(_expresion, _ambito)
+    }
+    else if(_expresion.tipo===TIPO_OPERACION.LENGTH){
+        const FuncionesN = require("./FuncionesN");
+        return FuncionesN(_expresion,_ambito)
+    }
+    else if(_expresion.tipo===TIPO_INSTRUCCION.CASTEO){
+        const casteo = require("../Instruccion/casteo");
+        return casteo(_expresion,_ambito)
     }
     else if(_expresion.tipo === TIPO_OPERACION.IGUALIGUAL){
         return igualigual(_expresion.opIzq, _expresion.opDer, _ambito)

@@ -1,9 +1,12 @@
 const TIPO_OPERACION = require("../Enums/TipoOperacion");
+const TIPO_INSTRUCCION = require("../Enums/TipoInstruccion");
 const TIPO_VALOR = require("../Enums/TipoValor");
 const Aritmetica = require("./Aritmetica");
 const ValorExpresion = require("./ValorExpresion");
 const Logica = require("./Logica");
 const Relacional = require("./Relacional");
+const ternario = require("./Ternario");
+const FuncionesN = require("./FuncionesN");
 
 function Operacion(_expresion, _ambito){
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.ENTERO 
@@ -32,6 +35,17 @@ function Operacion(_expresion, _ambito){
         || _expresion.tipo === TIPO_OPERACION.NOT
     ){
         return Logica(_expresion, _ambito)
+    }
+    else if(_expresion.tipo===TIPO_OPERACION.TERNARIO){
+        return ternario(_expresion, _ambito)
+    }
+    else if(_expresion.tipo===TIPO_OPERACION.LENGTH || _expresion.tipo===TIPO_OPERACION.UPPER || _expresion.tipo===TIPO_OPERACION.LOWER
+        ||_expresion.tipo===TIPO_OPERACION.TRUNCATE || _expresion.tipo===TIPO_OPERACION.ROUND || _expresion.tipo===TIPO_OPERACION.TYPEOF 
+        ){
+        return FuncionesN(_expresion,_ambito)
+    }
+    else if(_expresion.tipo===TIPO_INSTRUCCION.CASTEO){
+        return FuncionesN(_expresion,_ambito)
     }
 }
 

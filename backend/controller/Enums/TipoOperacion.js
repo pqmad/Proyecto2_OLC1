@@ -15,6 +15,13 @@ const TIPO_OPERACION = {
     MAYORIGUAL: 'MAYORIGUAL',
     OR: 'OR',
     AND: 'AND',
-    NOT: 'NOT'
+    NOT: 'NOT',
+    TERNARIO: "TERNARIO",
+    LENGTH:"LENGTH",
+    LOWER:"TO_LOWER",
+    UPPER:"TO_UPPER",
+    TRUNCATE:"TRUNCATE",
+    ROUND:"ROUND",
+    TYPEOF: "TYPEOF"
 }
 module.exports= TIPO_OPERACION;

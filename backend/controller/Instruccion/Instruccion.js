@@ -1,5 +1,5 @@
 const TIPO_INSTRUCCION = require("../Enums/TipoInstruccion")
-
+const TIPO_OPERACION = require("../Enums/TipoOperacion")
 
 function nuevaOperacion(_opIzq, _opDer, _tipo, _linea, _columna){
     return {
@@ -20,7 +20,7 @@ const Instruccion = {
             columna: _columna 
         }
     },
-
+    
     nuevoVALOR:function(_valor, _tipo, _linea, _columna){
         return{
             tipo: _tipo,
@@ -70,6 +70,28 @@ const Instruccion = {
             tipo: TIPO_INSTRUCCION.DO_WHILE,
             expresion: _expresion,
             instrucciones: _instrucciones,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    nuevoOperacionTernario: function(_expresion, _verdadero, _falso, _linea, _columna){
+        return {
+            tipo: TIPO_OPERACION.TERNARIO,
+            expresion: _expresion,
+            verdadero: _verdadero,
+            falso: _falso,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    nuevoTernario: function(_expresion, _verdadero, _falso, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.TERNARIO,
+            expresion: _expresion,
+            verdadero: _verdadero,
+            falso: _falso,
             linea: _linea,
             columna: _columna
         }
@@ -181,11 +203,13 @@ const Instruccion = {
             columna: _columna
 		}
 	},
+
 	nuevoListaCasos: function (caso) {
 		var casos = []; 
 		casos.push(caso);
 		return casos;
 	},
+
     nuevoCaso: function(expresion, instrucciones, _linea, _columna) {
 		return {
 			tipo: TIPO_INSTRUCCION.SWITCH_CASO,
@@ -195,10 +219,21 @@ const Instruccion = {
             columna: _columna
 		}
 	},
+
     nuevoCasoDef: function(instrucciones, _linea, _columna) {
 		return {
 			tipo: TIPO_INSTRUCCION.SWITCH_DEFECTO,
 			instrucciones: instrucciones,
+            linea: _linea,
+            columna: _columna
+		}
+	},
+
+    nuevoCASTEO: function(_tipodedato, _valor, _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.CASTEO,
+			tipodedato:_tipodedato,
+            valor:_valor,
             linea: _linea,
             columna: _columna
 		}

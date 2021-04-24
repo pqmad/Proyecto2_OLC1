@@ -8,7 +8,6 @@ const Asignacion = require("./Asignacion");
 function CicloFor(_instruccion, _ambito){
     var mensaje = ""
     var nuevoAmbitodelfor = new Ambito(_ambito)
-    console.log("empeiza el for aumento")
     if(_instruccion.valorVariable.tipo===TIPO_INSTRUCCION.DECLARACION){ //declara valor
         var mensajed = Declaracion(_instruccion.valorVariable, nuevoAmbitodelfor)
             if(mensajed!=null){
@@ -26,13 +25,10 @@ function CicloFor(_instruccion, _ambito){
             var nuevoAmbito = new Ambito(nuevoAmbitodelfor)
             const Bloque = require('./Bloque')
             mensaje+=Bloque(_instruccion.instrucciones, nuevoAmbito)
-            console.log("mensje bloque lgica.............")
-            console.log(mensaje)
             //actualizamos
             Asignacion(_instruccion.aumento, nuevoAmbito)
             operacion = Operacion(_instruccion.expresionLogica, nuevoAmbitodelfor)
-            console.log("operacion lgica.............")
-            console.log(operacion)
+            
         }
         return mensaje
     }

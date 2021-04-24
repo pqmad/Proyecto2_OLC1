@@ -7,14 +7,19 @@ const CicloDo_While = require("./Do_While");
 const Sentencia_if = require("./if");
 const Sentencia_else = require("./else");
 const procesarSwitch = require("./Switch");
-//const sentencia_elseif = require("./else");
+const Ternario_F = require("./Ternario_F");
 const Ciclofor = require("./for");
+const casteo = require("./casteo");
 //const verificaparamaetros = require("./VerificarParametros");
 
 function Bloque(_instrucciones, _ambito){
     var cadena = ""
     
     /*console.log(_instrucciones[0])
+    console.log("******************************************************")
+    console.log(_instrucciones.tipo)
+    console.log(_instrucciones[0])
+    console.log("******************************************************")
     console.log("******************************************************")
     console.log("******************************************************")
     console.log(_instrucciones)
@@ -30,11 +35,34 @@ function Bloque(_instrucciones, _ambito){
             }
         }
         else if(instruccion.tipo === TIPO_INSTRUCCION.PRINT){
-            cadena+=Cout(instruccion, _ambito)+'\n'
+            if(instruccion.expresion!=""){
+                cadena+=Cout(instruccion, _ambito)+'\n'
+            }else{
+                cadena+='\n'
+            }
         }
         
+        else if(instruccion.tipo === TIPO_INSTRUCCION.CASTEO){
+            var mensaje = casteo(instruccion, _ambito)
+            if(mensaje!=null){
+                cadena+=mensaje+'\n'
+            }
+        }
+
         else if(instruccion.tipo === TIPO_INSTRUCCION.ASIGNACION){
-            var mensaje = Asignacion(instruccion, _ambito)
+            console.log(instruccion)
+            var inst=instruccion
+            if(instruccion.expresion.tipo===TIPO_INSTRUCCION.CASTEO){
+                var exp = casteo(instruccion.expresion, _ambito)
+                inst = {
+                    tipo: instruccion.tipo,
+                    id: instruccion.id,
+                    expresion: exp,
+                    linea: instruccion.linea,
+                    columna: instruccion.columna
+                }
+            }
+            var mensaje = Asignacion(inst, _ambito)
             if(mensaje!=null){
                 cadena+=mensaje+'\n'
             }
@@ -88,7 +116,12 @@ function Bloque(_instrucciones, _ambito){
                 cadena+=mensaje+'\n'
             }
         }
-
+        else if(instruccion.tipo===TIPO_INSTRUCCION.TERNARIO){
+            var mensaje = Ternario_F(instruccion, _ambito);
+            if(mensaje!=null){
+                cadena+=mensaje+'\n'
+            }
+        }
         else if(instruccion.tipo === TIPO_INSTRUCCION.LLAMADA){
             const llamada = require("./Exec_Llamada");
             //var mensaje1=verificaparamaetros(instruccion.lista_valores,instruccion.nombre,_instrucciones)

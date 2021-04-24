@@ -1,6 +1,7 @@
 const TIPO_DATO = require("../Enums/TipoDato")
 const TIPO_OPERACION = require("../Enums/TipoOperacion")
 const TIPO_VALOR = require("../Enums/TipoValor")
+const TIPO_INSTRUCCION = require("../Enums/TipoInstruccion");
 const TipoResultado = require("./TipoResultado")
 const ValorExpresion = require("./ValorExpresion")
 
@@ -31,6 +32,14 @@ function Aritmetica(_expresion, _ambito){
     }
     else if(_expresion.tipo === TIPO_OPERACION.NEGACION){
         return negacion(_expresion.opIzq, _ambito)
+    }
+    else if(_expresion.tipo===TIPO_OPERACION.LENGTH){
+        const FuncionesN = require("./FuncionesN");
+        return FuncionesN(_expresion,_ambito)
+    }
+    else if(_expresion.tipo===TIPO_INSTRUCCION.CASTEO){
+        const casteo = require("../Instruccion/casteo");
+        return casteo(_expresion,_ambito)
     }
 }
 
