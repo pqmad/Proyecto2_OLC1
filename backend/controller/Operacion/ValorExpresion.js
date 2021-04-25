@@ -28,8 +28,14 @@ function ValorExpresion(_expresion, _ambito){
         }
     }
     else if(_expresion.tipo === TIPO_VALOR.CADENA){
+        var str = _expresion.valor.substring(1, _expresion.valor.length-1)
+        var cadena = str.replace("\\n", "\n");
+        cadena = cadena.replace("\\\\", "\\");
+        cadena = cadena.replace("\\\"", "\"");
+        cadena = cadena.replace("\\t", "\t");
+        cadena = cadena.replace("\\\'", "\'");
         return {
-            valor: _expresion.valor.substring(1, _expresion.valor.length-1),
+            valor: cadena,
             tipo: TIPO_DATO.CADENA,
             linea: _expresion.linea,
             columna: _expresion.columna
@@ -48,7 +54,7 @@ function ValorExpresion(_expresion, _ambito){
 
         if(simbolo!=null){
             var simboloo = simbolo.valor
-            if(simbolo.valor[0]==="\""){
+            if(simbolo.valor[0]==="\"" || simbolo.valor[0]==="\'"){
                 simboloo= simbolo.valor.substring(1, simbolo.valor.length-1)
             }
             return {

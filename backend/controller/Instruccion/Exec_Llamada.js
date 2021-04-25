@@ -33,10 +33,10 @@ function Exec_Llamada(_instruccion, _ambito){
                 }
                 valoresquemandan_tipo.push(tipo)
                 valoresquemandan_valor.push(valor)
-                console.log("valores que lleva. tipo:"+tipo+" valor:"+valor)
+                /*console.log("valores que lleva. tipo:"+tipo+" valor:"+valor)
                 console.log(valoresquemandan_tipo)
                 console.log(valoresquemandan_valor)
-                console.log("+++++++++++++++++++++")
+                console.log("+++++++++++++++++++++")*/
 
             });
         }
@@ -44,10 +44,10 @@ function Exec_Llamada(_instruccion, _ambito){
             metodoEjecutar.lista_parametros.forEach(e => {
                 parametrosdemetodo_tipo.push(e.tipo_dato)
                 parametrosdemetodo_variable.push(e.id)
-                console.log("valores de metodo. ")
+                /*console.log("valores de metodo. ")
                 console.log(parametrosdemetodo_tipo)
                 console.log(parametrosdemetodo_variable)
-                console.log("+++++++++++++++++++++")
+                console.log("+++++++++++++++++++++")*/
             });
         }
         if(parametrosdemetodo_tipo.length===valoresquemandan_tipo.length){

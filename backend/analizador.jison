@@ -11,6 +11,7 @@
 "//".*							// comentario simple línea
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]                     // comentario multiple líneas
 // TIPO DE DATOS
+"new"                   return 'nnew'
 "int"                   return 'int'
 "Double"                return 'Double'
 "Boolean"               return 'Boolean'
@@ -118,11 +119,11 @@ INICIO: OPINICIO  EOF{return $1;}
 OPINICIO: OPINICIO CUERPO {$1.push($2); $$ = $1;} 
         | CUERPO {$$ = [$1];}
 ;
-CUERPO: DEC_VAR {$$ = $1;}
-        |METFUNC {$$ = $1;}
-        | CAMBIARVALOR_VAR {$$ = $1;}
-        | exec identificador parenA parenC ptcoma {$$ = INSTRUCCION.Exec($2, null,this._$.first_line, (this._$.first_column+1));}
-        | exec identificador parenA LISTA_VALORES parenC ptcoma {$$ = INSTRUCCION.Exec($2, $4,this._$.first_line, (this._$.first_column+1));}
+CUERPO: DEC_VAR                                                         {$$ = $1;}
+        |METFUNC                                                        {$$ = $1;}
+        | CAMBIARVALOR_VAR                                              {$$ = $1;}
+        | exec identificador parenA parenC ptcoma                       {$$ = INSTRUCCION.Exec($2, null,this._$.first_line, (this._$.first_column+1));}
+        | exec identificador parenA LISTA_VALORES parenC ptcoma         {$$ = INSTRUCCION.Exec($2, $4,this._$.first_line, (this._$.first_column+1));}
 ;
 
 //---------------------------------METODOS Y FUNCIONES
@@ -131,6 +132,7 @@ METFUNC:TIPO identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = INST
         |void identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaMETODO($2, null, $6 , this._$.first_line,(this._$.first_column+1));}
         |void identificador parenA LISTAPARAMETROS parenC llaveA OPCIONESCUERPO llaveC {$$ = INSTRUCCION.nuevaMETODO($2, $4, $7, this._$.first_line, (this._$.first_column+1));}
 ;
+
 LLAMADA: identificador parenA LISTA_VALORES parenC ptcoma{$$ = INSTRUCCION.Llamadas($1, $3,this._$.first_line, (this._$.first_column+1));}
         |identificador parenA parenC ptcoma{$$ = INSTRUCCION.Llamadas($1, null,this._$.first_line, (this._$.first_column+1));}
 ;
@@ -152,24 +154,25 @@ OPCIONESCUERPO: OPCIONESCUERPO CUERPOMETFUNC {$1.push($2); $$ = $1;}
 CUERPOMETFUNC: DEC_VAR          {$$ = $1;}
         | CICLOS                {$$ = $1;}
         | CAMBIARVALOR_VAR      {$$ = $1;}
+        | VECTOR                {$$ = $1;}
         | LLAMADA               {$$ = $1;}
         | INCRE_DECRE           {$$ = $1;}
         | SENTENCIATRANS        {$$ = $1;}
-        |IMPRIMIR               {$$ = $1;}
+        | IMPRIMIR              {$$ = $1;}
 ;
 
-FUNCIONES:CASTEOS     {$$ = $1;}
-        | length parenA SACAR_LONG parenC {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.LENGTH, this._$.first_line, (this._$.first_column+1));}
-        | toLower parenA EXPRESION parenC {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.LOWER, this._$.first_line, (this._$.first_column+1));}
-        | toUpper parenA EXPRESION parenC {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.UPPER, this._$.first_line, (this._$.first_column+1));}
-        | truncate parenA EXPRESION parenC {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.TRUNCATE, this._$.first_line, (this._$.first_column+1));}
-        | round parenA EXPRESION parenC {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.ROUND, this._$.first_line, (this._$.first_column+1));}
-        | typeof parenA EXPRESION parenC {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.TYPEOF, this._$.first_line, (this._$.first_column+1));}
+FUNCIONES: CASTEOS                              {$$ = $1;}
+        | length parenA SACAR_LONG parenC       {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.LENGTH, this._$.first_line, (this._$.first_column+1));}
+        | toLower parenA EXPRESION parenC       {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.LOWER, this._$.first_line, (this._$.first_column+1));}
+        | toUpper parenA EXPRESION parenC       {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.UPPER, this._$.first_line, (this._$.first_column+1));}
+        | truncate parenA EXPRESION parenC      {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.TRUNCATE, this._$.first_line, (this._$.first_column+1));}
+        | round parenA EXPRESION parenC         {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.ROUND, this._$.first_line, (this._$.first_column+1));}
+        | typeof parenA EXPRESION parenC        {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.TYPEOF, this._$.first_line, (this._$.first_column+1));}
 ;
 
 CICLOS: WHILEC          {$$ = $1;}
-        |ELSEC          {$$ = $1;}
         |IFC            {$$ = $1;}
+        |ELSEIFC        {$$ = $1;}
         |FORC           {$$ = $1;}
         |SWITCHC        {$$ = $1;}
         |DOWHILEC       {$$ = $1;}
@@ -180,7 +183,14 @@ SENTENCIATRANS: break ptcoma      {$$ = $1;}
         |continue ptcoma          {$$ = $1;}
         |return ptcoma            {$$ = $1;}
 ;
-
+VECTOR: DEC_VECTOR              {$$ = $1;}
+        | ACCESO_VECTOR         {$$ = $1;}
+        | CAMBIARVALOR_VECTOR   {$$ = $1;}
+;
+//---------------------------------VECTORES
+DEC_VECTOR: TIPO corcheteA corcheteC identificador signoigual nnew TIPO corcheteA EXPRESION corcheteC ptcoma
+        |  TIPO corcheteA corcheteC identificador signoigual llaveA LISTA_VALORES llaveC ptcoma
+;
 //---------------------------------FUNCIONES
 IMPRIMIR: print parenA EXPRESION parenC ptcoma          { $$ = new INSTRUCCION.nuevoPRINT($3, this._$.first_line, (this._$.first_column+1));}
         |print parenA parenC ptcoma                     { $$ = new INSTRUCCION.nuevoPRINT("", this._$.first_line, (this._$.first_column+1));}
@@ -192,10 +202,7 @@ CASTEOS: parenA TIPOCASTEO parenC EXPRESION     { $$ = new INSTRUCCION.nuevoCAST
 //---------------------------------SENTENCIA DE CONTROL
 TERNARIOC: parenA EXPRESION parenC interrogacion OPCIONESCUERPO dospuntos OPCIONESCUERPO ptcoma       {$$ = INSTRUCCION.nuevoTernario($1,$3,$5,this._$.first_line,this._$.first_column+1);}
 ;
-IFC: if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC            {$$ = new INSTRUCCION.nuevoIf($3, $6 , this._$.first_line,(this._$.first_column+1));}
-;
-ELSEC: if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC else llaveA OPCIONESCUERPO llaveC        {$$ = new INSTRUCCION.nuevoElse($3, $6,$10 , this._$.first_line,(this._$.first_column+1));}
-;
+
 
 SACAR_LONG:cadenatexto        {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.CADENA, this._$.first_line, (this._$.first_column+1));}
         | identificador       {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1));}
@@ -222,10 +229,11 @@ EXPRESION: EXPRESION masmas                     {$$ = INSTRUCCION.nuevaOperacion
         | EXPRESION and EXPRESION               {$$ = INSTRUCCION.nuevaOperacionBinaria($1,$3, TIPO_OPERACION.AND,this._$.first_line,this._$.first_column+1);}
         | not EXPRESION                         {$$ = INSTRUCCION.nuevaOperacionBinaria($2,$2, TIPO_OPERACION.NOT,this._$.first_line,this._$.first_column+1);}
         | EXPRESION interrogacion EXPRESION dospuntos EXPRESION                 {$$ = INSTRUCCION.nuevoOperacionTernario($1,$3,$5,this._$.first_line,this._$.first_column+1);}
-        | FUNCIONES{$$=$1;}
+        | identificador corcheteA EXPRESION corcheteC                           {$$=$1;}//cambiar                        {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1));}
+        | FUNCIONES                                                             {$$=$1;}
         | entero                                                                {$$ = INSTRUCCION.nuevoVALOR( Number($1), TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1));}
-        | true                                                                  {$$ = INSTRUCCION.nuevoVALOR( Boolean($1), TIPO_VALOR.BANDERA, this._$.first_line, (this._$.first_column+1));}
-        | false                                                                 {$$ = INSTRUCCION.nuevoVALOR( Boolean($1), TIPO_VALOR.BANDERA,this._$.first_line, (this._$.first_column+1));}
+        | true                                                                  {$$ = INSTRUCCION.nuevoVALOR( true, TIPO_VALOR.BANDERA, this._$.first_line, (this._$.first_column+1));}
+        | false                                                                 {$$ = INSTRUCCION.nuevoVALOR( false, TIPO_VALOR.BANDERA,this._$.first_line, (this._$.first_column+1));}
         | cadenatexto                                                           {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.CADENA, this._$.first_line, (this._$.first_column+1));}
         | identificador                                                         {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1));}
         | decimal                                                               {$$ = INSTRUCCION.nuevoVALOR(Number($1), TIPO_VALOR.DECIMAL,this._$.first_line, (this._$.first_column+1));}
@@ -268,6 +276,7 @@ WHILEC: while parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC {$$ = new INS
 ;
 DOWHILEC: do llaveA OPCIONESCUERPO llaveC while parenA EXPRESION parenC ptcoma {$$ = new INSTRUCCION.nuevoDOWhile($7, $3 , this._$.first_line,(this._$.first_column+1));}
 ;
+
 SWITCHC: switch parenA EXPRESION parenC llaveA LISTA_CASOS llaveC { $$ = INSTRUCCION.nuevoSwitch($3,$6, this._$.first_line,(this._$.first_column+1));}
 ;
 LISTA_CASOS: LISTA_CASOS CASOS          {$1.push($2); $$ = $1;} 
@@ -275,4 +284,16 @@ LISTA_CASOS: LISTA_CASOS CASOS          {$1.push($2); $$ = $1;}
 ;
 CASOS: case EXPRESION dospuntos OPCIONESCUERPO          { $$ = INSTRUCCION.nuevoCaso($2,$4, this._$.first_line,(this._$.first_column+1)); }
         |default dospuntos OPCIONESCUERPO               { $$ = INSTRUCCION.nuevoCasoDef($3, this._$.first_line,(this._$.first_column+1)); }
+;
+
+ELSEIFC:if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC LISTA_ELSEIF { $$ = INSTRUCCION.nuevoELSEIF($3,$6,$8, this._$.first_line,(this._$.first_column+1));}
+;
+LISTA_ELSEIF: LISTA_ELSEIF UNELSEIF     {$1.push($2); $$ = $1;}
+        |UNELSEIF                       { $$ = INSTRUCCION.nuevoListaELSEIF($1);}
+;
+UNELSEIF:else if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC { $$ = INSTRUCCION.nuevoOP_ELSEIF($4,$7, this._$.first_line,(this._$.first_column+1)); }
+        |else llaveA OPCIONESCUERPO llaveC { $$ = INSTRUCCION.nuevoELSEIF_Def($3, this._$.first_line,(this._$.first_column+1)); }
+;
+
+IFC: if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC            {$$ = new INSTRUCCION.nuevoIf($3, $6 , this._$.first_line,(this._$.first_column+1));}
 ;

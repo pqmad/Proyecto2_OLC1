@@ -49,7 +49,28 @@ function suma(_opIzq, _opDer, _ambito){
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo,"suma")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
-            const resultado = Number(opIzq.valor) + Number(opDer.valor);
+            var val1=opIzq.valor; var val2=opDer.valor
+            if(opIzq.tipo===TIPO_DATO.BANDERA){
+                if(opIzq.valor){
+                    val1=1;
+                }else{
+                    val1=0;
+                }
+            }
+            if(opDer.tipo===TIPO_DATO.BANDERA){
+                if(opDer.valor){
+                    val2=1;
+                }else{
+                    val2=0;
+                }
+            }
+            if(opIzq.tipo===TIPO_DATO.CARACTER){
+                val1=opIzq.valor.charCodeAt(0);
+            }
+            if(opDer.tipo===TIPO_DATO.CARACTER){
+                val2=opDer.valor.charCodeAt(0);
+            }
+            const resultado = Number(val1) + Number(val2);
             return{
                 valor: resultado,
                 tipo: tipoRes,
@@ -82,7 +103,28 @@ function resta(_opIzq, _opDer, _ambito){
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "resta")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
-            const resultado = Number(opIzq.valor) - Number(opDer.valor);
+            var val1=opIzq.valor; var val2=opDer.valor
+            if(opIzq.tipo===TIPO_DATO.BANDERA){
+                if(opIzq.valor){
+                    val1=1;
+                }else{
+                    val1=0;
+                }
+            }
+            if(opDer.tipo===TIPO_DATO.BANDERA){
+                if(opDer.valor){
+                    val2=1;
+                }else{
+                    val2=0;
+                }
+            }
+            if(opIzq.tipo===TIPO_DATO.CARACTER){
+                val1=opIzq.valor.charCodeAt(0);
+            }
+            if(opDer.tipo===TIPO_DATO.CARACTER){
+                val2=opDer.valor.charCodeAt(0);
+            }
+            const resultado = Number(val1) - Number(val2);
             return{
                 valor: resultado,
                 tipo: tipoRes,
@@ -93,7 +135,7 @@ function resta(_opIzq, _opDer, _ambito){
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
     return{
-        valor: respuesta+'\nError semántico: no se puede realizar la operacion suma... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
+        valor: respuesta+'\nError semántico: no se puede realizar la operacion resta... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
         linea: _opIzq.linea,
         columna: _opIzq.columna
@@ -106,7 +148,14 @@ function multiplicacion(_opIzq, _opDer, _ambito){
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "multi")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
-            const resultado = Number(opIzq.valor) * Number(opDer.valor);
+            var val1=opIzq.valor; var val2=opDer.valor
+            if(opIzq.tipo===TIPO_DATO.CARACTER){
+                val1=opIzq.valor.charCodeAt(0);
+            }
+            if(opDer.tipo===TIPO_DATO.CARACTER){
+                val2=opDer.valor.charCodeAt(0);
+            }
+            const resultado = Number(val1) * Number(val2);
             return{
                 valor: resultado,
                 tipo: tipoRes,
@@ -117,7 +166,7 @@ function multiplicacion(_opIzq, _opDer, _ambito){
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
     return{
-        valor: respuesta+'\nError semántico: no se puede realizar la operacion suma... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
+        valor: respuesta+'\nError semántico: no se puede realizar la operacion multiplicacion... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
         linea: _opIzq.linea,
         columna: _opIzq.columna
@@ -130,7 +179,14 @@ function division(_opIzq, _opDer, _ambito){
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "division")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
-            const resultado = Number(opIzq.valor) / Number(opDer.valor);
+            var val1=opIzq.valor; var val2=opDer.valor
+            if(opIzq.tipo===TIPO_DATO.CARACTER){
+                val1=opIzq.valor.charCodeAt(0);
+            }
+            if(opDer.tipo===TIPO_DATO.CARACTER){
+                val2=opDer.valor.charCodeAt(0);
+            }
+            const resultado = Number(val1) / Number(val2);
             return{
                 valor: resultado,
                 tipo: tipoRes,
@@ -141,7 +197,7 @@ function division(_opIzq, _opDer, _ambito){
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
     return{
-        valor: respuesta+'\nError semántico: no se puede realizar la operacion suma... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
+        valor: respuesta+'\nError semántico: no se puede realizar la operacion division... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
         linea: _opIzq.linea,
         columna: _opIzq.columna
@@ -170,7 +226,7 @@ function potencia(_opIzq, _opDer, _ambito){
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
     return{
-        valor: respuesta+'\nError semántico: no se puede realizar la operacion suma... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
+        valor: respuesta+'\nError semántico: no se puede realizar la operacion potencia... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
         linea: _opIzq.linea,
         columna: _opIzq.columna
@@ -194,7 +250,7 @@ function modulo(_opIzq, _opDer, _ambito){
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
     return{
-        valor: respuesta+'\nError semántico: no se puede realizar la operacion suma... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
+        valor: respuesta+'\nError semántico: no se puede realizar la operacion modulo... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
         linea: _opIzq.linea,
         columna: _opIzq.columna
@@ -217,7 +273,7 @@ function negacion(_opIzq, _ambito){
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")
     return{
-        valor: respuesta+'\nError semántico: no se puede realizar la operacion suma... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
+        valor: respuesta+'\nError semántico: no se puede realizar la operacion negación... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
         linea: _opIzq.linea,
         columna: _opIzq.columna

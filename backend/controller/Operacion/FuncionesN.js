@@ -1,7 +1,6 @@
 const TIPO_DATO = require("../Enums/TipoDato")
 const TIPO_OPERACION = require("../Enums/TipoOperacion")
 const TIPO_VALOR = require("../Enums/TipoValor")
-const TipoResultado = require("./TipoResultado")
 const ValorExpresion = require("./ValorExpresion")
 
 function FuncionesN(_expresion, _ambito){
@@ -155,7 +154,7 @@ function f_UPPER(_opIzq, _ambito){
 
 function f_length(_opIzq, _ambito){
     const valor = FuncionesN(_opIzq,_ambito)
-    if(valor.tipo===TIPO_DATO.CADENA) {//falta agregar lista y vector
+    if(valor.tipo===TIPO_DATO.CADENA || valor.tipo===TIPO_DATO.LISTA || valor.tipo===TIPO_DATO.VECTOR) {//falta agregar lista y vector
         var str=valor.valor;
             var resultado = str.length;
             return{

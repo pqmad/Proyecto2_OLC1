@@ -108,7 +108,7 @@ const Instruccion = {
         }
     },
 
-    nuevoElse: function(_expresionLogica, _instruccionesIfVerdadero, _instruccionesIfFalso,_linea,_columna) {
+    /*nuevoElse: function(_expresionLogica, _instruccionesIfVerdadero, _instruccionesIfFalso,_linea,_columna) {
         return {
             tipo: TIPO_INSTRUCCION.ELSE,
             expresionLogica: _expresionLogica,
@@ -117,17 +117,8 @@ const Instruccion = {
             linea: _linea,
             columna: _columna
         }
-    },
-    //falta el else if
-    nuevoElseIf: function(_expresion, _instrucciones, _linea, _columna){
-        return {
-            tipo: TIPO_INSTRUCCION.IF,
-            expresion: _expresion,
-            instrucciones: _instrucciones,
-            linea: _linea,
-            columna: _columna
-        }
-    },
+    },*/
+    
 
     nuevoFOR: function(_valorVariable, _expresionLogica, _aumento, _instrucciones, _linea, _columna){
         return {
@@ -234,6 +225,42 @@ const Instruccion = {
 			tipo: TIPO_INSTRUCCION.CASTEO,
 			tipodedato:_tipodedato,
             valor:_valor,
+            linea: _linea,
+            columna: _columna
+		}
+	},
+
+    nuevoELSEIF: function(expresion, instrucciones,casos, _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.ELSEIF,
+			expresion: expresion,
+            instrucciones:instrucciones,
+			casos: casos,
+            linea: _linea,
+            columna: _columna
+		}
+	},
+
+	nuevoListaELSEIF: function (caso) {
+		var casos = []; 
+		casos.push(caso);
+		return casos;
+	},
+
+    nuevoOP_ELSEIF: function(expresion, instrucciones, _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.ELSEIF_OP,
+			expresion: expresion,
+			instrucciones: instrucciones,
+            linea: _linea,
+            columna: _columna
+		}
+	},
+
+    nuevoELSEIF_Def: function(instrucciones, _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.ELSEIF_ELSE,
+			instrucciones: instrucciones,
             linea: _linea,
             columna: _columna
 		}

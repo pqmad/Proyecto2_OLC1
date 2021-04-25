@@ -6,6 +6,7 @@ const CicloWhile = require("./while");
 const CicloDo_While = require("./Do_While");
 const Sentencia_if = require("./if");
 const Sentencia_else = require("./else");
+const sentencia_elseif = require("./else_if");
 const procesarSwitch = require("./Switch");
 const Ternario_F = require("./Ternario_F");
 const Ciclofor = require("./for");
@@ -50,7 +51,6 @@ function Bloque(_instrucciones, _ambito){
         }
 
         else if(instruccion.tipo === TIPO_INSTRUCCION.ASIGNACION){
-            console.log(instruccion)
             var inst=instruccion
             if(instruccion.expresion.tipo===TIPO_INSTRUCCION.CASTEO){
                 var exp = casteo(instruccion.expresion, _ambito)
@@ -71,55 +71,54 @@ function Bloque(_instrucciones, _ambito){
         else if(instruccion.tipo === TIPO_INSTRUCCION.WHILE){
             var mensaje = CicloWhile(instruccion, _ambito)
             if(mensaje!=null){
-                cadena+=mensaje+'\n'
+                cadena+=mensaje
             }
         }
 
         else if(instruccion.tipo === TIPO_INSTRUCCION.DO_WHILE){
             var mensaje = CicloDo_While(instruccion, _ambito)
             if(mensaje!=null){
-                cadena+=mensaje+'\n'
+                cadena+=mensaje
             }
         }
 
         else if(instruccion.tipo === TIPO_INSTRUCCION.IF){
             var mensaje = Sentencia_if(instruccion, _ambito)
             if(mensaje!=null){
-                cadena+=mensaje+'\n'
+                cadena+=mensaje
             }
         }
 
-        else if(instruccion.tipo === TIPO_INSTRUCCION.ELSE){
+        /*else if(instruccion.tipo === TIPO_INSTRUCCION.ELSE){
             var mensaje = Sentencia_else(instruccion, _ambito)
             if(mensaje!=null){
                 cadena+=mensaje+'\n'
             }
-        }
-        /*FALTAAAAAAAAAA
-        else if(instruccion.tipo === TIPO_INSTRUCCION.ELSEIF){
-            var mensaje = sentencia_elseif(instruccion, _ambito,original)
-            if(mensaje!=null){
-                cadena+=mensaje+'\n'
-            }
         }*/
-
+        
+        else if(instruccion.tipo === TIPO_INSTRUCCION.ELSEIF){
+            var mensaje = sentencia_elseif(instruccion, _ambito)
+            if(mensaje!=null){
+                cadena+=mensaje
+            }
+        }
         else if(instruccion.tipo === TIPO_INSTRUCCION.FOR){
             var mensaje = Ciclofor(instruccion, _ambito)
             if(mensaje!=null){
-                cadena+=mensaje+'\n'
+                cadena+=mensaje
             }
         }
 
         else if (instruccion.tipo === TIPO_INSTRUCCION.SWITCH) {
             var mensaje = procesarSwitch(instruccion, _ambito);
             if(mensaje!=null){
-                cadena+=mensaje+'\n'
+                cadena+=mensaje
             }
         }
         else if(instruccion.tipo===TIPO_INSTRUCCION.TERNARIO){
             var mensaje = Ternario_F(instruccion, _ambito);
             if(mensaje!=null){
-                cadena+=mensaje+'\n'
+                cadena+=mensaje
             }
         }
         else if(instruccion.tipo === TIPO_INSTRUCCION.LLAMADA){
@@ -137,6 +136,9 @@ function Bloque(_instrucciones, _ambito){
             //}
         }
     });
+    console.log("-------------------------------------------------------------------------------")
+    console.log(cadena)
+    console.log("-------------------------------------------------------------------------------")
     return cadena
 }
 
