@@ -1,9 +1,9 @@
 class Simbolo{
-    constructor(_id, _valor, _tipo, _linea, _columna){
+    constructor(_id, _valor, _tipo, _entorno,_linea, _columna){
         this.id = _id;
         this.valor = _valor;
         this.tipo = _tipo;
-        //this.entorno = _entorno;
+        this.entorno = _entorno;
         this.linea = _linea;
         this.columna = _columna;
     }

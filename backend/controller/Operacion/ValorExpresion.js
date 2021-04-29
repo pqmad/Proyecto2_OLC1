@@ -69,7 +69,7 @@ function ValorExpresion(_expresion, _ambito,_Error){
             }
         }
         var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"La variable '"+_expresion.valor+"' no existe",_expresion.linea, _expresion.columna);
-    _Error.addErrores(nuevo)
+        _Error.addErrores(nuevo)
         return {
             valor: "Error Semantico: la variable '"+_expresion.valor+"' no existe... Linea: "+_expresion.linea+" Columna: "+_expresion.columna,
             tipo: null,

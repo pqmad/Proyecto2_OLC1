@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild ,OnDestroy} from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 //importamos para el editor
 import { filter, take } from 'rxjs/operators';
 import {MonacoEditorComponent,MonacoEditorConstructionOptions,MonacoEditorLoaderService,MonacoStandaloneCodeEditor} from '@materia-ui/ngx-monaco-editor';
@@ -13,6 +13,9 @@ import { AnalizarService } from 'src/app/services/analizar.service';
 })
 export class EditorComponent implements OnInit {
 
+  data_error: any;
+  data_simbolo: any;
+  
   @ViewChild(MonacoEditorComponent, { static: false })
   monacoComponent: MonacoEditorComponent = new MonacoEditorComponent(this.monacoLoaderService);
   editorOptions: MonacoEditorConstructionOptions = {
@@ -68,6 +71,7 @@ export class EditorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
   }
 
   imprimir(){
@@ -79,9 +83,14 @@ export class EditorComponent implements OnInit {
     var texto = {
       prueba: this.editorTexto.value
     }
+    
     this.analizarService.ejecutar(texto).subscribe((res:any)=>{
       console.log(res)
       this.consola.setValue(res.consola);
+      let errores=res.errores.tablaErrores;
+      this.data_error=errores;
+      this.data_simbolo=errores;
+      console.log(this.data_error)
       //this.editorTexto.setValue(res.consola);
     }, err=>{
       console.log("ERROR: "+err)

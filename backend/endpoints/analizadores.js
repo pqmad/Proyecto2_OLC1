@@ -19,14 +19,17 @@ module.exports=(parser, app)=>{
             const AmbitoGlobal = new Ambito(null)
             //var cadena = Bloque(ast, AmbitoGlobal)
             var devuelve = Global(ast.arbol, AmbitoGlobal,Error)
+
             var resultado = {
-                arbol: ast,
+                arbol: ast.arbol,
+                errores: Error,
                 consola: devuelve
             }
             res.send(resultado)
             console.log("---------------act-------------------------")
             console.log(Error)
             console.log("----------------------------------------")
+            //console.log(AmbitoGlobal)
         //} catch (error) {
         //    res.send(error)
         //}

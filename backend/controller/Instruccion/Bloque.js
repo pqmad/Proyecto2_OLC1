@@ -38,7 +38,7 @@ function Bloque(_instrucciones, _ambito,_Error){
         }
         else if(instruccion.tipo === TIPO_INSTRUCCION.PRINT){
             if(instruccion.expresion!=""){
-                cadena+=Cout(instruccion, _ambito)+'\n'
+                cadena+=Cout(instruccion, _ambito,_Error)+'\n'
             }else{
                 cadena+='\n'
             }
