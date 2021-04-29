@@ -3,18 +3,19 @@ const TIPO_OPERACION = require("../Enums/TipoOperacion")
 const TIPO_VALOR = require("../Enums/TipoValor")
 const Relacional = require("./Relacional")
 const ValorExpresion = require("./ValorExpresion")
+const TIPO_ERROR = require('../Enums/Tipo_Error')
+const ERRORES = require("../Ambito/S_Error")
 
-
-function ternario(_instruccion, _ambito){
+function ternario(_instruccion, _ambito,_Error){
     console.log("-----------------entra al ternario de variables")
     console.log(_instruccion)
     const c=_instruccion.expresion
     const v=_instruccion.verdadero
     const f=_instruccion.falso
     const Operacion = require("../Operacion/Operacion")
-    const condicion = Operacion(c, _ambito)
-    const verdadero = Operacion(v, _ambito)
-    const falso = Operacion(f, _ambito)
+    const condicion = Operacion(c, _ambito,_Error)
+    const verdadero = Operacion(v, _ambito,_Error)
+    const falso = Operacion(f, _ambito,_Error)
     
     if(condicion.tipo=== TIPO_DATO.BANDERA){
         var r_valor, r_tipo
@@ -32,12 +33,14 @@ function ternario(_instruccion, _ambito){
             columna: _instruccion.columna
         }
     }
-    var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
+    //var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,` La condición no es de tipo BANDERA, es: ${condicion.tipo}`,_instruccion.linea, _instruccion.columna);
+    _Error.addErrores(nuevo)
     return{
-        valor: respuesta+ `\nError semántico: no se puede comparar el valor de tipo ${opIzq.tipo} \ncon el valor de tipo ${opDer.tipo}... Linea: +${_opIzq.linea}+" Columna: "+${_opIzq.columna}`,
+        valor: `Error semántico: La condición no es de tipo BANDERA, es: ${condicion.tipo}... Linea: ${_instruccion.linea} Columna: ${_instruccion.linea}`,
         tipo: null,
-        linea: _opIzq.linea,
-        columna: _opIzq.columna
+        linea: _instruccion.linea,
+        columna: _instruccion.columna
     }
 }
 

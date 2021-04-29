@@ -1,11 +1,12 @@
 const Ambito = require("../Ambito/Ambito")
 const TIPO_DATO = require("../Enums/TipoDato")
 const Operacion = require("../Operacion/Operacion")
-
-function casteo(_instruccion, _ambito){
+const TIPO_ERROR = require('../Enums/Tipo_Error')
+const ERRORES = require("../Ambito/S_Error")
+function casteo(_instruccion, _ambito,_Error){
     var entro = false
     const cambiar_a=_instruccion.tipodedato;
-    const evaluar=Operacion(_instruccion.valor,_ambito)
+    const evaluar=Operacion(_instruccion.valor,_ambito,_Error)
     const valor_a_cambair=evaluar.valor;
     const tipo_a_cambair=evaluar.tipo;
     //console.log("entra a casteo"+valor_a_cambair)
@@ -46,6 +47,8 @@ function casteo(_instruccion, _ambito){
             columna: _instruccion.columna
         }
     }
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,`No se puede convertir un ${tipo_a_cambair} a un ${cambiar_a}.`,_instruccion.linea, _instruccion.columna);
+    _Error.addErrores(nuevo)
     return{
         valor: `Error Semantico: No se puede convertir un ${tipo_a_cambair} a un ${cambiar_a}... Linea: ${_instruccion.linea} Columna: ${_instruccion.columna}`,
         tipo: tipo_a_cambair,

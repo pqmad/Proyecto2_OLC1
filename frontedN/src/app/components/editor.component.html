@@ -1,4 +1,4 @@
-<div id="tabconsola">
+<div id="tabconsola" class="bg-warning">
 <ul class="nav nav-tabs justify-content-center">
     <li class="nav-item active">
         <a class="nav-link active" data-toggle="tab" href="#consolaa">Tab1</a>
@@ -12,17 +12,17 @@
 </ul>
 </div>
 
-<div class="tab-pane fade in active show" id="consolaa">
+<div class="tab-pane fade in active show bg-success" id="consolaa">
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <br>
                 <div class="row">
-                    <div class="col-md-10">
-                        <div class="card text-white bg-secondary mb-3">
+                    <div class="col-md-5">
+                        <div class="card text-white bg-warning mb-3">
                             <div class="card-header">Ingrese texto:</div>
                             
-                                <div style="width: auto; height: 250px;">
+                                <div style="width: auto; height: 550px;">
                                     <ngx-monaco-editor [formControl]="editorTexto" [options]="editorOptions"
                                         [(ngModel)]="code" (init)="editorInit($event)"></ngx-monaco-editor>
                                 </div>
@@ -33,17 +33,21 @@
                         <br><br><br><br><br>
                         <div class="d-grid gap-2" >
                             <div align="center">
-                            <button type="button" (click)="analizar()" class="btn btn-outline-warning center">Ejecutar</button>
+                            <button type="button" (click)="analizar()" class="btn btn-warning center">Ejecutar</button>
                             <br><br>
-                            <button type="button" (click)="analizar()" class="btn btn-outline-warning center">Tablas</button>
+                            <button type="button" (click)="analizar()" class="btn btn-dark center">Tablas</button>
                             <br><br>
-                            <button type="button" (click)="analizar()" class="btn btn-outline-warning center">Arbol AST</button>
+                            <button type="button" (click)="analizar()" class="btn btn-dark center">Arbol AST</button>
+                            <br><br>
+                            <button type="button" (click)="analizar()" class="btn btn-dark center">Abrir</button>
+                            <br><br>
+                            <button type="button" (click)="analizar()" class="btn btn-dark center">Guardar</button>
                         </div></div>
                     </div>
-                    <div class="col-md-10">
-                        <div  class="card text-white bg-secondary mb-3">
+                    <div class="col-md-5">
+                        <div  class="card text-white bg-warning mb-3">
                             <div class="card-header">Consola</div>
-                                <div style="width: auto; height: 200px;">
+                                <div style="width: auto; height: 550px;">
                                     <ngx-monaco-editor 
                                         [formControl]="consola" [options]="consoleOptions"
                                         [(ngModel)]="console" (init)="editorInit($event)" aria-readonly="true">
@@ -52,17 +56,10 @@
                             <br>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <br><br><br><br>
-                            <div class="d-grid gap-2" >
-                                <div align="center">
-                                <button type="button" (click)="analizar()" class="btn btn-outline-primary center">Abrir</button>
-                                <br><br>
-                                <button type="button" (click)="analizar()" class="btn btn-outline-primary center">Guardar</button>
-                                
-                            </div></div>
                         </div>
                 </div>
             </div>
-        </div>    
+        </div>  
+        <br><br><br><br><br>
+        <br><br><br><br>
 </div>

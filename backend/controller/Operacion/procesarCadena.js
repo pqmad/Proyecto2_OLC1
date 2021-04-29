@@ -1,7 +1,7 @@
 const Operacion = require("./Operacion")
 
-function procesarCadena(_expresion, _ambito){
-    return Operacion(_expresion, _ambito)
+function procesarCadena(_expresion, _ambito,_Error){
+    return Operacion(_expresion, _ambito,_Error)
 }
 
 module.exports = procesarCadena

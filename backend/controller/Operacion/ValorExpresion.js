@@ -1,8 +1,10 @@
 const TIPO_DATO = require("../Enums/TipoDato");
 const TIPO_VALOR = require("../Enums/TipoValor");
+const TIPO_ERROR = require('../Enums/Tipo_Error')
+const ERRORES = require("../Ambito/S_Error")
 
-function ValorExpresion(_expresion, _ambito){
-    //console.log(_expresion+"<---->"+ _expresion.valor)
+function ValorExpresion(_expresion, _ambito,_Error){
+    //console.log(_expresion.tipo+"<---->"+ _expresion.valor)
     if(_expresion.tipo === TIPO_VALOR.DECIMAL){
         return {
             valor: Number(_expresion.valor),
@@ -28,12 +30,14 @@ function ValorExpresion(_expresion, _ambito){
         }
     }
     else if(_expresion.tipo === TIPO_VALOR.CADENA){
-        var str = _expresion.valor.substring(1, _expresion.valor.length-1)
-        var cadena = str.replace("\\n", "\n");
-        cadena = cadena.replace("\\\\", "\\");
-        cadena = cadena.replace("\\\"", "\"");
-        cadena = cadena.replace("\\t", "\t");
-        cadena = cadena.replace("\\\'", "\'");
+        var cadena = _expresion.valor
+        /*.substring(1, _expresion.valor.length-1)
+        cadena = cadena.replace(/\n/g, "\n");
+        cadena = cadena.replace(/\\/g, "\\");
+        cadena = cadena.replace(/\"/g, "\"");
+        cadena = cadena.replace(/\t/g, "\t");
+        cadena = cadena.replace(/\r/g, "\r");
+        cadena = cadena.replace(/\'/g, "\'");*/
         return {
             valor: cadena,
             tipo: TIPO_DATO.CADENA,
@@ -64,6 +68,8 @@ function ValorExpresion(_expresion, _ambito){
                 columna: simbolo.columna
             }
         }
+        var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"La variable '"+_expresion.valor+"' no existe",_expresion.linea, _expresion.columna);
+    _Error.addErrores(nuevo)
         return {
             valor: "Error Semantico: la variable '"+_expresion.valor+"' no existe... Linea: "+_expresion.linea+" Columna: "+_expresion.columna,
             tipo: null,

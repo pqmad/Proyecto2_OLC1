@@ -1,11 +1,12 @@
 const Operacion = require("../Operacion/Operacion");
 const TIPO_DATO = require("../Enums/TipoDato");
-
-function Asignacion(_instruccion, _ambito){
+const TIPO_ERROR = require('../Enums/Tipo_Error')
+const ERRORES = require("../Ambito/S_Error")
+function Asignacion(_instruccion, _ambito,_Error){
     const id = _instruccion.id;
     const existe = _ambito.existeSimbolo(id)
     if(existe){
-        var valor = Operacion(_instruccion.expresion, _ambito)
+        var valor = Operacion(_instruccion.expresion, _ambito,_Error)
         var simbolo = _ambito.getSimbolo(id)
         var tipos = {
             tipoSimbolo: simbolo.tipo,
@@ -24,9 +25,12 @@ function Asignacion(_instruccion, _ambito){
             _ambito.actualizar(id,simbolo)
             return null
         }
-
-        return valor.valor+"\nError Semantico: No es posible asignar un valor de tipo "+tipos.tipoNuevoValor+" a la variable \n'"+ id +"' que es de tipo "+tipos.tipoSimbolo+"... Linea: "+_instruccion.linea+" Columna: "+ _instruccion.columna;
+        var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,`No es posible asignar un valor de tipo ${tipos.tipoNuevoValor} a la variable  ${id}  que es de tipo ${tipos.tipoSimbolo}.`,_instruccion.linea, _instruccion.columna);
+        _Error.addErrores(nuevo)
+        return valor.valor+" Error Semantico: No es posible asignar un valor de tipo "+tipos.tipoNuevoValor+" a la variable \n'"+ id +"' que es de tipo "+tipos.tipoSimbolo+"... Linea: "+_instruccion.linea+" Columna: "+ _instruccion.columna;
     }
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,`la variable '${String(id)}' no existe.`,_instruccion.linea, _instruccion.columna);
+        _Error.addErrores(nuevo)
     return `Error Semantico: la variable '${String(id)}' no existe... Linea: ${_instruccion.linea} Columna: ${_instruccion.columna}`
 }
 

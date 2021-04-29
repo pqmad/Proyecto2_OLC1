@@ -11,9 +11,6 @@ app.use(bodParser.urlencoded({limit:'50mb', extended:true}))
 app.use(cors())
 
 app.get('/',(req,res)=>{
-    var respuesta={
-        message:"Todo bien"
-    }
     res.send(respuesta)
 })
 

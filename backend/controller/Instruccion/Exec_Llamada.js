@@ -2,8 +2,11 @@ const Ambito = require("../Ambito/Ambito")
 const Bloque = require("./Bloque")
 const TIPO_VALOR= require("../Enums/TipoValor")
 const Simbolo = require("../Ambito/Simbolo");
+const Operacion = require("../Operacion/Operacion")
+const TIPO_ERROR = require('../Enums/Tipo_Error')
+const ERRORES = require("../Ambito/S_Error")
 
-function Exec_Llamada(_instruccion, _ambito){
+function Exec_Llamada(_instruccion, _ambito,_Error){
     var metodoEjecutar = _ambito.getMetodo(_instruccion.nombre)
     /*console.log("------------------------------------------------------EXEC")
     console.log(metodoEjecutar)
@@ -27,7 +30,16 @@ function Exec_Llamada(_instruccion, _ambito){
                     var param=_ambito.getSimbolo(e.valor);
                     tipo=param.tipo;
                     valor=param.valor;
-                }else{
+                }else 
+                if(e.tipo !== TIPO_VALOR.CADENA && e.tipo !== TIPO_VALOR.CARACTER &&
+                    e.tipo !== TIPO_VALOR.ENTERO && e.tipo !== TIPO_VALOR.DECIMAL &&
+                    e.tipo !== TIPO_VALOR.BANDERA){
+                        //console.log(e)
+                        var param =Operacion(e, _ambito,_Error)
+                        tipo=param.tipo;
+                        valor=param.valor;
+                }
+                else{
                     tipo=e.tipo;
                     valor=e.valor;
                 }
@@ -50,6 +62,7 @@ function Exec_Llamada(_instruccion, _ambito){
                 console.log("+++++++++++++++++++++")*/
             });
         }
+        
         if(parametrosdemetodo_tipo.length===valoresquemandan_tipo.length){
             if(valoresquemandan_tipo.length>0){
                 for (let i = 0; i < parametrosdemetodo_tipo.length; i++) {
@@ -57,21 +70,28 @@ function Exec_Llamada(_instruccion, _ambito){
                     var tipo_recibe=parametrosdemetodo_tipo[i]
                     var valor_mandar=valoresquemandan_valor[i]
                     var variable=parametrosdemetodo_variable[i]
+                    //console.log(tipo_mandar+"<-->"+tipo_recibe)
                     if(tipo_mandar===tipo_recibe){
                         const nuevoSimbolo = new Simbolo(variable, valor_mandar, tipo_recibe, _instruccion.linea, _instruccion.columna)
                         nuevoAmbito.addSimbolo(nuevoSimbolo.id, nuevoSimbolo)
                         //console.log("Añadido: "+nuevoSimbolo.id)
                     }else{
+                        var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"No coinciden los parametros enviado con los del metodo/funcion.",_instruccion.linea, _instruccion.columna);
+                            _Error.addErrores(nuevo)
                         return "Error Semantico: no coinciden los parametros enviado con los del metodo/funcion... linea: "+_instruccion.linea+" Columna: "+_instruccion.columna
                     }
                 }
             }
         }else{
+            var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"No coinciden los parametros enviado con los del metodo/funcion.",_instruccion.linea, _instruccion.columna);
+                _Error.addErrores(nuevo)
             return "Error Semantico: no coinciden los parametros enviado con los del metodo/funcion... linea: "+_instruccion.linea+" Columna: "+_instruccion.columna
         }
-        return Bloque(metodoEjecutar.instrucciones, nuevoAmbito)
+        return Bloque(metodoEjecutar.instrucciones, nuevoAmbito,_Error)
     }
-    return `Error: El método ${_instruccion.nombre} no existe... Linea: ${_instruccion.linea} Columna: ${_instruccion.columna}`
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"El método "+_instruccion.nombre+" no existe.",_instruccion.linea, _instruccion.columna);
+                _Error.addErrores(nuevo)
+    return `Error Semantico: El método ${_instruccion.nombre} no existe... Linea: ${_instruccion.linea} Columna: ${_instruccion.columna}`
 }
 
 module.exports = Exec_Llamada

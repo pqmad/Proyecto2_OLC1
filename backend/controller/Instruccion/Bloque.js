@@ -1,4 +1,5 @@
 const TIPO_INSTRUCCION = require("../Enums/TipoInstruccion");
+const TIPO_OPERACION = require("../Enums/TipoOperacion");
 const Asignacion = require("./Asignacion");
 const Cout = require("./Print");
 const Declaracion = require("./Declaracion");
@@ -8,12 +9,12 @@ const Sentencia_if = require("./if");
 const Sentencia_else = require("./else");
 const sentencia_elseif = require("./else_if");
 const procesarSwitch = require("./Switch");
-const Ternario_F = require("./Ternario_F");
+//const Ternario_F = require("./Ternario_F");
 const Ciclofor = require("./for");
 const casteo = require("./casteo");
 //const verificaparamaetros = require("./VerificarParametros");
 
-function Bloque(_instrucciones, _ambito){
+function Bloque(_instrucciones, _ambito,_Error){
     var cadena = ""
     
     /*console.log(_instrucciones[0])
@@ -30,7 +31,7 @@ function Bloque(_instrucciones, _ambito){
     _instrucciones.forEach(instruccion => {
         //console.log("valuando..."+instruccion.tipo)
         if(instruccion.tipo === TIPO_INSTRUCCION.DECLARACION){
-            var mensaje = Declaracion(instruccion, _ambito)
+            var mensaje = Declaracion(instruccion, _ambito,_Error)
             if(mensaje!=null){
                 cadena+=mensaje+'\n'
             }
@@ -44,7 +45,7 @@ function Bloque(_instrucciones, _ambito){
         }
         
         else if(instruccion.tipo === TIPO_INSTRUCCION.CASTEO){
-            var mensaje = casteo(instruccion, _ambito)
+            var mensaje = casteo(instruccion, _ambito,_Error)
             if(mensaje!=null){
                 cadena+=mensaje+'\n'
             }
@@ -53,7 +54,7 @@ function Bloque(_instrucciones, _ambito){
         else if(instruccion.tipo === TIPO_INSTRUCCION.ASIGNACION){
             var inst=instruccion
             if(instruccion.expresion.tipo===TIPO_INSTRUCCION.CASTEO){
-                var exp = casteo(instruccion.expresion, _ambito)
+                var exp = casteo(instruccion.expresion, _ambito,_Error)
                 inst = {
                     tipo: instruccion.tipo,
                     id: instruccion.id,
@@ -62,28 +63,28 @@ function Bloque(_instrucciones, _ambito){
                     columna: instruccion.columna
                 }
             }
-            var mensaje = Asignacion(inst, _ambito)
+            var mensaje = Asignacion(inst, _ambito,_Error)
             if(mensaje!=null){
                 cadena+=mensaje+'\n'
             }
         }
 
         else if(instruccion.tipo === TIPO_INSTRUCCION.WHILE){
-            var mensaje = CicloWhile(instruccion, _ambito)
+            var mensaje = CicloWhile(instruccion, _ambito,_Error)
             if(mensaje!=null){
                 cadena+=mensaje
             }
         }
 
         else if(instruccion.tipo === TIPO_INSTRUCCION.DO_WHILE){
-            var mensaje = CicloDo_While(instruccion, _ambito)
+            var mensaje = CicloDo_While(instruccion, _ambito,_Error)
             if(mensaje!=null){
                 cadena+=mensaje
             }
         }
 
         else if(instruccion.tipo === TIPO_INSTRUCCION.IF){
-            var mensaje = Sentencia_if(instruccion, _ambito)
+            var mensaje = Sentencia_if(instruccion, _ambito,_Error)
             if(mensaje!=null){
                 cadena+=mensaje
             }
@@ -97,27 +98,28 @@ function Bloque(_instrucciones, _ambito){
         }*/
         
         else if(instruccion.tipo === TIPO_INSTRUCCION.ELSEIF){
-            var mensaje = sentencia_elseif(instruccion, _ambito)
+            var mensaje = sentencia_elseif(instruccion, _ambito,_Error)
             if(mensaje!=null){
                 cadena+=mensaje
             }
         }
         else if(instruccion.tipo === TIPO_INSTRUCCION.FOR){
-            var mensaje = Ciclofor(instruccion, _ambito)
+            var mensaje = Ciclofor(instruccion, _ambito,_Error)
             if(mensaje!=null){
                 cadena+=mensaje
             }
         }
 
         else if (instruccion.tipo === TIPO_INSTRUCCION.SWITCH) {
-            var mensaje = procesarSwitch(instruccion, _ambito);
+            var mensaje = procesarSwitch(instruccion, _ambito,_Error);
             if(mensaje!=null){
                 cadena+=mensaje
             }
         }
-        else if(instruccion.tipo===TIPO_INSTRUCCION.TERNARIO){
-            var mensaje = Ternario_F(instruccion, _ambito);
-            if(mensaje!=null){
+        else if(instruccion.tipo===TIPO_OPERACION.TERNARIO){
+            const Ternario = require("../Operacion/Ternario")
+            var mensaje = Ternario(instruccion, _ambito,_Error);
+            if(mensaje!=null && mensaje.tipo===null){
                 cadena+=mensaje
             }
         }
@@ -129,16 +131,16 @@ function Bloque(_instrucciones, _ambito){
             //}else{ //para que no ejecute el metoo o funcion hasta que se cumpla con los parametros correctos
                 //console.log("mierdita")
                 //console.log (instruccion)
-                var mensaje = llamada(instruccion, _ambito)
+                var mensaje = llamada(instruccion, _ambito,_Error)
                 if(mensaje!=null){
-                    cadena+=mensaje+'\n'
+                    cadena+=mensaje
                 }
             //}
         }
     });
-    console.log("-------------------------------------------------------------------------------")
+    /*console.log("-------------------------------------------------------------------------------")
     console.log(cadena)
-    console.log("-------------------------------------------------------------------------------")
+    console.log("-------------------------------------------------------------------------------")*/
     return cadena
 }
 

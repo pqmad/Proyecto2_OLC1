@@ -4,8 +4,10 @@ const Declaracion = require("./Declaracion")
 const DecMetodo = require("./Declaracion_Metodo")
 const Exec = require("./Exec_Llamada")
 //const verificaparamaetros = require("./VerificarParametros");
+const TIPO_ERROR = require('../Enums/Tipo_Error')
+const ERRORES = require("../Ambito/S_Error")
 
-function Global(_instrucciones, _ambito){
+function Global(_instrucciones, _ambito,_Error){
     var cadena = ""
 //1ERA: VERIFICAR DE QUE SOLO VENGA 1 EXEC
     var contadorExec=0;
@@ -15,29 +17,40 @@ function Global(_instrucciones, _ambito){
         }
     }
     if(contadorExec==0){
+        
+        var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"No se ha detectado la sentencia EXEC",_instrucciones.linea, _instrucciones.columna);
+        _Error.addErrores(nuevo)
         return 'Error Semantico: No se ha detectado la sentencia EXEC'
     }
     else if(contadorExec>1){
+        var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,'Se ha detectado '+contadorExec+' EXEC',_instrucciones.linea, _instrucciones.columna);
+        _Error.addErrores(nuevo)
         return 'Error Semantico: Se ha detectado '+contadorExec+' EXEC'
     }
 //2DA: DECLARAR VARIABLES, METODOS Y ASIGNAR VALORES
     for(let i=0; i<_instrucciones.length; i++){
 
         if(_instrucciones[i].tipo === TIPO_INSTRUCCION.DECLARACION){
-            var mensaje = Declaracion(_instrucciones[i], _ambito)
+            var mensaje = Declaracion(_instrucciones[i], _ambito,_Error)
             if(mensaje!=null){
+                var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,mensaje,_instrucciones.linea, _instrucciones.columna);
+                _Error.addErrores(nuevo)
                 cadena+=mensaje+'\n'
             }
         }
         else if(_instrucciones[i].tipo === TIPO_INSTRUCCION.ASIGNACION){
-            var mensaje = Asignacion(_instrucciones[i], _ambito)
+            var mensaje = Asignacion(_instrucciones[i], _ambito,_Error)
             if(mensaje!=null){
+                var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,mensaje,_instrucciones.linea, _instrucciones.columna);
+                _Error.addErrores(nuevo)
                 cadena+=mensaje+'\n'
             }
         }
         else if(_instrucciones[i].tipo === TIPO_INSTRUCCION.DECLARACION_M || _instrucciones[i].tipo === TIPO_INSTRUCCION.DECLARACION_F){
-            var mensaje = DecMetodo(_instrucciones[i], _ambito)
+            var mensaje = DecMetodo(_instrucciones[i], _ambito,_Error)
             if(mensaje!=null){
+                var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,mensaje,_instrucciones.linea, _instrucciones.columna);
+                _Error.addErrores(nuevo)
                 cadena+=mensaje+'\n'
             }
         }
@@ -52,7 +65,7 @@ function Global(_instrucciones, _ambito){
             //}else{ //para que no ejecute el metoo o funcion hasta que se cumpla con los parametros correctos
                 //console.log("mierdita")
                 //console.log (instruccion)
-                var mensaje = Exec(_instrucciones[i], _ambito)
+                var mensaje = Exec(_instrucciones[i], _ambito,_Error)
                 if(mensaje!=null){
                     cadena+=mensaje
                 }

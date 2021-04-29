@@ -55,6 +55,16 @@ const Instruccion = {
         }
     },
 
+    nuevaASIGNACION_InDe: function(_expresion, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.ASIGNACION,
+            id: _expresion.opIzq.valor,
+            expresion: _expresion,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
     nuevoWhile: function(_expresion, _instrucciones, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.WHILE,
@@ -85,8 +95,7 @@ const Instruccion = {
             columna: _columna
         }
     },
-
-    nuevoTernario: function(_expresion, _verdadero, _falso, _linea, _columna){
+    /*nuevoTernario: function(_expresion, _verdadero, _falso, _linea, _columna){
         return {
             tipo: TIPO_INSTRUCCION.TERNARIO,
             expresion: _expresion,
@@ -95,7 +104,7 @@ const Instruccion = {
             linea: _linea,
             columna: _columna
         }
-    },
+    },*/
 
     nuevoIf: function(_expresion, _instrucciones, _linea, _columna){
         return {

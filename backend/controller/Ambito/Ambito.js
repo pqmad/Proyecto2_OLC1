@@ -32,7 +32,13 @@ class Ambito{
         }
         return false
     }
-    
+    existeSimbolodecla(_s){
+            var encontrado = this.tablaSimbolos.get(_s.toLowerCase())
+            if(encontrado!=null){
+                return true
+            }
+        return false
+    }
     actualizar(_s, _simbolo){
         for(let e=this; e!=null; e=e.anterior){
             var encontrado = e.tablaSimbolos.get(_s.toLowerCase());

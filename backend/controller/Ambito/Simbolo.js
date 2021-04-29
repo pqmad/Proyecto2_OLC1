@@ -3,6 +3,7 @@ class Simbolo{
         this.id = _id;
         this.valor = _valor;
         this.tipo = _tipo;
+        //this.entorno = _entorno;
         this.linea = _linea;
         this.columna = _columna;
     }

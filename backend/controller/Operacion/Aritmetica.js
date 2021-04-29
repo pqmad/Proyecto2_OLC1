@@ -4,48 +4,51 @@ const TIPO_VALOR = require("../Enums/TipoValor")
 const TIPO_INSTRUCCION = require("../Enums/TipoInstruccion");
 const TipoResultado = require("./TipoResultado")
 const ValorExpresion = require("./ValorExpresion")
+const TIPO_ERROR = require('../Enums/Tipo_Error')
+const ERRORES = require("../Ambito/S_Error")
 
-function Aritmetica(_expresion, _ambito){
+
+function Aritmetica(_expresion, _ambito,_Error){
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.BANDERA ||
         _expresion.tipo === TIPO_VALOR.CADENA || _expresion.tipo === TIPO_VALOR.IDENTIFICADOR
         || _expresion.tipo === TIPO_VALOR.ENTERO || _expresion.tipo === TIPO_VALOR.CARACTER
     ){
-        return ValorExpresion(_expresion, _ambito)
+        return ValorExpresion(_expresion, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.SUMA){
-        return suma(_expresion.opIzq, _expresion.opDer, _ambito)
+        return suma(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.RESTA){
-        return resta(_expresion.opIzq, _expresion.opDer, _ambito)
+        return resta(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.MULTIPLICACION){
-        return multiplicacion(_expresion.opIzq, _expresion.opDer, _ambito)
+        return multiplicacion(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.DIVISION){
-        return division(_expresion.opIzq, _expresion.opDer, _ambito)
+        return division(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.POTENCIA){
-        return potencia(_expresion.opIzq, _expresion.opDer, _ambito)
+        return potencia(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.MODULO){
-        return modulo(_expresion.opIzq, _expresion.opDer, _ambito)
+        return modulo(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.NEGACION){
-        return negacion(_expresion.opIzq, _ambito)
+        return negacion(_expresion.opIzq, _ambito,_Error)
     }
     else if(_expresion.tipo===TIPO_OPERACION.LENGTH){
         const FuncionesN = require("./FuncionesN");
-        return FuncionesN(_expresion,_ambito)
+        return FuncionesN(_expresion,_ambito,_Error)
     }
     else if(_expresion.tipo===TIPO_INSTRUCCION.CASTEO){
         const casteo = require("../Instruccion/casteo");
-        return casteo(_expresion,_ambito)
+        return casteo(_expresion,_ambito,_Error)
     }
 }
 
-function suma(_opIzq, _opDer, _ambito){ 
-    const opIzq = Aritmetica(_opIzq,_ambito)
-    const opDer = Aritmetica(_opDer,_ambito)
+function suma(_opIzq, _opDer, _ambito,_Error){ 
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
+    const opDer = Aritmetica(_opDer,_ambito,_Error)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo,"suma")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -89,17 +92,19 @@ function suma(_opIzq, _opDer, _ambito){
         }
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"no se puede realizar la operacion suma.",_opIzq.linea, _opIzq.columna);
+    _Error.addErrores(nuevo)
     return{
-        valor: respuesta+'\nError semántico: no se puede realizar la operacion suma...\nLinea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
+        valor: respuesta+' Error semántico: no se puede realizar la operacion suma...\nLinea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
         linea: _opIzq.linea,
         columna: _opIzq.columna
     }
 }
 
-function resta(_opIzq, _opDer, _ambito){
-    const opIzq = Aritmetica(_opIzq,_ambito)
-    const opDer = Aritmetica(_opDer,_ambito)
+function resta(_opIzq, _opDer, _ambito,_Error){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
+    const opDer = Aritmetica(_opDer,_ambito,_Error)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "resta")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -134,6 +139,8 @@ function resta(_opIzq, _opDer, _ambito){
         }
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"no se puede realizar la operacion resta.",_opIzq.linea, _opIzq.columna);
+    _Error.addErrores(nuevo)
     return{
         valor: respuesta+'\nError semántico: no se puede realizar la operacion resta... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
@@ -142,9 +149,9 @@ function resta(_opIzq, _opDer, _ambito){
     }
 }
 
-function multiplicacion(_opIzq, _opDer, _ambito){
-    const opIzq = Aritmetica(_opIzq,_ambito)
-    const opDer = Aritmetica(_opDer,_ambito)
+function multiplicacion(_opIzq, _opDer, _ambito,_Error){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
+    const opDer = Aritmetica(_opDer,_ambito,_Error)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "multi")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -165,6 +172,8 @@ function multiplicacion(_opIzq, _opDer, _ambito){
         }
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"no se puede realizar la operacion multiplicacion.",_opIzq.linea, _opIzq.columna);
+    _Error.addErrores(nuevo)
     return{
         valor: respuesta+'\nError semántico: no se puede realizar la operacion multiplicacion... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
@@ -173,9 +182,9 @@ function multiplicacion(_opIzq, _opDer, _ambito){
     }
 }
 
-function division(_opIzq, _opDer, _ambito){
-    const opIzq = Aritmetica(_opIzq,_ambito)
-    const opDer = Aritmetica(_opDer,_ambito)
+function division(_opIzq, _opDer, _ambito,_Error){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
+    const opDer = Aritmetica(_opDer,_ambito,_Error)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "division")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -196,6 +205,8 @@ function division(_opIzq, _opDer, _ambito){
         }
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"no se puede realizar la operacion division.",_opIzq.linea, _opIzq.columna);
+    _Error.addErrores(nuevo)
     return{
         valor: respuesta+'\nError semántico: no se puede realizar la operacion division... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
@@ -204,10 +215,10 @@ function division(_opIzq, _opDer, _ambito){
     }
 }
 
-function potencia(_opIzq, _opDer, _ambito){
+function potencia(_opIzq, _opDer, _ambito,_Error){
     
-    const opIzq = Aritmetica(_opIzq,_ambito)
-    const opDer = Aritmetica(_opDer,_ambito)
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
+    const opDer = Aritmetica(_opDer,_ambito,_Error)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "potencia")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -225,6 +236,8 @@ function potencia(_opIzq, _opDer, _ambito){
         }
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"no se puede realizar la operacion potencia.",_opIzq.linea, _opIzq.columna);
+    _Error.addErrores(nuevo)
     return{
         valor: respuesta+'\nError semántico: no se puede realizar la operacion potencia... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
@@ -233,9 +246,9 @@ function potencia(_opIzq, _opDer, _ambito){
     }
 }
 
-function modulo(_opIzq, _opDer, _ambito){
-    const opIzq = Aritmetica(_opIzq,_ambito)
-    const opDer = Aritmetica(_opDer,_ambito)
+function modulo(_opIzq, _opDer, _ambito,_Error){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
+    const opDer = Aritmetica(_opDer,_ambito,_Error)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "modulo")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL){
@@ -249,6 +262,8 @@ function modulo(_opIzq, _opDer, _ambito){
         }
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")+(opDer.tipo===null ? opDer.valor: "") //true+5+10+5
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"no se puede realizar la operacion modulo.",_opIzq.linea, _opIzq.columna);
+    _Error.addErrores(nuevo)
     return{
         valor: respuesta+'\nError semántico: no se puede realizar la operacion modulo... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,
@@ -257,8 +272,8 @@ function modulo(_opIzq, _opDer, _ambito){
     }
 }
 
-function negacion(_opIzq, _ambito){
-    const opIzq = Aritmetica(_opIzq,_ambito)
+function negacion(_opIzq, _ambito,_Error){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
     const tipoRes = TipoResultado(opIzq.tipo,opIzq.tipo, "negacion")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -272,6 +287,8 @@ function negacion(_opIzq, _ambito){
         }
     }
     var respuesta = (opIzq.tipo===null ? opIzq.valor: "")
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"no se puede realizar la operacion negacion.",_opIzq.linea, _opIzq.columna);
+    _Error.addErrores(nuevo)
     return{
         valor: respuesta+'\nError semántico: no se puede realizar la operacion negación... Linea: '+_opIzq.linea+" Columna: "+_opIzq.columna,
         tipo: null,

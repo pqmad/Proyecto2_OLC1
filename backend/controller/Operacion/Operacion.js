@@ -8,12 +8,12 @@ const Relacional = require("./Relacional");
 const ternario = require("./Ternario");
 const FuncionesN = require("./FuncionesN");
 
-function Operacion(_expresion, _ambito){
+function Operacion(_expresion, _ambito,_Error){
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.ENTERO 
         || _expresion.tipo === TIPO_VALOR.BANDERA || _expresion.tipo === TIPO_VALOR.CARACTER
         || _expresion.tipo === TIPO_VALOR.CADENA || _expresion.tipo === TIPO_VALOR.IDENTIFICADOR){
 
-        return ValorExpresion(_expresion, _ambito)
+        return ValorExpresion(_expresion, _ambito,_Error)
 
     }
     
@@ -22,30 +22,34 @@ function Operacion(_expresion, _ambito){
         _expresion.tipo === TIPO_OPERACION.MODULO || _expresion.tipo === TIPO_OPERACION.POTENCIA ||
         _expresion.tipo === TIPO_OPERACION.NEGACION
         ){
-        return Aritmetica(_expresion, _ambito)
+        return Aritmetica(_expresion, _ambito,_Error)
     }
 
     else if(_expresion.tipo === TIPO_OPERACION.IGUALIGUAL || _expresion.tipo === TIPO_OPERACION.DIFERENTE ||
         _expresion.tipo === TIPO_OPERACION.MENOR || _expresion.tipo === TIPO_OPERACION.MAYOR||
         _expresion.tipo === TIPO_OPERACION.MENORIGUAL || _expresion.tipo === TIPO_OPERACION.MAYORIGUAL
     ){
-        return Relacional(_expresion, _ambito)
+        return Relacional(_expresion, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.OR || _expresion.tipo === TIPO_OPERACION.AND
         || _expresion.tipo === TIPO_OPERACION.NOT
     ){
-        return Logica(_expresion, _ambito)
+        return Logica(_expresion, _ambito,_Error)
     }
     else if(_expresion.tipo===TIPO_OPERACION.TERNARIO){
-        return ternario(_expresion, _ambito)
+        return ternario(_expresion, _ambito,_Error)
     }
     else if(_expresion.tipo===TIPO_OPERACION.LENGTH || _expresion.tipo===TIPO_OPERACION.UPPER || _expresion.tipo===TIPO_OPERACION.LOWER
         ||_expresion.tipo===TIPO_OPERACION.TRUNCATE || _expresion.tipo===TIPO_OPERACION.ROUND || _expresion.tipo===TIPO_OPERACION.TYPEOF 
         ){
-        return FuncionesN(_expresion,_ambito)
+        return FuncionesN(_expresion,_ambito,_Error)
     }
     else if(_expresion.tipo===TIPO_INSTRUCCION.CASTEO){
-        return FuncionesN(_expresion,_ambito)
+        return FuncionesN(_expresion,_ambito,_Error)
+    }
+    else if(_expresion.tipo===TIPO_INSTRUCCION.LLAMADA){
+        const Bloque = require('./Bloque')
+        return Bloque(_expresion, _ambito,_Error)
     }
 }
 
