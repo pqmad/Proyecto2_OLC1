@@ -88,9 +88,10 @@ export class EditorComponent implements OnInit {
       console.log(res)
       this.consola.setValue(res.consola);
       let errores=res.errores.tablaErrores;
+      let Simbol_l=res.Simbol_lit.listado_Simbolos;
       this.data_error=errores;
-      this.data_simbolo=errores;
-      console.log(this.data_error)
+      this.data_simbolo=Simbol_l;
+      console.log(this.data_simbolo)
       //this.editorTexto.setValue(res.consola);
     }, err=>{
       console.log("ERROR: "+err)

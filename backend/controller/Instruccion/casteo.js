@@ -3,10 +3,10 @@ const TIPO_DATO = require("../Enums/TipoDato")
 const Operacion = require("../Operacion/Operacion")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
-function casteo(_instruccion, _ambito,_Error){
+function casteo(_instruccion, _ambito,_Error,Simbol){
     var entro = false
     const cambiar_a=_instruccion.tipodedato;
-    const evaluar=Operacion(_instruccion.valor,_ambito,_Error)
+    const evaluar=Operacion(_instruccion.valor,_ambito,_Error,"Casteo",Simbol)
     const valor_a_cambair=evaluar.valor;
     const tipo_a_cambair=evaluar.tipo;
     //console.log("entra a casteo"+valor_a_cambair)

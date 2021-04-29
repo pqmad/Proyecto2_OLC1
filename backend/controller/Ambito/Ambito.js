@@ -1,6 +1,7 @@
 class Ambito{
     constructor(_anterior){
         this.anterior = _anterior
+        
         this.tablaSimbolos = new Map();
         this.tablaMetodos = new Map();
     }

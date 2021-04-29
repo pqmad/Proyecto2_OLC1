@@ -6,7 +6,8 @@ const Operacion = require("../Operacion/Operacion")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
 
-function Exec_Llamada(_instruccion, _ambito,_Error){
+function Exec_Llamada(_instruccion, _ambito,_Error,Simbol){
+    
     var metodoEjecutar = _ambito.getMetodo(_instruccion.nombre)
     /*console.log("------------------------------------------------------EXEC")
     console.log(metodoEjecutar)
@@ -72,8 +73,9 @@ function Exec_Llamada(_instruccion, _ambito,_Error){
                     var variable=parametrosdemetodo_variable[i]
                     //console.log(tipo_mandar+"<-->"+tipo_recibe)
                     if(tipo_mandar===tipo_recibe){
-                        const nuevoSimbolo = new Simbolo(variable, valor_mandar, tipo_recibe, _instruccion.linea, _instruccion.columna)
+                        const nuevoSimbolo = new Simbolo(variable, valor_mandar, tipo_recibe, "Parametros de "+metodoEjecutar.id,_instruccion.linea, _instruccion.columna)
                         nuevoAmbito.addSimbolo(nuevoSimbolo.id, nuevoSimbolo)
+                        Simbol.add_s(nuevoSimbolo)
                         //console.log("Añadido: "+nuevoSimbolo.id)
                     }else{
                         var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"No coinciden los parametros enviado con los del metodo/funcion.",_instruccion.linea, _instruccion.columna);
@@ -87,7 +89,7 @@ function Exec_Llamada(_instruccion, _ambito,_Error){
                 _Error.addErrores(nuevo)
             return "Error Semantico: no coinciden los parametros enviado con los del metodo/funcion... linea: "+_instruccion.linea+" Columna: "+_instruccion.columna
         }
-        return Bloque(metodoEjecutar.instrucciones, nuevoAmbito,_Error)
+        return Bloque(metodoEjecutar.instrucciones, nuevoAmbito,_Error,metodoEjecutar.id,Simbol)
     }
     var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"El método "+_instruccion.nombre+" no existe.",_instruccion.linea, _instruccion.columna);
                 _Error.addErrores(nuevo)

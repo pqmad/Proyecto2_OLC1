@@ -2,11 +2,11 @@ const Operacion = require("../Operacion/Operacion");
 const TIPO_DATO = require("../Enums/TipoDato");
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
-function Asignacion(_instruccion, _ambito,_Error){
+function Asignacion(_instruccion, _ambito,_Error,Simbol){
     const id = _instruccion.id;
     const existe = _ambito.existeSimbolo(id)
     if(existe){
-        var valor = Operacion(_instruccion.expresion, _ambito,_Error)
+        var valor = Operacion(_instruccion.expresion, _ambito,_Error,Simbol)
         var simbolo = _ambito.getSimbolo(id)
         var tipos = {
             tipoSimbolo: simbolo.tipo,

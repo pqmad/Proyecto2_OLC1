@@ -6,29 +6,29 @@ const Declaracion = require("./Declaracion");
 const Asignacion = require("./Asignacion");
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
-function CicloFor(_instruccion, _ambito,_Error){
+function CicloFor(_instruccion, _ambito,_Error,Simbol){
     var mensaje = ""
     var nuevoAmbitodelfor = new Ambito(_ambito)
     if(_instruccion.valorVariable.tipo===TIPO_INSTRUCCION.DECLARACION){ //declara valor
-        var mensajed = Declaracion(_instruccion.valorVariable, nuevoAmbitodelfor,_Error)
+        var mensajed = Declaracion(_instruccion.valorVariable, nuevoAmbitodelfor,_Error, "For",Simbol)
             if(mensajed!=null){
                 mensaje+=mensajed+'\n'
             }
     }else{ //asigna valor
-        var mensajed = Asignacion(_instruccion.valorVariable, nuevoAmbitodelfor,_Error)
+        var mensajed = Asignacion(_instruccion.valorVariable, nuevoAmbitodelfor,_Error,Simbol)
             if(mensajed!=null){
                 mensaje+=mensajed+'\n'
             }
     }
-    var operacion = Operacion(_instruccion.expresionLogica, nuevoAmbitodelfor,_Error)
+    var operacion = Operacion(_instruccion.expresionLogica, nuevoAmbitodelfor,_Error, "For",Simbol)
     if(operacion.tipo === TIPO_DATO.BANDERA){
         while(operacion.valor){
             var nuevoAmbito = new Ambito(nuevoAmbitodelfor)
             const Bloque = require('./Bloque')
-            mensaje+=Bloque(_instruccion.instrucciones, nuevoAmbito,_Error)
+            mensaje+=Bloque(_instruccion.instrucciones, nuevoAmbito,_Error, "For",Simbol)
             //actualizamos
             Asignacion(_instruccion.aumento, nuevoAmbito,_Error)
-            operacion = Operacion(_instruccion.expresionLogica, nuevoAmbitodelfor,_Error)
+            operacion = Operacion(_instruccion.expresionLogica, nuevoAmbitodelfor,_Error, "For",Simbol)
             
         }
         return mensaje

@@ -6,16 +6,16 @@ const ValorExpresion = require("./ValorExpresion")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
 
-function ternario(_instruccion, _ambito,_Error){
+function ternario(_instruccion, _ambito,_Error,Simbol){
     console.log("-----------------entra al ternario de variables")
     console.log(_instruccion)
     const c=_instruccion.expresion
     const v=_instruccion.verdadero
     const f=_instruccion.falso
     const Operacion = require("../Operacion/Operacion")
-    const condicion = Operacion(c, _ambito,_Error)
-    const verdadero = Operacion(v, _ambito,_Error)
-    const falso = Operacion(f, _ambito,_Error)
+    const condicion = Operacion(c, _ambito,_Error,"Ope. ternario",Simbol)
+    const verdadero = Operacion(v, _ambito,_Error,"Ope. ternario",Simbol)
+    const falso = Operacion(f, _ambito,_Error,"Ope. ternario",Simbol)
     
     if(condicion.tipo=== TIPO_DATO.BANDERA){
         var r_valor, r_tipo

@@ -4,8 +4,10 @@ class Simbolo{
         this.valor = _valor;
         this.tipo = _tipo;
         this.entorno = _entorno;
+        this.soy="Variable";
         this.linea = _linea;
         this.columna = _columna;
+        this.extra="";
     }
 }
 

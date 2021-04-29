@@ -3,22 +3,22 @@ const TIPO_DATO = require("../Enums/TipoDato")
 const Operacion = require("../Operacion/Operacion")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
-function Sentencia_else(_instruccion, _ambito,_Error){
+function Sentencia_else(_instruccion, _ambito,_Error,Simbol){
     var mensaje = ""
-    var operacion = Operacion(_instruccion.expresionLogica, _ambito,_Error)
+    var operacion = Operacion(_instruccion.expresionLogica, _ambito,_Error,"Else",Simbol)
     if(operacion.tipo === TIPO_DATO.BANDERA){
         if(operacion.valor){
             var nuevoAmbito = new Ambito(_ambito)
             const Bloque = require('./Bloque')
-            mensaje+=Bloque(_instruccion.instruccionesIfVerdadero, nuevoAmbito,_Error)
+            mensaje+=Bloque(_instruccion.instruccionesIfVerdadero, nuevoAmbito,_Error,"Else",Simbol)
             //actualizamos
-            operacion = Operacion(_instruccion.expresionLogica, _ambito,_Error)
+            operacion = Operacion(_instruccion.expresionLogica, _ambito,_Error,"Else",Simbol)
         } else{
             var nuevoAmbito = new Ambito(_ambito)
             const Bloque = require('./Bloque')
-            mensaje+=Bloque(_instruccion.instruccionesIfFalso, nuevoAmbito,_Error)
+            mensaje+=Bloque(_instruccion.instruccionesIfFalso, nuevoAmbito,_Error,"Else",Simbol)
             //actualizamos
-            operacion = Operacion(_instruccion.expresionLogica, _ambito,_Error)
+            operacion = Operacion(_instruccion.expresionLogica, _ambito,_Error,"Else",Simbol)
         }
         return mensaje
     }

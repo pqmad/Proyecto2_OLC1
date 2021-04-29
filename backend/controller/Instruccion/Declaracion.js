@@ -5,7 +5,7 @@ const TIPO_INSTRUCCION = require("../Enums/TipoInstruccion")
 const casteo = require("./casteo");
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
-function Declaracion(_instruccion, _ambito,_Error){
+function Declaracion(_instruccion, _ambito,_Error, _entorno,Simbol){
     //console.log(_instruccion)
     if(_instruccion.tipo_dato === TIPO_DATO.DECIMAL){
         var valor = "0.0"
@@ -33,13 +33,14 @@ function Declaracion(_instruccion, _ambito,_Error){
                 return "Error Semantico: No es posible asignar un valor de tipo "+tipo+" a la variable \n'"+ _instruccion.id +"' que es de tipo "+TIPO_DATO.CARACTER+"... Linea: "+_instruccion.linea+" Columna: "+ _instruccion.columna;
             }
         }
-        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.DECIMAL, _instruccion.linea, _instruccion.columna)
+        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.DECIMAL, _entorno,_instruccion.linea, _instruccion.columna)
         if(_ambito.existeSimbolodecla(nuevoSimbolo.id)!=false){
             var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"La variable '"+ nuevoSimbolo.id +"' ya existe...",_instruccion.linea, _instruccion.columna);
                 _Error.addErrores(nuevo)
             return "Error Semantico: La variable '"+ nuevoSimbolo.id +"' ya existe... Linea: "+nuevoSimbolo.linea+" Columna: "+ nuevoSimbolo.columna;
         }
         _ambito.addSimbolo(nuevoSimbolo.id, nuevoSimbolo)
+        Simbol.add_s(nuevoSimbolo)
         //console.log(_ambito)
         return null
     }
@@ -71,13 +72,14 @@ function Declaracion(_instruccion, _ambito,_Error){
             }
         }
         //verificamos si ya existe
-        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.CADENA, _instruccion.linea, _instruccion.columna)
+        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.CADENA, _entorno, _instruccion.linea, _instruccion.columna)
         if(_ambito.existeSimbolodecla(nuevoSimbolo.id)!=false){
             var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"La variable '"+ nuevoSimbolo.id +"' ya existe...",_instruccion.linea, _instruccion.columna);
             _Error.addErrores(nuevo)
             return "Error Semantico: La variable '"+ nuevoSimbolo.id +"' ya existe... Linea: "+nuevoSimbolo.linea+" Columna: "+ nuevoSimbolo.columna;
         }
         _ambito.addSimbolo(nuevoSimbolo.id, nuevoSimbolo)
+        Simbol.add_s(nuevoSimbolo)
         return null
         //console.log(_ambito)
     }
@@ -98,13 +100,14 @@ function Declaracion(_instruccion, _ambito,_Error){
             }
         }
         //verificamos si ya existe
-        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.BANDERA, _instruccion.linea, _instruccion.columna)
+        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.BANDERA, _entorno, _instruccion.linea, _instruccion.columna)
         if(_ambito.existeSimbolodecla(nuevoSimbolo.id)!=false){
             var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"La variable '"+ nuevoSimbolo.id +"' ya existe...",_instruccion.linea, _instruccion.columna);
             _Error.addErrores(nuevo)
             return "Error Semantico: La variable '"+ nuevoSimbolo.id +"' ya existe... Linea: "+nuevoSimbolo.linea+" Columna: "+ nuevoSimbolo.columna;
         }
         _ambito.addSimbolo(nuevoSimbolo.id, nuevoSimbolo)
+        Simbol.add_s(nuevoSimbolo)
         return null
         //console.log(_ambito)
     }
@@ -134,13 +137,14 @@ function Declaracion(_instruccion, _ambito,_Error){
                 return "Error Semantico: No es posible asignar un valor de tipo "+tipo+" a la variable \n'"+ _instruccion.id +"' que es de tipo "+TIPO_DATO.CARACTER+"... Linea: "+_instruccion.linea+" Columna: "+ _instruccion.columna;
             }
         }
-        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.ENTERO, _instruccion.linea, _instruccion.columna)
+        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.ENTERO, _entorno, _instruccion.linea, _instruccion.columna)
         if(_ambito.existeSimbolodecla(nuevoSimbolo.id)!=false){
             var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"La variable '"+ nuevoSimbolo.id +"' ya existe...",_instruccion.linea, _instruccion.columna);
             _Error.addErrores(nuevo)
             return "Error Semantico: La variable '"+ nuevoSimbolo.id +"' ya existe... Linea: "+nuevoSimbolo.linea+" Columna: "+ nuevoSimbolo.columna;
         }
         _ambito.addSimbolo(nuevoSimbolo.id, nuevoSimbolo)
+        Simbol.add_s(nuevoSimbolo)
         //console.log(_ambito)
         return null
     }
@@ -172,7 +176,7 @@ function Declaracion(_instruccion, _ambito,_Error){
             }
         }
         //verificamos si ya existe
-        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.CARACTER, _instruccion.linea, _instruccion.columna)
+        const nuevoSimbolo = new Simbolo(_instruccion.id, valor, TIPO_DATO.CARACTER, _entorno, _instruccion.linea, _instruccion.columna)
         if(_ambito.existeSimbolodecla(nuevoSimbolo.id)!=false){
             var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"La variable '"+ nuevoSimbolo.id +"' ya existe...",_instruccion.linea, _instruccion.columna);
             _Error.addErrores(nuevo)
@@ -180,6 +184,7 @@ function Declaracion(_instruccion, _ambito,_Error){
         }
         console.log("llega aqui")
         _ambito.addSimbolo(nuevoSimbolo.id, nuevoSimbolo)
+        Simbol.add_s(nuevoSimbolo)
         return null
         //console.log(_ambito)
     }
