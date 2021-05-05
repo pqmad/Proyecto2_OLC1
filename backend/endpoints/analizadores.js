@@ -10,19 +10,17 @@ module.exports=(parser, app)=>{
         var prueba = req.body.prueba
         //try {
             var ast = parser.parse(prueba)
-            /*console.log("----------------------------------------") 
-            
-            console.log("----------------------------------------")*/
             const Error = new Errores()
             const Simbol= new Simbol_list()
+            var devuelve=""
             ast.errores.forEach(error => {
                 Error.addErrores(error)
+                devuelve+="Error "+error.tipo+": "+error.descripcion+"... linea: "+error.linea+" Columna: "+error.columna+"\n"
             });
             const AmbitoGlobal = new Ambito(null)
-            //var cadena = Bloque(ast, AmbitoGlobal)
-            var devuelve = Global(ast.arbol, AmbitoGlobal,Error,"Global",Simbol)
+            
+            devuelve=devuelve+ Global(ast.arbol, AmbitoGlobal,Error,"Global",Simbol)
             var Gdot="digraph mygraph { node [shape=box];\n"
-            //console.log(ast.arbol)
             ast.arbol.forEach(instruccion => {
                 Gdot += Grafico(instruccion,"Raiz","Raiz")
             });

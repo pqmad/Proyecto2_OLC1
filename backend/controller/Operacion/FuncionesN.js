@@ -5,7 +5,7 @@ const ValorExpresion = require("./ValorExpresion")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
 
-function FuncionesN(_expresion, _ambito,_Error){
+function FuncionesN(_expresion, _ambito,_Error, _entorno,Simbol){
     
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.ENTERO 
         || _expresion.tipo === TIPO_VALOR.BANDERA || _expresion.tipo === TIPO_VALOR.CARACTER
@@ -14,31 +14,34 @@ function FuncionesN(_expresion, _ambito,_Error){
         return ValorExpresion(_expresion, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.LENGTH){
-        return f_length(_expresion.opIzq, _ambito,_Error)
+        return f_length(_expresion.opIzq, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.LOWER){
-        return f_LOWER(_expresion.opIzq, _ambito,_Error)
+        return f_LOWER(_expresion.opIzq, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.UPPER){
-        return f_UPPER(_expresion.opIzq, _ambito,_Error)
+        return f_UPPER(_expresion.opIzq, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.TRUNCATE){
-        return f_TRUNCATE(_expresion.opIzq, _ambito,_Error)
+        return f_TRUNCATE(_expresion.opIzq, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.ROUND){
-        return f_ROUND(_expresion.opIzq, _ambito,_Error)
+        return f_ROUND(_expresion.opIzq, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.TYPEOF){
-        return f_TYPEOF(_expresion.opIzq, _ambito,_Error)
+        return f_TYPEOF(_expresion.opIzq, _ambito,_Error, _entorno,Simbol)
+    }
+    else if(_expresion.tipo === TIPO_OPERACION.TOCHARARRAY){
+        return f_TOCHARARRAY(_expresion.opIzq, _ambito,_Error, _entorno,Simbol)
     }
     else{
         const Operacion = require("./Operacion")
-        return Operacion(_expresion, _ambito,_Error)
+        return Operacion(_expresion, _ambito,_Error, _entorno,Simbol)
     }
 }
 
-function f_TYPEOF(_opIzq, _ambito,_Error){
-    const valor = FuncionesN(_opIzq,_ambito,_Error)
+function f_TYPEOF(_opIzq, _ambito,_Error, _entorno,Simbol){
+    const valor = FuncionesN(_opIzq,_ambito,_Error, _entorno,Simbol)
     if(valor.tipo!=null) {
         var resultado
         if (valor.tipo===TIPO_DATO.ENTERO){
@@ -74,8 +77,8 @@ function f_TYPEOF(_opIzq, _ambito,_Error){
     }
 }
 
-function f_ROUND(_opIzq, _ambito,_Error){
-    const valor = FuncionesN(_opIzq,_ambito,_Error)
+function f_ROUND(_opIzq, _ambito,_Error, _entorno,Simbol){
+    const valor = FuncionesN(_opIzq,_ambito,_Error, _entorno,Simbol)
     if(valor.tipo===TIPO_DATO.ENTERO || valor.tipo===TIPO_DATO.DECIMAL) {
         var resultado = Math.round(valor.valor);
             return{
@@ -96,8 +99,8 @@ function f_ROUND(_opIzq, _ambito,_Error){
     }
 }
 
-function f_TRUNCATE(_opIzq, _ambito,_Error){
-    const valor = FuncionesN(_opIzq,_ambito,_Error)
+function f_TRUNCATE(_opIzq, _ambito,_Error, _entorno,Simbol){
+    const valor = FuncionesN(_opIzq,_ambito,_Error, _entorno,Simbol)
     if(valor.tipo===TIPO_DATO.ENTERO || valor.tipo===TIPO_DATO.DECIMAL) {
         var resultado = Math.trunc(valor.valor);
             return{
@@ -118,8 +121,8 @@ function f_TRUNCATE(_opIzq, _ambito,_Error){
     }
 }
 
-function f_LOWER(_opIzq, _ambito,_Error){
-    const valor = FuncionesN(_opIzq,_ambito,_Error)
+function f_LOWER(_opIzq, _ambito,_Error, _entorno,Simbol){
+    const valor = FuncionesN(_opIzq,_ambito,_Error, _entorno,Simbol)
     if(valor.tipo===TIPO_DATO.CADENA) {
         var str=valor.valor;
             var resultado = str.toLowerCase();
@@ -141,8 +144,8 @@ function f_LOWER(_opIzq, _ambito,_Error){
     }
 }
 
-function f_UPPER(_opIzq, _ambito,_Error){
-    const valor = FuncionesN(_opIzq,_ambito,_Error)
+function f_UPPER(_opIzq, _ambito,_Error, _entorno,Simbol){
+    const valor = FuncionesN(_opIzq,_ambito,_Error, _entorno,Simbol)
     if(valor.tipo===TIPO_DATO.CADENA) {
         var str=valor.valor;
             var resultado = str.toUpperCase();
@@ -164,8 +167,8 @@ function f_UPPER(_opIzq, _ambito,_Error){
     }
 }
 
-function f_length(_opIzq, _ambito,_Error){
-    const valor = FuncionesN(_opIzq,_ambito,_Error)
+function f_length(_opIzq, _ambito,_Error, _entorno,Simbol){
+    const valor = FuncionesN(_opIzq,_ambito,_Error, _entorno,Simbol)
     if(valor.tipo===TIPO_DATO.CADENA || valor.tipo===TIPO_DATO.LISTA || valor.tipo===TIPO_DATO.VECTOR) {//falta agregar lista y vector
         var str=valor.valor;
             var resultado = str.length;
@@ -181,6 +184,37 @@ function f_length(_opIzq, _ambito,_Error){
     _Error.addErrores(nuevo)
     return{
         valor: respuesta+`Error Semantico: no se puede realizar la función LENGTH porque el valor es: ${valor.tipo}... Linea: ${_opIzq.linea} Columna: ${_opIzq.columna}`,
+        tipo: null,
+        linea: _opIzq.linea,
+        columna: _opIzq.columna
+    }
+}
+function f_TOCHARARRAY(_opIzq, _ambito,_Error, _entorno,Simbol){
+    const valor = FuncionesN(_opIzq,_ambito,_Error, _entorno,Simbol)
+    if(valor.tipo===TIPO_DATO.CADENA) {//falta agregar lista y vector
+        var resultado = [];
+        for (let i = 0; i < valor.valor.length; i++) {
+            var inst = {
+                tipo: TIPO_DATO.CARACTER,
+                valor: valor.valor[i],
+                linea: valor.linea,
+                columna: valor.columna
+            }
+            resultado.push(inst)
+        }
+        
+            return{
+                valor: resultado,
+                tipo: TIPO_DATO.LISTA,
+                linea: _opIzq.linea,
+                columna: _opIzq.columna
+            }
+    }
+    var respuesta = (valor.tipo===null ? valor.valor: "")
+    var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,`no se puede realizar la función TO CHAR ARRAY porque el valor es: ${valor.tipo}`,_opIzq.linea, _opIzq.columna);
+    _Error.addErrores(nuevo)
+    return{
+        valor: respuesta+`Error Semantico: no se puede realizar la función TO CHAR ARRAY porque el valor es: ${valor.tipo}... Linea: ${_opIzq.linea} Columna: ${_opIzq.columna}`,
         tipo: null,
         linea: _opIzq.linea,
         columna: _opIzq.columna

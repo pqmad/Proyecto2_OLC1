@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { EditorComponent } from './components/editor.component';
 import { MonacoEditorModule, MONACO_PATH } from '@materia-ui/ngx-monaco-editor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import {MatTabsModule} from '@angular/material/tabs';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +22,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MonacoEditorModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    DataTablesModule
+    DataTablesModule,
+    MatTabsModule
   ],
   providers: [
     {

@@ -8,7 +8,15 @@ const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
 
 
-function Aritmetica(_expresion, _ambito,_Error){
+function Aritmetica(_expresion, _ambito,_Error, _entorno,Simbol){
+    /*console.log("Aritmetica----------------------------1")
+    console.log(_entorno)
+    console.log(Simbol)
+    console.log(_expresion)
+    console.log("Aritmetica----------------------------2")*/
+    //console.log("1---------------------------------------------------------------------")
+    //console.log(_expresion)
+    //console.log("2---------------------------------------------------------------------")
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.BANDERA ||
         _expresion.tipo === TIPO_VALOR.CADENA || _expresion.tipo === TIPO_VALOR.IDENTIFICADOR
         || _expresion.tipo === TIPO_VALOR.ENTERO || _expresion.tipo === TIPO_VALOR.CARACTER
@@ -16,40 +24,37 @@ function Aritmetica(_expresion, _ambito,_Error){
         return ValorExpresion(_expresion, _ambito,_Error)
     }
     else if(_expresion.tipo === TIPO_OPERACION.SUMA){
-        return suma(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
+        return suma(_expresion.opIzq, _expresion.opDer, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.RESTA){
-        return resta(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
+        return resta(_expresion.opIzq, _expresion.opDer, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.MULTIPLICACION){
-        return multiplicacion(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
+        return multiplicacion(_expresion.opIzq, _expresion.opDer, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.DIVISION){
-        return division(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
+        return division(_expresion.opIzq, _expresion.opDer, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.POTENCIA){
-        return potencia(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
+        return potencia(_expresion.opIzq, _expresion.opDer, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.MODULO){
-        return modulo(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
+        return modulo(_expresion.opIzq, _expresion.opDer, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.NEGACION){
-        return negacion(_expresion.opIzq, _ambito,_Error)
+        return negacion(_expresion.opIzq, _ambito,_Error, _entorno,Simbol)
     }
-    else if(_expresion.tipo===TIPO_OPERACION.LENGTH){
-        const FuncionesN = require("./FuncionesN");
-        return FuncionesN(_expresion,_ambito,_Error)
-    }
-    else if(_expresion.tipo===TIPO_INSTRUCCION.CASTEO){
-        const casteo = require("../Instruccion/casteo");
-        return casteo(_expresion,_ambito,_Error)
+    else{
+        const Operacion = require("./Operacion")
+        return Operacion(_expresion, _ambito,_Error, _entorno,Simbol)
     }
 }
 
-function suma(_opIzq, _opDer, _ambito,_Error){ 
-    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
-    const opDer = Aritmetica(_opDer,_ambito,_Error)
+function suma(_opIzq, _opDer, _ambito,_Error, _entorno,Simbol){ 
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error, _entorno,Simbol)
+    const opDer = Aritmetica(_opDer,_ambito,_Error, _entorno,Simbol)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo,"suma")
+    //console.log(tipoRes)
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
             var val1=opIzq.valor; var val2=opDer.valor
@@ -102,9 +107,9 @@ function suma(_opIzq, _opDer, _ambito,_Error){
     }
 }
 
-function resta(_opIzq, _opDer, _ambito,_Error){
-    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
-    const opDer = Aritmetica(_opDer,_ambito,_Error)
+function resta(_opIzq, _opDer, _ambito,_Error, _entorno,Simbol){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error, _entorno,Simbol)
+    const opDer = Aritmetica(_opDer,_ambito,_Error, _entorno,Simbol)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "resta")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -149,9 +154,9 @@ function resta(_opIzq, _opDer, _ambito,_Error){
     }
 }
 
-function multiplicacion(_opIzq, _opDer, _ambito,_Error){
-    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
-    const opDer = Aritmetica(_opDer,_ambito,_Error)
+function multiplicacion(_opIzq, _opDer, _ambito,_Error, _entorno,Simbol){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error, _entorno,Simbol)
+    const opDer = Aritmetica(_opDer,_ambito,_Error, _entorno,Simbol)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "multi")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -182,9 +187,9 @@ function multiplicacion(_opIzq, _opDer, _ambito,_Error){
     }
 }
 
-function division(_opIzq, _opDer, _ambito,_Error){
-    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
-    const opDer = Aritmetica(_opDer,_ambito,_Error)
+function division(_opIzq, _opDer, _ambito,_Error, _entorno,Simbol){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error, _entorno,Simbol)
+    const opDer = Aritmetica(_opDer,_ambito,_Error, _entorno,Simbol)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "division")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -215,10 +220,10 @@ function division(_opIzq, _opDer, _ambito,_Error){
     }
 }
 
-function potencia(_opIzq, _opDer, _ambito,_Error){
+function potencia(_opIzq, _opDer, _ambito,_Error, _entorno,Simbol){
     
-    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
-    const opDer = Aritmetica(_opDer,_ambito,_Error)
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error, _entorno,Simbol)
+    const opDer = Aritmetica(_opDer,_ambito,_Error, _entorno,Simbol)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "potencia")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){
@@ -246,9 +251,9 @@ function potencia(_opIzq, _opDer, _ambito,_Error){
     }
 }
 
-function modulo(_opIzq, _opDer, _ambito,_Error){
-    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
-    const opDer = Aritmetica(_opDer,_ambito,_Error)
+function modulo(_opIzq, _opDer, _ambito,_Error, _entorno,Simbol){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error, _entorno,Simbol)
+    const opDer = Aritmetica(_opDer,_ambito,_Error, _entorno,Simbol)
     const tipoRes = TipoResultado(opIzq.tipo, opDer.tipo, "modulo")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL){
@@ -272,8 +277,8 @@ function modulo(_opIzq, _opDer, _ambito,_Error){
     }
 }
 
-function negacion(_opIzq, _ambito,_Error){
-    const opIzq = Aritmetica(_opIzq,_ambito,_Error)
+function negacion(_opIzq, _ambito,_Error, _entorno,Simbol){
+    const opIzq = Aritmetica(_opIzq,_ambito,_Error, _entorno,Simbol)
     const tipoRes = TipoResultado(opIzq.tipo,opIzq.tipo, "negacion")
     if(tipoRes!=null){
         if(tipoRes === TIPO_DATO.DECIMAL || tipoRes === TIPO_DATO.ENTERO){

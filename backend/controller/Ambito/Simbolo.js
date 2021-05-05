@@ -1,5 +1,5 @@
 class Simbolo{
-    constructor(_id, _valor, _tipo, _entorno,_linea, _columna){
+    constructor(_id, _valor, _tipo, _entorno,_linea, _columna,_extra){
         this.id = _id;
         this.valor = _valor;
         this.tipo = _tipo;
@@ -7,7 +7,7 @@ class Simbolo{
         this.soy="Variable";
         this.linea = _linea;
         this.columna = _columna;
-        this.extra="";
+        this.extra=_extra;
     }
 }
 

@@ -3,6 +3,9 @@
 /* lexical grammar */
 %{
         var cadena="";
+        var lista_Errores=[];
+        const TIPO_ERROR        = require('./controller/Enums/Tipo_Error');
+        const ERRORES            = require("./controller/Ambito/S_Error")
 %}
 %lex
 
@@ -25,6 +28,8 @@
 "true"                  return 'true'
 "false"                return 'false'
 //CICLOS
+"list"                        return 'list'
+"add"                      return 'add'
 "if"                        return 'if'
 "else"                      return 'else'
 "switch"                    return 'switch'
@@ -77,6 +82,7 @@
 "%"                   return 'modulo'
 //CARACTERES DE FINALIZACION O ENCAPSULAMIENTO
 ";"                   return 'ptcoma'
+"."                   return 'punto'
 "{"                   return 'llaveA'
 "}"                   return 'llaveC'
 // VECTOR
@@ -100,21 +106,19 @@
 <string>["]                  {yytext=cadena; this.popState(); return 'cadenatexto';}
 ["\'"]([^"\'"])?["\'"]          return 'caracter'
 <<EOF>>               return 'EOF'
-.                     {var nuevo=new ERRORES(TIPO_ERROR.LEXICO,"Caracter invalido: "+yytext,yylloc.first_line,yylloc.first_column+1);lista_Errores.push(nuevo);}
+.                     {var nuevo=new ERRORES(TIPO_ERROR.LEXICO,"Caracter invalido: "+yytext,yylloc.first_line,yylloc.first_column+1);lista_Errores.push(nuevo); return 'INVALID';}
 
 /lex
 %{
-        var lista_Errores=[];
+        
 	const TIPO_OPERACION	= require('./controller/Enums/TipoOperacion'); 
 	const TIPO_VALOR 	= require('./controller/Enums/TipoValor');
 	const TIPO_DATO		= require('./controller/Enums/TipoDato');
-        const TIPO_ERROR        = require('./controller/Enums/Tipo_Error');
-        const ERRORES            = require("./controller/Ambito/S_Error")
 	const INSTRUCCION	= require('./controller/Instruccion/Instruccion');
 %}
 
 /* PRECEDENCIA DE OPERACIONES */
-%left 'interrogacion'
+%left 'interrogacion' cast
 %left 'or'
 %left 'and'
 %right 'not'
@@ -142,7 +146,7 @@ CUERPO: DEC_VAR                                                         {$$ = $1
         | CAMBIARVALOR_VAR                                              {$$ = $1;}
         | exec identificador parenA parenC ptcoma                       {$$ = INSTRUCCION.Exec($2, null,this._$.first_line, (this._$.first_column+1));}
         | exec identificador parenA LISTA_VALORES parenC ptcoma         {$$ = INSTRUCCION.Exec($2, $4,this._$.first_line, (this._$.first_column+1));}
-        | error ptcoma {$$ = ""; var nuevo=new ERRORES(TIPO_ERROR.SINTACTICO,"Falto un \";\",Error recuperado: "+yytext,this._$.first_line, (this._$.first_column+1));lista_Errores.push(nuevo);}
+        | error ptcoma {$$ = ""; var nuevo=new ERRORES(TIPO_ERROR.SINTACTICO,"Error recuperado con: "+yytext,this._$.first_line, (this._$.first_column+1));lista_Errores.push(nuevo);}
 ;
 
 //---------------------------------METODOS Y FUNCIONES
@@ -159,33 +163,135 @@ METFUNC:TIPO identificador parenA parenC llaveA OPCIONESCUERPO llaveC {$$ = INST
 LLAMADA: identificador parenA LISTA_VALORES parenC {$$ = INSTRUCCION.Llamadas($1, $3,this._$.first_line, (this._$.first_column+1));}
         |identificador parenA parenC {$$ = INSTRUCCION.Llamadas($1, null,this._$.first_line, (this._$.first_column+1));}
 ;
+
 LISTA_VALORES: LISTA_VALORES coma  VALORES {$1.push($3); $$ = $1;} 
                 | VALORES {$$ = [$1];}
 ;
+
 VALORES:EXPRESION {$$=$1}
 ;
+
 LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS {$1.push($3); $$ = $1;} 
                 | PARAMETROS {$$ = [$1];}
 ;
+
 PARAMETROS: TIPO identificador {$$ = INSTRUCCION.nuevaPARAMETRO($2,$1, this._$.first_line, (this._$.first_column+1));}
 ;
 
 //---------------------------------CUERPO DE LOS METODOS Y FUNCIONES
 OPCIONESCUERPO: OPCIONESCUERPO CUERPOMETFUNC {$1.push($2); $$ = $1;} 
                 | CUERPOMETFUNC {$$ = [$1];}
-                | error ptcoma {$$ = [];var nuevo=new ERRORES(TIPO_ERROR.SINTACTICO,"Falto un \";\",Error recuperado: "+yytext,this._$.first_line, (this._$.first_column+1));lista_Errores.push(nuevo);}
+                | error ptcoma {$$ = [];var nuevo=new ERRORES(TIPO_ERROR.SINTACTICO,"Error recuperado con: "+yytext,this._$.first_line, (this._$.first_column+1));lista_Errores.push(nuevo);}
 ;
+
 CUERPOMETFUNC: DEC_VAR          {$$ = $1;}
         | CICLOS                {$$ = $1;}
         | CAMBIARVALOR_VAR      {$$ = $1;}
-        | VECTOR                {$$ = $1;}
         | LLAMADA ptcoma        {$$ = $1;}
         | INCRE_DECRE ptcoma    {$$ = INSTRUCCION.nuevaASIGNACION_InDe($1, this._$.first_line, (this._$.first_column+1));}
         | SENTENCIATRANS        {$$ = $1;}
         | IMPRIMIR              {$$ = $1;}
 ;
 
+DEC_VAR: TIPO identificador ptcoma {$$ = INSTRUCCION.nuevaDECLARACION($2, null, $1, this._$.first_line, (this._$.first_column+1));}
+        | TIPO identificador signoigual EXPRESION ptcoma {$$ = INSTRUCCION.nuevaDECLARACION($2, $4, $1, this._$.first_line, (this._$.first_column+1));}
+        | DEC_VECTOR {$$ = $1;}
+        | DEC_LISTA {$$ = $1;}
+;
+
+CAMBIARVALOR_VAR: identificador signoigual EXPRESION ptcoma {$$ = INSTRUCCION.nuevaASIGNACION($1, $3, this._$.first_line, (this._$.first_column+1));}
+        |CAMBIARVALOR_VECTOR {$$ = $1;}
+        |CAMBIARVALOR_LISTA {$$ = $1;}
+        |AGREGAR_LISTA {$$ = $1;}
+;
+//---------------------------------VECTORES
+DEC_VECTOR: TIPO corcheteA corcheteC identificador signoigual nnew TIPO corcheteA EXPRESION corcheteC ptcoma {$$ = INSTRUCCION.nuevaDECLARACION_V($4, $9,null,TIPO_VALOR.VECTOR ,$1, this._$.first_line, (this._$.first_column+1));}
+        |  TIPO corcheteA corcheteC identificador signoigual llaveA LISTA_VALORES llaveC ptcoma {$$ = INSTRUCCION.nuevaDECLARACION_V($4, 0,$7,TIPO_VALOR.VECTOR, $1, this._$.first_line, (this._$.first_column+1));}
+;
+CAMBIARVALOR_VECTOR: identificador corcheteA EXPRESION corcheteC signoigual EXPRESION ptcoma {$$ = INSTRUCCION.nuevoMODIFICACIONVector($1,$3,$6,this._$.first_line, (this._$.first_column+1));}
+;
+DEC_LISTA: list menor TIPO mayor identificador signoigual nnew list menor TIPO mayor ptcoma {$$ = INSTRUCCION.nuevaDECLARACION_V($5, 0,null,TIPO_VALOR.LISTA ,$3, this._$.first_line, (this._$.first_column+1));}
+        | list menor TIPO mayor identificador signoigual tochararray parenA EXPRESION parenC ptcoma  {$$ = INSTRUCCION.nuevaDECLARACION_V($5, 0,INSTRUCCION.nuevaOperacionBinaria($9,$9, TIPO_OPERACION.TOCHARARRAY, this._$.first_line, (this._$.first_column+1)),TIPO_VALOR.LISTA ,$3, this._$.first_line, (this._$.first_column+1));}
+;
+CAMBIARVALOR_LISTA: identificador corcheteA corcheteA EXPRESION corcheteC corcheteC signoigual EXPRESION ptcoma {$$ = INSTRUCCION.nuevoMODIFICACION_L($1,$4,$8,this._$.first_line, (this._$.first_column+1));}
+;
+AGREGAR_LISTA: identificador punto add parenA EXPRESION parenC ptcoma {$$ = INSTRUCCION.nuevoAGREGAR_LISTA($1,$5, this._$.first_line, (this._$.first_column+1));}
+;
+//---------------------------------VARIABLES Y TIPOS
+TIPO: Double            {$$ = TIPO_DATO.DECIMAL}
+        | String        {$$ = TIPO_DATO.CADENA}
+        | Boolean       {$$ = TIPO_DATO.BANDERA}
+        | int           {$$ = TIPO_DATO.ENTERO}
+        | Char          {$$ = TIPO_DATO.CARACTER}
+;
+
+TIPOCASTEO: Double      {$$ = TIPO_DATO.DECIMAL}
+        | int           {$$ = TIPO_DATO.ENTERO}
+        | Char          {$$ = TIPO_DATO.CARACTER}
+;
+
+
+INCRE_DECRE: identificador masmas {$$ = INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1));}
+        | identificador menosmenos {$$ = INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1));}
+;
+
+//---------------------------------SENTENCIA CICLICAS
+FORC: for parenA FOR_DECAS EXPRESION ptcoma FOR_ACT parenC llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoFOR($3,$4, $6,$9 , this._$.first_line,(this._$.first_column+1));}
+|for parenA FOR_DECAS EXPRESION ptcoma FOR_ACT parenC llaveA  llaveC {$$ = new INSTRUCCION.nuevoFOR($3,$4, $6,[] , this._$.first_line,(this._$.first_column+1));}
+;
+
+FOR_DECAS: DEC_VAR              {$$ = $1;}
+        |CAMBIARVALOR_VAR       {$$ = $1;}
+;
+
+FOR_ACT: identificador signoigual EXPRESION     {$$ = INSTRUCCION.nuevaASIGNACION($1, $3, this._$.first_line, (this._$.first_column+1));}
+        |identificador masmas                   {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
+        | identificador menosmenos              {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
+;
+
+WHILEC: while parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoWhile($3, $6 , this._$.first_line,(this._$.first_column+1));}
+|while parenA EXPRESION parenC llaveA  llaveC {$$ = new INSTRUCCION.nuevoWhile($3, [] , this._$.first_line,(this._$.first_column+1));}
+;
+
+DOWHILEC: do llaveA OPCIONESCUERPO llaveC while parenA EXPRESION parenC ptcoma {$$ = new INSTRUCCION.nuevoDOWhile($7, $3 , this._$.first_line,(this._$.first_column+1));}
+|do llaveA llaveC while parenA EXPRESION parenC ptcoma {$$ = new INSTRUCCION.nuevoDOWhile($6, [] , this._$.first_line,(this._$.first_column+1));}
+;
+
+SWITCHC: switch parenA EXPRESION parenC llaveA LISTA_CASOS llaveC { $$ = INSTRUCCION.nuevoSwitch($3,$6, this._$.first_line,(this._$.first_column+1));}
+;
+
+LISTA_CASOS: LISTA_CASOS CASOS          {$1.push($2); $$ = $1;} 
+        |CASOS                          { $$ = INSTRUCCION.nuevoListaCasos($1);}
+;
+
+CASOS: case EXPRESION dospuntos OPCIONESCUERPO          { $$ = INSTRUCCION.nuevoCaso($2,$4, this._$.first_line,(this._$.first_column+1)); }
+        |default dospuntos OPCIONESCUERPO               { $$ = INSTRUCCION.nuevoCasoDef($3, this._$.first_line,(this._$.first_column+1)); }
+        |case EXPRESION dospuntos           { $$ = INSTRUCCION.nuevoCaso($2,[], this._$.first_line,(this._$.first_column+1)); }
+        |default dospuntos                { $$ = INSTRUCCION.nuevoCasoDef([], this._$.first_line,(this._$.first_column+1)); }
+;
+
+ELSEIFC:if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC LISTA_ELSEIF { $$ = INSTRUCCION.nuevoELSEIF($3,$6,$8, this._$.first_line,(this._$.first_column+1));}
+|if parenA EXPRESION parenC llaveA llaveC LISTA_ELSEIF { $$ = INSTRUCCION.nuevoELSEIF($3,[],$7, this._$.first_line,(this._$.first_column+1));}
+;
+
+LISTA_ELSEIF: LISTA_ELSEIF UNELSEIF     {$1.push($2); $$ = $1;}
+        |UNELSEIF                       { $$ = INSTRUCCION.nuevoListaELSEIF($1);}
+;
+
+UNELSEIF:else if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC { $$ = INSTRUCCION.nuevoOP_ELSEIF($4,$7, this._$.first_line,(this._$.first_column+1)); }
+        |else llaveA OPCIONESCUERPO llaveC { $$ = INSTRUCCION.nuevoELSEIF_Def($3, this._$.first_line,(this._$.first_column+1)); }
+        |else if parenA EXPRESION parenC llaveA  llaveC { $$ = INSTRUCCION.nuevoOP_ELSEIF($4,[], this._$.first_line,(this._$.first_column+1)); }
+        |else llaveA  llaveC { $$ = INSTRUCCION.nuevoELSEIF_Def([], this._$.first_line,(this._$.first_column+1)); }
+;
+
+IFC: if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC            {$$ = new INSTRUCCION.nuevoIf($3, $6 , this._$.first_line,(this._$.first_column+1));}
+        |if parenA EXPRESION parenC llaveA llaveC            {$$ = new INSTRUCCION.nuevoIf($3, [] , this._$.first_line,(this._$.first_column+1));}
+;
+
+// CONJUNTOS DEL CUERPO--------------------------------------------------------
+
 FUNCIONES: CASTEOS                              {$$ = $1;}
+        | tochararray parenA EXPRESION parenC   {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.TOCHARARRAY, this._$.first_line, (this._$.first_column+1));}
         | length parenA SACAR_LONG parenC       {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.LENGTH, this._$.first_line, (this._$.first_column+1));}
         | toLower parenA EXPRESION parenC       {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.LOWER, this._$.first_line, (this._$.first_column+1));}
         | toUpper parenA EXPRESION parenC       {$$ = INSTRUCCION.nuevaOperacionBinaria($3,$3, TIPO_OPERACION.UPPER, this._$.first_line, (this._$.first_column+1));}
@@ -203,23 +309,17 @@ CICLOS: WHILEC                  {$$ = $1;}
         |TERNARIOC ptcoma       {$$ = $1;}
 ;
 
-SENTENCIATRANS: break ptcoma      {$$ = $1;}
-        |continue ptcoma          {$$ = $1;}
-        |return ptcoma            {$$ = $1;}
+SENTENCIATRANS: break ptcoma      {$$ = new INSTRUCCION.nuevoBREAK(this._$.first_line, (this._$.first_column+1));}
+        |continue ptcoma          {$$ = new INSTRUCCION.nuevoCONTINUE(this._$.first_line, (this._$.first_column+1));}
+        |return ptcoma            {$$ = new INSTRUCCION.nuevoRETURN(null,this._$.first_line, (this._$.first_column+1));}
+        |return EXPRESION ptcoma  {$$ = new INSTRUCCION.nuevoRETURN($2,this._$.first_line, (this._$.first_column+1));}
 ;
-VECTOR: DEC_VECTOR              {$$ = $1;}
-        | ACCESO_VECTOR         {$$ = $1;}
-        | CAMBIARVALOR_VECTOR   {$$ = $1;}
-;
-//---------------------------------VECTORES
-DEC_VECTOR: TIPO corcheteA corcheteC identificador signoigual nnew TIPO corcheteA EXPRESION corcheteC ptcoma
-        |  TIPO corcheteA corcheteC identificador signoigual llaveA LISTA_VALORES llaveC ptcoma
-;
+
 //---------------------------------FUNCIONES
 IMPRIMIR: print parenA EXPRESION parenC ptcoma          { $$ = new INSTRUCCION.nuevoPRINT($3, this._$.first_line, (this._$.first_column+1));}
         |print parenA parenC ptcoma                     { $$ = new INSTRUCCION.nuevoPRINT("", this._$.first_line, (this._$.first_column+1));}
 ;
-CASTEOS: parenA TIPOCASTEO parenC EXPRESION     { $$ = new INSTRUCCION.nuevoCASTEO($2,$4, this._$.first_line, (this._$.first_column+1));}
+CASTEOS: parenA TIPOCASTEO parenC EXPRESION %prec cast { $$ = new INSTRUCCION.nuevoCASTEO($2,$4, this._$.first_line, (this._$.first_column+1));}
         | tostring parenA EXPRESION parenC     { $$ = new INSTRUCCION.nuevoCASTEO(TIPO_DATO.CADENA,$3, this._$.first_line, (this._$.first_column+1));}
 ;
 
@@ -252,7 +352,8 @@ EXPRESION: EXPRESION suma EXPRESION              {$$ = INSTRUCCION.nuevaOperacio
         | not EXPRESION                         {$$ = INSTRUCCION.nuevaOperacionBinaria($2,$2, TIPO_OPERACION.NOT,this._$.first_line,this._$.first_column+1);}
         | TERNARIOC                                                             {$$=$1;}
         | INCRE_DECRE                                                           {$$=$1;}
-        | identificador corcheteA EXPRESION corcheteC                           {$$=$1;}//cambiar
+        | identificador corcheteA EXPRESION corcheteC                           {$$ = INSTRUCCION.nuevoAccespVector( $1, $3, this._$.first_line, (this._$.first_column+1));}
+        | identificador corcheteA corcheteA EXPRESION corcheteC corcheteC       {$$ = INSTRUCCION.nuevoAccesLISTA( $1, $4, this._$.first_line, (this._$.first_column+1));}
         | FUNCIONES                                                             {$$=$1;}
         | LLAMADA                                                               {$$=$1;}
         | entero                                                                {$$ = INSTRUCCION.nuevoVALOR( Number($1), TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1));}
@@ -262,62 +363,4 @@ EXPRESION: EXPRESION suma EXPRESION              {$$ = INSTRUCCION.nuevaOperacio
         | identificador                                                         {$$ = INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1));}
         | decimal                                                               {$$ = INSTRUCCION.nuevoVALOR(Number($1), TIPO_VALOR.DECIMAL,this._$.first_line, (this._$.first_column+1));}
         | caracter                                                              {$$ = INSTRUCCION.nuevoVALOR($1, TIPO_VALOR.CARACTER,this._$.first_line, (this._$.first_column+1));}
-;
-
-
-//---------------------------------VARIABLES Y TIPOS
-TIPO: Double            {$$ = TIPO_DATO.DECIMAL}
-        | String        {$$ = TIPO_DATO.CADENA}
-        | Boolean       {$$ = TIPO_DATO.BANDERA}
-        | int           {$$ = TIPO_DATO.ENTERO}
-        | Char          {$$ = TIPO_DATO.CARACTER}
-;
-TIPOCASTEO: Double      {$$ = TIPO_DATO.DECIMAL}
-        | int           {$$ = TIPO_DATO.ENTERO}
-        | Char          {$$ = TIPO_DATO.CARACTER}
-;
-DEC_VAR: TIPO identificador ptcoma {$$ = INSTRUCCION.nuevaDECLARACION($2, null, $1, this._$.first_line, (this._$.first_column+1));}
-        | TIPO identificador signoigual EXPRESION ptcoma {$$ = INSTRUCCION.nuevaDECLARACION($2, $4, $1, this._$.first_line, (this._$.first_column+1));}
-;
-CAMBIARVALOR_VAR: identificador signoigual EXPRESION ptcoma {$$ = INSTRUCCION.nuevaASIGNACION($1, $3, this._$.first_line, (this._$.first_column+1));}
-;
-
-INCRE_DECRE: identificador masmas {$$ = INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1));}
-        | identificador menosmenos {$$ = INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1));}
-;
-
-//---------------------------------SENTENCIA CICLICAS
-FORC: for parenA FOR_DECAS EXPRESION ptcoma FOR_ACT parenC llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoFOR($3,$4, $6,$9 , this._$.first_line,(this._$.first_column+1));}
-;
-FOR_DECAS: DEC_VAR              {$$ = $1;}
-        |CAMBIARVALOR_VAR       {$$ = $1;}
-;
-FOR_ACT: identificador signoigual EXPRESION     {$$ = INSTRUCCION.nuevaASIGNACION($1, $3, this._$.first_line, (this._$.first_column+1));}
-        |identificador masmas                   {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.SUMA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
-        | identificador menosmenos              {$$ = INSTRUCCION.nuevaASIGNACION($1, INSTRUCCION.nuevaOperacionBinaria(INSTRUCCION.nuevoVALOR( $1, TIPO_VALOR.IDENTIFICADOR,this._$.first_line, (this._$.first_column+1)),INSTRUCCION.nuevoVALOR( 1, TIPO_VALOR.ENTERO, this._$.first_line, (this._$.first_column+1)),TIPO_OPERACION.RESTA, this._$.first_line, (this._$.first_column+1)), this._$.first_line, (this._$.first_column+1));}
-;
-WHILEC: while parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC {$$ = new INSTRUCCION.nuevoWhile($3, $6 , this._$.first_line,(this._$.first_column+1));}
-;
-DOWHILEC: do llaveA OPCIONESCUERPO llaveC while parenA EXPRESION parenC ptcoma {$$ = new INSTRUCCION.nuevoDOWhile($7, $3 , this._$.first_line,(this._$.first_column+1));}
-;
-
-SWITCHC: switch parenA EXPRESION parenC llaveA LISTA_CASOS llaveC { $$ = INSTRUCCION.nuevoSwitch($3,$6, this._$.first_line,(this._$.first_column+1));}
-;
-LISTA_CASOS: LISTA_CASOS CASOS          {$1.push($2); $$ = $1;} 
-        |CASOS                          { $$ = INSTRUCCION.nuevoListaCasos($1);}
-;
-CASOS: case EXPRESION dospuntos OPCIONESCUERPO          { $$ = INSTRUCCION.nuevoCaso($2,$4, this._$.first_line,(this._$.first_column+1)); }
-        |default dospuntos OPCIONESCUERPO               { $$ = INSTRUCCION.nuevoCasoDef($3, this._$.first_line,(this._$.first_column+1)); }
-;
-
-ELSEIFC:if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC LISTA_ELSEIF { $$ = INSTRUCCION.nuevoELSEIF($3,$6,$8, this._$.first_line,(this._$.first_column+1));}
-;
-LISTA_ELSEIF: LISTA_ELSEIF UNELSEIF     {$1.push($2); $$ = $1;}
-        |UNELSEIF                       { $$ = INSTRUCCION.nuevoListaELSEIF($1);}
-;
-UNELSEIF:else if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC { $$ = INSTRUCCION.nuevoOP_ELSEIF($4,$7, this._$.first_line,(this._$.first_column+1)); }
-        |else llaveA OPCIONESCUERPO llaveC { $$ = INSTRUCCION.nuevoELSEIF_Def($3, this._$.first_line,(this._$.first_column+1)); }
-;
-
-IFC: if parenA EXPRESION parenC llaveA OPCIONESCUERPO llaveC            {$$ = new INSTRUCCION.nuevoIf($3, $6 , this._$.first_line,(this._$.first_column+1));}
 ;

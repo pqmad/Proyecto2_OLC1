@@ -6,7 +6,7 @@ const ValorExpresion = require("./ValorExpresion")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
 
-function Logica(_expresion, _ambito,_Error){
+function Logica(_expresion, _ambito,_Error, _entorno,Simbol){
     //true || false
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.BANDERA ||
         _expresion.tipo === TIPO_VALOR.CADENA || _expresion.tipo === TIPO_VALOR.IDENTIFICADOR
@@ -17,7 +17,7 @@ function Logica(_expresion, _ambito,_Error){
     else if(_expresion.tipo === TIPO_OPERACION.IGUALIGUAL || _expresion.tipo === TIPO_OPERACION.DIFERENTE ||
         _expresion.tipo === TIPO_OPERACION.MENOR || _expresion.tipo === TIPO_OPERACION.MENORIGUAL ||
         _expresion.tipo === TIPO_OPERACION.MAYOR || _expresion.tipo === TIPO_OPERACION.MAYORIGUAL){
-        return Relacional(_expresion, _ambito,_Error)
+        return Relacional(_expresion, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.OR){
         /*
@@ -26,7 +26,7 @@ function Logica(_expresion, _ambito,_Error){
         0 || 1 = 1
         0 || 0 = 0
         */
-        return or(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
+        return or(_expresion.opIzq, _expresion.opDer, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.AND){
         /*
@@ -35,7 +35,7 @@ function Logica(_expresion, _ambito,_Error){
         0 && 1 = 0
         0 && 0 = 0
         */
-        return and(_expresion.opIzq, _expresion.opDer, _ambito,_Error)
+        return and(_expresion.opIzq, _expresion.opDer, _ambito,_Error, _entorno,Simbol)
     }
     else if(_expresion.tipo === TIPO_OPERACION.NOT){
         /*
@@ -44,13 +44,17 @@ function Logica(_expresion, _ambito,_Error){
         0 && 1 = 0
         0 && 0 = 0
         */
-        return not(_expresion.opIzq, _ambito,_Error)
+        return not(_expresion.opIzq, _ambito,_Error, _entorno,Simbol)
+    }
+    else{
+        const Operacion = require("./Operacion")
+        return Operacion(_expresion, _ambito,_Error, _entorno,Simbol)
     }
 }
 
-function or(_opIzq, _opDer, _ambito,_Error){
-    const opIzq = Logica(_opIzq, _ambito,_Error)
-    const opDer = Logica(_opDer, _ambito,_Error)
+function or(_opIzq, _opDer, _ambito,_Error, _entorno,Simbol){
+    const opIzq = Logica(_opIzq, _ambito,_Error, _entorno,Simbol)
+    const opDer = Logica(_opDer, _ambito,_Error, _entorno,Simbol)
     
     if(opIzq.tipo == opDer.tipo && opIzq.tipo === TIPO_DATO.BANDERA){
         var resultado = false
@@ -75,9 +79,9 @@ function or(_opIzq, _opDer, _ambito,_Error){
     }
 }
 
-function and(_opIzq, _opDer, _ambito,_Error){
-    const opIzq = Logica(_opIzq, _ambito,_Error)
-    const opDer = Logica(_opDer, _ambito,_Error)
+function and(_opIzq, _opDer, _ambito,_Error, _entorno,Simbol){
+    const opIzq = Logica(_opIzq, _ambito,_Error, _entorno,Simbol)
+    const opDer = Logica(_opDer, _ambito,_Error, _entorno,Simbol)
     if(opIzq.tipo == opDer.tipo && opIzq.tipo === TIPO_DATO.BANDERA){
         var resultado = false
         if(opIzq.valor && opDer.valor){
@@ -100,8 +104,8 @@ function and(_opIzq, _opDer, _ambito,_Error){
         columna: _opIzq.columna
     }
 }
-function not(_opIzq, _ambito,_Error){
-    const opIzq = Logica(_opIzq, _ambito,_Error)
+function not(_opIzq, _ambito,_Error, _entorno,Simbol){
+    const opIzq = Logica(_opIzq, _ambito,_Error, _entorno,Simbol)
     if(opIzq.tipo === TIPO_DATO.BANDERA){
         if(opIzq.valor === true){
             return {

@@ -6,7 +6,7 @@ function Asignacion(_instruccion, _ambito,_Error,Simbol){
     const id = _instruccion.id;
     const existe = _ambito.existeSimbolo(id)
     if(existe){
-        var valor = Operacion(_instruccion.expresion, _ambito,_Error,Simbol)
+        var valor = Operacion(_instruccion.expresion, _ambito,_Error,"",Simbol)
         var simbolo = _ambito.getSimbolo(id)
         var tipos = {
             tipoSimbolo: simbolo.tipo,
@@ -19,7 +19,8 @@ function Asignacion(_instruccion, _ambito,_Error,Simbol){
         }
         if((tipos.tipoSimbolo===TIPO_DATO.DECIMAL && tipos.tipoNuevoValor===TIPO_DATO.ENTERO) ||
         (tipos.tipoSimbolo===TIPO_DATO.ENTERO && tipos.tipoNuevoValor===TIPO_DATO.DECIMAL) ||
-        (tipos.tipoSimbolo===TIPO_DATO.CARACTER && tipos.tipoNuevoValor===TIPO_DATO.ENTERO)
+        (tipos.tipoSimbolo===TIPO_DATO.CARACTER && tipos.tipoNuevoValor===TIPO_DATO.ENTERO) ||
+        (tipos.tipoSimbolo===TIPO_DATO.CADENA && tipos.tipoNuevoValor===TIPO_DATO.CARACTER)
         ){
             simbolo.valor = valor.valor
             _ambito.actualizar(id,simbolo)

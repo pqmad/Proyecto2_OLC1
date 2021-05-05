@@ -3,9 +3,9 @@ import {Menu} from 'semantic-ui-react'
 import {Link} from 'react-router-dom'
 import '../css/Nav.css'
 
-const colores=['pink', 'green', 'purple']
-const opciones=['Código','Tablas','Arbol AST']
-const url=['/codigo','/tablas','/arbol']
+var colores=['pink', 'green', 'purple']
+var opciones=['Código','Tablas','Arbol AST']
+var url=['/codigo','/tablas','/arbol']
 function NavBar() {
     const [activo, setactivo] = useState(colores[0])
     return (

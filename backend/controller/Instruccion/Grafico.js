@@ -4,9 +4,9 @@ const TIPO_OPERACION = require("../Enums/TipoOperacion");
 
 function GDot(instruccion, padre,label_padre){
     var cadena = ""
-    console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{_instrucciones")
-    console.log(instruccion)
-    console.log("--------------------------------------------------------------")
+   // console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{_instrucciones")
+    //console.log(instruccion)
+    //console.log("--------------------------------------------------------------")
     if(instruccion!=null){
         if(instruccion.tipo === TIPO_INSTRUCCION.DECLARACION_M || instruccion.tipo === TIPO_INSTRUCCION.DECLARACION_F){
             const nodopadre=padre
@@ -21,7 +21,7 @@ function GDot(instruccion, padre,label_padre){
                     a+= e.tipo_dato+","
                 });
             }
-            cadena+=`\"${param}\" [label= \"( ${a} )\"]; \n`
+            cadena+=`\"${param}\" [label= \"Parametros:\n( ${a} )\"]; \n`
             cadena+=`\"${nombre}\" [label= \"Id: ${instruccion.nombre}\"]; \n`
             
             cadena+=`\"${nodopadre}\" -> \"${tipo}\"\n` //instruccion 
@@ -33,6 +33,7 @@ function GDot(instruccion, padre,label_padre){
             });
             
         }
+        
         else if(instruccion.tipo === TIPO_INSTRUCCION.EXEC || instruccion.tipo === TIPO_INSTRUCCION.LLAMADA){
             const nodopadre=padre
             const tipo=instruccion.tipo+instruccion.linea+instruccion.columna+instruccion.nombre
@@ -47,24 +48,33 @@ function GDot(instruccion, padre,label_padre){
             cadena+=`\"${tipo}\" -> \"${nombre}\"\n`
 
         }
+
         else if(instruccion.tipo === TIPO_INSTRUCCION.DECLARACION){
             const nodopadre=padre
             const tipo=instruccion.tipo+instruccion.linea+instruccion.columna
             const tipo_dato=tipo+instruccion.tipo_dato
             const nombre=tipo+instruccion.id
-
+            var cadenadetipo=instruccion.tipo_dato
             cadena+=`\"${nodopadre}\" [label= \"${label_padre}\"]; \n` 
             cadena+=`\"${nombre}\" [label= \"Id: ${instruccion.id}\"]; \n`
             cadena+=`\"${tipo}\" [label= \"${instruccion.tipo}\"]; \n`
-            cadena+=`\"${tipo_dato}\" [label= \"${instruccion.tipo_dato}\"]; \n`
+            if(instruccion.tipo_dato===TIPO_VALOR.LISTA || instruccion.tipo_dato===TIPO_VALOR.VECTOR){
+                cadenadetipo+="\\n"+instruccion.tipo_VL
+            }
+            cadena+=`\"${tipo_dato}\" [label= \"${cadenadetipo}\"]; \n`
             
             
             cadena+=`\"${nodopadre}\" -> \"${tipo}\"\n` //instruccion 
             cadena+=`\"${tipo}\" -> \"${tipo_dato}\"\n`
             cadena+=`\"${tipo}\" -> \"${nombre}\"\n`
-
-            cadena+= GDot(instruccion.valor, tipo,instruccion.tipo)
+            if(instruccion.tipo_dato===TIPO_VALOR.LISTA || instruccion.tipo_dato===TIPO_VALOR.VECTOR){
+                cadena+= GDot(instruccion.valores, tipo,instruccion.tipo)
+            }else{
+                cadena+= GDot(instruccion.valor, tipo,instruccion.tipo)
+            }
+            
         }
+
         else if(instruccion.tipo === TIPO_INSTRUCCION.PRINT){
             const nodopadre=padre
             const tipo=instruccion.tipo+instruccion.linea+instruccion.columna
@@ -76,6 +86,54 @@ function GDot(instruccion, padre,label_padre){
             cadena+= GDot(instruccion.expresion, tipo,instruccion.tipo)
         }
         
+        else if(instruccion.tipo === TIPO_INSTRUCCION.RETURN || instruccion.tipo === TIPO_INSTRUCCION.CONTINUE
+            ||instruccion.tipo === TIPO_INSTRUCCION.BREAK){
+            const nodopadre=padre
+            const tipo=instruccion.tipo+instruccion.linea+instruccion.columna
+            cadena+=`\"${nodopadre}\" [label= \"${label_padre}\"]; \n` 
+            cadena+=`\"${tipo}\" [label= \"${instruccion.tipo}\"]; \n`
+    
+            cadena+=`\"${nodopadre}\" -> \"${tipo}\"\n` 
+            if(instruccion.tipo === TIPO_INSTRUCCION.RETURN){
+                cadena+= GDot(instruccion.valor, tipo,instruccion.tipo)
+            }
+        }
+
+        else if(instruccion.tipo === TIPO_INSTRUCCION.ACCESO_V || instruccion.tipo === TIPO_INSTRUCCION.ACCESO_L){
+            const nodopadre=padre
+            const tipo=instruccion.tipo+instruccion.linea+instruccion.columna+instruccion.id
+            const nombre=tipo+instruccion.id
+            cadena+=`\"${nodopadre}\" [label= \"${label_padre}\"]; \n` 
+            cadena+=`\"${nombre}\" [label= \"Id: ${instruccion.id}\"]; \n`
+            cadena+=`\"${tipo}\" [label= \"${instruccion.tipo}\"]; \n`
+    
+            cadena+=`\"${nodopadre}\" -> \"${tipo}\"\n` 
+            cadena+=`\"${tipo}\" -> \"${nombre}\"\n`
+
+            cadena+= GDot(instruccion.posicion, nombre,"Id: "+instruccion.id)
+        }
+
+        else if(instruccion.tipo === TIPO_INSTRUCCION.MODIFICAR_V || instruccion.tipo === TIPO_INSTRUCCION.MODIFICAR_L
+            ||instruccion.tipo === TIPO_INSTRUCCION.AGREGAR_VAL_LISTA){
+            const nodopadre=padre
+            const tipo=instruccion.tipo+instruccion.linea+instruccion.columna+instruccion.id
+            var valor=tipo+instruccion.valor+instruccion.linea+instruccion.columna
+            const nombre=tipo+instruccion.id
+            cadena+=`\"${nodopadre}\" [label= \"${label_padre}\"]; \n` 
+            cadena+=`\"${tipo}\" [label= \"${instruccion.tipo}\"]; \n`
+            cadena+=`\"${nombre}\" [label= \"Id: ${instruccion.id}\"]; \n`
+            cadena+=`\"${valor}\" [label= \"Valor\"]; \n`
+
+            cadena+=`\"${tipo}\" -> \"${nombre}\"\n`
+            cadena+=`\"${nodopadre}\" -> \"${tipo}\"\n`
+            cadena+=`\"${tipo}\" -> \"${valor}\"\n` 
+            
+            cadena+= GDot(instruccion.valor, valor,"Valor")
+            if(instruccion.tipo !== TIPO_INSTRUCCION.AGREGAR_VAL_LISTA){
+                cadena+= GDot(instruccion.posicion, nombre,"Id: "+instruccion.id)
+            }
+        }
+
         else if(instruccion.tipo === TIPO_INSTRUCCION.CASTEO){
             const nodopadre=padre
             const de=instruccion.tipo+instruccion.valor.linea+instruccion.valor.columna
@@ -154,12 +212,6 @@ function GDot(instruccion, padre,label_padre){
             });
         }
 
-        /*else if(instruccion.tipo === TIPO_INSTRUCCION.ELSE){
-            var mensaje = Sentencia_else(instruccion, _ambito)
-            if(mensaje!=null){
-                cadena+=mensaje+'\n'
-            }
-        }*/
         else if(instruccion.tipo === TIPO_INSTRUCCION.SWITCH){
             const nodopadre=padre
             const tipo=instruccion.tipo+instruccion.linea+instruccion.columna
@@ -293,7 +345,7 @@ function GDot(instruccion, padre,label_padre){
             ){
                 var signo;
                 const nodopadre=padre
-                const tipo=instruccion.tipo+instruccion.linea+instruccion.columna
+                const tipo=instruccion.tipo+instruccion.linea+instruccion.columna+instruccion.opIzq.valor+instruccion.opDer.valor
 
                 if(instruccion.tipo === TIPO_OPERACION.SUMA){signo="+"}
                 else if(instruccion.tipo === TIPO_OPERACION.RESTA){signo="-"}
@@ -320,7 +372,7 @@ function GDot(instruccion, padre,label_padre){
         ){
             var signo;
                 const nodopadre=padre
-                const tipo=instruccion.tipo+instruccion.linea+instruccion.columna
+                const tipo=instruccion.tipo+instruccion.linea+instruccion.columna+instruccion.opIzq.valor+instruccion.opDer.valor
 
                 if(instruccion.tipo === TIPO_OPERACION.IGUALIGUAL){signo="=="}
                 else if(instruccion.tipo === TIPO_OPERACION.DIFERENTE){signo="!="}
@@ -343,7 +395,7 @@ function GDot(instruccion, padre,label_padre){
         ){
             var signo;
                 const nodopadre=padre
-                const tipo=instruccion.tipo+instruccion.linea+instruccion.columna
+                const tipo=instruccion.tipo+instruccion.linea+instruccion.columna+instruccion.opIzq.valor+instruccion.opDer.valor
 
                 if(instruccion.tipo === TIPO_OPERACION.OR){signo="||"}
                 else if(instruccion.tipo === TIPO_OPERACION.AND){signo="&&"}
@@ -362,9 +414,10 @@ function GDot(instruccion, padre,label_padre){
         }
         else if(instruccion.tipo===TIPO_OPERACION.LENGTH || instruccion.tipo===TIPO_OPERACION.UPPER || instruccion.tipo===TIPO_OPERACION.LOWER
             ||instruccion.tipo===TIPO_OPERACION.TRUNCATE || instruccion.tipo===TIPO_OPERACION.ROUND || instruccion.tipo===TIPO_OPERACION.TYPEOF 
+            ||instruccion.tipo===TIPO_OPERACION.TOCHARARRAY 
             ){
                 const nodopadre=padre
-                const tipo=instruccion.tipo+instruccion.linea+instruccion.columna
+                const tipo=instruccion.tipo+instruccion.linea+instruccion.columna+instruccion.opIzq.valor+instruccion.opDer.valor+"funciones"
                 var cadenadesigno=instruccion.tipo;
 
                 cadena+=`\"${nodopadre}\" [label= \"${label_padre}\"]; \n` 

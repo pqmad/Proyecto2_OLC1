@@ -6,7 +6,7 @@ const ValorExpresion = require("./ValorExpresion")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
 
-function ternario(_instruccion, _ambito,_Error,Simbol){
+function ternario(_instruccion, _ambito,_Error, _entorno,Simbol){
     console.log("-----------------entra al ternario de variables")
     console.log(_instruccion)
     const c=_instruccion.expresion

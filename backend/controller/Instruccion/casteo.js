@@ -3,6 +3,7 @@ const TIPO_DATO = require("../Enums/TipoDato")
 const Operacion = require("../Operacion/Operacion")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
+const elseif = require("./else_if")
 function casteo(_instruccion, _ambito,_Error,Simbol){
     var entro = false
     const cambiar_a=_instruccion.tipodedato;
@@ -33,10 +34,14 @@ function casteo(_instruccion, _ambito,_Error,Simbol){
         val_final= volviendo
         entro=true
     }
-    else if (cambiar_a===TIPO_DATO.CADENA && (tipo_a_cambair===TIPO_DATO.BANDERA 
+    else if (cambiar_a===TIPO_DATO.CADENA && (tipo_a_cambair===TIPO_DATO.BANDERA ||tipo_a_cambair===TIPO_DATO.CARACTER
         ||tipo_a_cambair===TIPO_DATO.DECIMAL ||tipo_a_cambair===TIPO_DATO.ENTERO)
         ){
-        val_final= "\""+valor_a_cambair+"\"";
+        val_final= ""+valor_a_cambair;
+        entro=true
+    }
+    else if(cambiar_a===tipo_a_cambair){
+        val_final= valor_a_cambair;
         entro=true
     }
     if(entro){

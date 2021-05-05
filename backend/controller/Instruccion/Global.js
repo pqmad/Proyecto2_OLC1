@@ -6,6 +6,8 @@ const Exec = require("./Exec_Llamada")
 //const verificaparamaetros = require("./VerificarParametros");
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
+const Asignacion_vector = require("./Asignacion_VEC");
+const Asignacion_LISTA = require("./Asignacion_LISTA");
 
 function Global(_instrucciones, _ambito,_Error,_entorno,Simbol){
     var cadena = ""
@@ -46,6 +48,22 @@ function Global(_instrucciones, _ambito,_Error,_entorno,Simbol){
                 cadena+=mensaje+'\n'
             }
         }
+        else if(_instrucciones[i].tipo === TIPO_INSTRUCCION.MODIFICAR_V || _instrucciones[i].tipo === TIPO_INSTRUCCION.MODIFICAR_L){
+            var mensaje = Asignacion_vector(_instrucciones[i], _ambito,_Error,_entorno,Simbol)
+            if(mensaje!=null){
+                //var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,mensaje,_instrucciones.linea, _instrucciones.columna);
+                //_Error.addErrores(nuevo)
+                cadena+=mensaje+'\n'
+            }
+        }
+        else if(_instrucciones[i].tipo === TIPO_INSTRUCCION.AGREGAR_VAL_LISTA){
+            var mensaje = Asignacion_LISTA(_instrucciones[i], _ambito,_Error,_entorno,Simbol)
+            if(mensaje!=null){
+                //var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,mensaje,_instrucciones.linea, _instrucciones.columna);
+                //_Error.addErrores(nuevo)
+                cadena+=mensaje+'\n'
+            }
+        }
         else if(_instrucciones[i].tipo === TIPO_INSTRUCCION.DECLARACION_M || _instrucciones[i].tipo === TIPO_INSTRUCCION.DECLARACION_F){
             var mensaje = DecMetodo(_instrucciones[i], _ambito,_Error,_entorno,Simbol)
             if(mensaje!=null){
@@ -64,7 +82,7 @@ function Global(_instrucciones, _ambito,_Error,_entorno,Simbol){
               //  cadena+=mensaje1+'\n'
             //}else{ //para que no ejecute el metoo o funcion hasta que se cumpla con los parametros correctos
                
-                var mensaje = Exec(_instrucciones[i], _ambito,_Error,Simbol)
+                var mensaje = Exec(_instrucciones[i], _ambito,_Error,_entorno,Simbol).cadena
                 if(mensaje!=null){
                     cadena+=mensaje
                 }

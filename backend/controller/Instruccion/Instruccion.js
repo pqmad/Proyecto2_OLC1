@@ -95,16 +95,6 @@ const Instruccion = {
             columna: _columna
         }
     },
-    /*nuevoTernario: function(_expresion, _verdadero, _falso, _linea, _columna){
-        return {
-            tipo: TIPO_INSTRUCCION.TERNARIO,
-            expresion: _expresion,
-            verdadero: _verdadero,
-            falso: _falso,
-            linea: _linea,
-            columna: _columna
-        }
-    },*/
 
     nuevoIf: function(_expresion, _instrucciones, _linea, _columna){
         return {
@@ -116,18 +106,6 @@ const Instruccion = {
             valor:false
         }
     },
-
-    /*nuevoElse: function(_expresionLogica, _instruccionesIfVerdadero, _instruccionesIfFalso,_linea,_columna) {
-        return {
-            tipo: TIPO_INSTRUCCION.ELSE,
-            expresionLogica: _expresionLogica,
-			instruccionesIfVerdadero: _instruccionesIfVerdadero,
-			instruccionesIfFalso: _instruccionesIfFalso,
-            linea: _linea,
-            columna: _columna
-        }
-    },*/
-    
 
     nuevoFOR: function(_valorVariable, _expresionLogica, _aumento, _instrucciones, _linea, _columna){
         return {
@@ -270,6 +248,89 @@ const Instruccion = {
 		return {
 			tipo: TIPO_INSTRUCCION.ELSEIF_ELSE,
 			instrucciones: instrucciones,
+            linea: _linea,
+            columna: _columna
+		}
+	},
+
+    nuevaDECLARACION_V: function(_id, _tam,_valor, tVL,_tipo, _linea, _columna){
+        return{
+            tipo: TIPO_INSTRUCCION.DECLARACION,
+            id: _id,
+            valores: _valor,
+            tam:_tam,
+            tipo_dato: tVL,    //vector o lista
+            tipo_VL:  _tipo, // string, int, double..... etc
+            linea: _linea,
+            columna: _columna
+        }
+    },
+    nuevoAccespVector: function(_id, _expresion, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.ACCESO_V,
+            id: _id,
+            posicion: _expresion,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+    nuevoAccesLISTA: function(_id, _expresion, _linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.ACCESO_L,
+            id: _id,
+            posicion: _expresion,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+    nuevoMODIFICACIONVector: function(_id, _expresion, _valor,_linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.MODIFICAR_V,
+            id: _id,
+            posicion: _expresion,
+            valor:_valor,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+    nuevoMODIFICACION_L: function(_id, _expresion, _valor,_linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.MODIFICAR_L,
+            id: _id,
+            posicion: _expresion,
+            valor:_valor,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+    nuevoAGREGAR_LISTA: function(_id, _valor,_linea, _columna){
+        return {
+            tipo: TIPO_INSTRUCCION.AGREGAR_VAL_LISTA,
+            id: _id,
+            valor:_valor,
+            linea: _linea,
+            columna: _columna
+        }
+    },
+
+    nuevoBREAK: function( _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.BREAK,
+            linea: _linea,
+            columna: _columna
+		}
+	},
+    nuevoCONTINUE: function( _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.CONTINUE,
+            linea: _linea,
+            columna: _columna
+		}
+	},
+    nuevoRETURN: function(_valor, _linea, _columna) {
+		return {
+			tipo: TIPO_INSTRUCCION.RETURN,
+            valor:_valor,
             linea: _linea,
             columna: _columna
 		}

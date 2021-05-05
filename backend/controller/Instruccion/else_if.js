@@ -5,7 +5,11 @@ const TIPO_DATO = require("../Enums/TipoDato")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
 function elseif (instruccion, _ambito,_Error,Simbol) {
-    mensaje=""
+    var mensaje=""
+    var haybreak=false;
+    var hayreturn=false;
+    var haycontinue=false;
+    var valorR=null;
     const primerif = Operacion(instruccion.expresion, _ambito,_Error,"Else If / Else",Simbol);
     const nuevoAmbito = new Ambito(_ambito);
     //console.log(primerif.tipo+"----"+TIPO_DATO.BANDERA)
@@ -13,7 +17,9 @@ function elseif (instruccion, _ambito,_Error,Simbol) {
         if (primerif.valor){
             //console.log("primer valor true")
             const Bloque = require('./Bloque')
-            mensaje= Bloque(instruccion.instrucciones, nuevoAmbito,_Error,"Else If / Else",Simbol);
+            var ejec=Bloque(instruccion.instrucciones, nuevoAmbito,_Error,"Else If / Else",Simbol);
+            haybreak= ejec.haybreak;
+            mensaje+=ejec.cadena
         }else{
             instruccion.casos.forEach(caso => {
                 const Bloque = require('./Bloque')
@@ -22,7 +28,12 @@ function elseif (instruccion, _ambito,_Error,Simbol) {
                     if(valorExpCase.tipo === TIPO_DATO.BANDERA){
                         if (valorExpCase.valor && mensaje===""){
                             //console.log("case true")
-                            mensaje= Bloque(caso.instrucciones, nuevoAmbito,_Error,"Else If / Else",Simbol);
+                            var ejec=Bloque(caso.instrucciones, nuevoAmbito,_Error,"Else If / Else",Simbol);
+                            haybreak= ejec.haybreak;
+                            mensaje+=ejec.cadena
+                            hayreturn=ejec.hayreturn
+                            valorR=ejec.retorno
+                            haycontinue=ejec.haycontinue
                         }
                     }else{
                         var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"No es una expresion de tipo BANDERA en la condicion",valorExpCase.linea, valorExpCase.columna);
@@ -32,7 +43,12 @@ function elseif (instruccion, _ambito,_Error,Simbol) {
                 }
                 if (caso.tipo === TIPO_INSTRUCCION.ELSEIF_ELSE){
                     if(mensaje===""){  
-                        mensaje=Bloque(caso.instrucciones, nuevoAmbito,_Error,"Else If / Else");
+                        var ejec=Bloque(caso.instrucciones, nuevoAmbito,_Error,"Else If / Else",Simbol);
+                            haybreak= ejec.haybreak;
+                            mensaje+=ejec.cadena
+                            hayreturn=ejec.hayreturn
+                            valorR=ejec.retorno
+                            haycontinue=ejec.haycontinue
                     }
                 }
             });
@@ -42,7 +58,13 @@ function elseif (instruccion, _ambito,_Error,Simbol) {
                 _Error.addErrores(nuevo)
         mensaje= `Error Semantico: No es una expresion de tipo BANDERA en la condicion... Linea: ${instruccion.linea} Columna: ${instruccion.columna}`
     } 
-    return mensaje
+    return {
+        haybreak: haybreak,
+        cadena: mensaje,
+        hayreturn: hayreturn,
+        retorno:valorR,
+        haycontinue:haycontinue
+    }
     
 }
 module.exports = elseif

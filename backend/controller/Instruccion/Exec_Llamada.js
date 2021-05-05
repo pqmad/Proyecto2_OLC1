@@ -6,17 +6,10 @@ const Operacion = require("../Operacion/Operacion")
 const TIPO_ERROR = require('../Enums/Tipo_Error')
 const ERRORES = require("../Ambito/S_Error")
 
-function Exec_Llamada(_instruccion, _ambito,_Error,Simbol){
-    
+function Exec_Llamada(_instruccion, _ambito,_Error,_entorno,Simbol){
+    var hayreturn=false;
+    var valorR=null;
     var metodoEjecutar = _ambito.getMetodo(_instruccion.nombre)
-    /*console.log("------------------------------------------------------EXEC")
-    console.log(metodoEjecutar)
-    console.log("------------------------------------------------------lista de envio desde la llamada")
-    console.log(_instruccion.lista_valores) // de la llamada
-    console.log("------------------------------------------------------2lista de envio desde la llamada")
-    console.log(metodoEjecutar.lista_parametros) //del metodo*/
-    //----------------------------------------------------------
-    
     if(metodoEjecutar!=null){
         var nuevoAmbito = new Ambito(_ambito)
         let parametrosdemetodo_tipo=[]
@@ -36,7 +29,7 @@ function Exec_Llamada(_instruccion, _ambito,_Error,Simbol){
                     e.tipo !== TIPO_VALOR.ENTERO && e.tipo !== TIPO_VALOR.DECIMAL &&
                     e.tipo !== TIPO_VALOR.BANDERA){
                         //console.log(e)
-                        var param =Operacion(e, _ambito,_Error)
+                        var param =Operacion(e, _ambito,_Error,_entorno,Simbol)
                         tipo=param.tipo;
                         valor=param.valor;
                 }
@@ -80,20 +73,85 @@ function Exec_Llamada(_instruccion, _ambito,_Error,Simbol){
                     }else{
                         var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"No coinciden los parametros enviado con los del metodo/funcion.",_instruccion.linea, _instruccion.columna);
                             _Error.addErrores(nuevo)
-                        return "Error Semantico: no coinciden los parametros enviado con los del metodo/funcion... linea: "+_instruccion.linea+" Columna: "+_instruccion.columna
+                            return {
+                                cadena: "Error Semantico: no coinciden los parametros enviado con los del metodo/funcion... linea: "+_instruccion.linea+" Columna: "+_instruccion.columna,
+                                hayreturn: hayreturn,
+                                retorno:valorR
+                            }
                     }
                 }
             }
         }else{
             var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"No coinciden los parametros enviado con los del metodo/funcion.",_instruccion.linea, _instruccion.columna);
                 _Error.addErrores(nuevo)
-            return "Error Semantico: no coinciden los parametros enviado con los del metodo/funcion... linea: "+_instruccion.linea+" Columna: "+_instruccion.columna
+                return {
+                    cadena: "Error Semantico: no coinciden los parametros enviado con los del metodo/funcion... linea: "+_instruccion.linea+" Columna: "+_instruccion.columna,
+                    hayreturn: hayreturn,
+                    retorno:valorR
+                }
+            
         }
-        return Bloque(metodoEjecutar.instrucciones, nuevoAmbito,_Error,metodoEjecutar.id,Simbol)
+        var ejec= Bloque(metodoEjecutar.instrucciones, nuevoAmbito,_Error,metodoEjecutar.id,Simbol)
+        //console.log(ejec)
+        var mensaje=ejec.cadena
+        if(ejec.haybreak){
+            var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"Se ha encontrado un break fuera de un ciclo",_instruccion.linea, _instruccion.columna);
+                _Error.addErrores(nuevo)
+            mensaje+=`Error: Se ha encontrado un break fuera de un ciclo`
+        }
+        if(ejec.haycontinue){
+            var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"Se ha encontrado un continue fuera de un ciclo",_instruccion.linea, _instruccion.columna);
+                _Error.addErrores(nuevo)
+            mensaje+=`Error: Se ha encontrado un continue fuera de un ciclo`
+        }
+        hayreturn=ejec.hayreturn
+        valorR=ejec.retorno
+        var op = valorR;
+        if(metodoEjecutar.soy==="Metodo"){
+            if(valorR!=null){
+                var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"Un método solo puede retornar null",_instruccion.linea, _instruccion.columna);
+                _Error.addErrores(nuevo)
+                return {
+                    cadena: `Error: Un método solo puede retornar null`,
+                    hayreturn: hayreturn,
+                    retorno:valorR
+                }
+            }
+        }else{
+            //op = Operacion(valorR, nuevoAmbito,_Error,_entorno,Simbol)
+            //console.log("exec_llamada: "+valorR)
+            if(valorR===null){
+                var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,`La función no devuelve nada... tiene que retornar un valor tipo: ${metodoEjecutar.tipo}`,_instruccion.linea, _instruccion.columna);
+                _Error.addErrores(nuevo)
+                return {
+                    cadena: `Error: La función no devuelve nada... tiene que retornar un valor tipo: ${metodoEjecutar.tipo}`,
+                    hayreturn: hayreturn,
+                    retorno:{ tipo: TIPO_VALOR.CADENA, valor: 'null', linea:_instruccion.linea, columna: _instruccion.columna }
+                }
+            }else
+            if(valorR.tipo!=metodoEjecutar.tipo && valorR.tipo!=TIPO_VALOR.IDENTIFICADOR){
+                var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,`Una función de tipo: ${metodoEjecutar.tipo} no puede retornar un tipo ${valorR.tipo}`,_instruccion.linea, _instruccion.columna);
+                _Error.addErrores(nuevo)
+                return {
+                    cadena: `Error: Un función de tipo: ${metodoEjecutar.tipo} no puede retornar un tipo ${valorR.tipo}`,
+                    hayreturn: hayreturn,
+                    retorno:valorR
+                }
+            }
+        }
+        return {
+            cadena: mensaje,
+            hayreturn: hayreturn,
+            retorno:valorR
+        }
     }
     var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"El método "+_instruccion.nombre+" no existe.",_instruccion.linea, _instruccion.columna);
-                _Error.addErrores(nuevo)
-    return `Error Semantico: El método ${_instruccion.nombre} no existe... Linea: ${_instruccion.linea} Columna: ${_instruccion.columna}`
+    _Error.addErrores(nuevo)
+    return {
+        cadena: `Error Semantico: El método ${_instruccion.nombre} no existe... Linea: ${_instruccion.linea} Columna: ${_instruccion.columna}`,
+        hayreturn: hayreturn,
+        retorno:valorR
+    } 
 }
 
 module.exports = Exec_Llamada

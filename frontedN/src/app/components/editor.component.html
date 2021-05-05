@@ -1,18 +1,4 @@
-<div id="tabconsola" class="bg-warning">
-<ul class="nav nav-tabs justify-content-center">
-    <li class="nav-item active">
-        <a class="nav-link active" data-toggle="tab" href="#consolaa">Tab1</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#consolaa">Tab2</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#consolaa">Tab3</a>
-    </li>
-</ul>
-</div>
-
-<div class="tab-pane fade in active show bg-success" id="consolaa">
+<div class="Reportes">
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-12">
@@ -20,34 +6,64 @@
                 <div class="row">
                     <div class="col-md-5">
                         <div class="card text-white bg-warning mb-3">
-                            <div class="card-header">Ingrese texto:</div>
-                            
-                                <div style="width: auto; height: 550px;">
-                                    <ngx-monaco-editor [formControl]="editorTexto" [options]="editorOptions"
-                                        [(ngModel)]="code" (init)="editorInit($event)"></ngx-monaco-editor>
-                                </div>
-                            <br>
+                               
+                            <mat-tab-group >
+                                <mat-tab label="Tab 1">
+                                        <button type="button" (click)="analizar()" class="btn btn-warning center">Ejecutar</button>
+                                        <button type="button" (click)="abrir('fileInput')" class="btn btn-warning center">Abrir
+                                            <input id="fileInput" type="file" style="display:none" accept=".ty" (change)="readFile($event,1)">
+                                        </button>
+                                        <button type="button" (click)="guardar(1)" class="btn btn-warning center">Guardar</button>
+                                    
+                                        <div style="width: auto; height: 487px;">
+                                            <ngx-monaco-editor [formControl]="editorTexto" [options]="editorOptions"
+                                                [(ngModel)]="code" (init)="editorInit($event)"></ngx-monaco-editor>
+                                        </div>
+                                </mat-tab>
+                                <mat-tab label="Tab 2">
+                                    <button type="button" (click)="analizar2()" class="btn btn-warning center">Ejecutar</button>
+                                        <button type="button" (click)="abrir('fileInput2')" class="btn btn-warning center">Abrir
+                                            <input id="fileInput2" type="file" style="display:none" accept=".ty" (change)="readFile($event,2)">
+                                        </button>
+                                        <button type="button" (click)="guardar(2)" class="btn btn-warning center">Guardar</button>
+                                    
+                                        <div style="width: auto; height: 487px;">
+                                            <ngx-monaco-editor [formControl]="editorTexto2" [options]="editorOptions"
+                                                [(ngModel)]="code2" (init)="editorInit($event)"></ngx-monaco-editor>
+                                        </div>
+                                </mat-tab>
+                                <mat-tab label="Tab 3">
+                                    <button type="button" (click)="analizar3()" class="btn btn-warning center">Ejecutar</button>
+                                    <button type="button" (click)="abrir('fileInput3')" class="btn btn-warning center">Abrir
+                                        <input id="fileInput3" type="file" style="display:none" accept=".ty" (change)="readFile($event,3)">
+                                    </button>
+                                        <button type="button" (click)="guardar(3)" class="btn btn-warning center">Guardar</button>
+                                    
+                                        <div style="width: auto; height: 487px;">
+                                            <ngx-monaco-editor [formControl]="editorTexto3" [options]="editorOptions"
+                                                [(ngModel)]="code3" (init)="editorInit($event)"></ngx-monaco-editor>
+                                        </div>
+                                </mat-tab>
+                                <mat-tab label="Tab 4">
+                                    <button type="button" (click)="analizar4()" class="btn btn-warning center">Ejecutar</button>
+                                    <button type="button" (click)="abrir('fileInput4')" class="btn btn-warning center">Abrir
+                                        <input id="fileInput4" type="file" style="display:none" accept=".ty" (change)="readFile($event,4)">
+                                    </button>
+                                        <button type="button" (click)="guardar(4)" class="btn btn-warning center">Guardar</button>
+                                    
+                                        <div style="width: auto; height: 487px;">
+                                            <ngx-monaco-editor [formControl]="editorTexto4" [options]="editorOptions"
+                                                [(ngModel)]="code4" (init)="editorInit($event)"></ngx-monaco-editor>
+                                        </div>
+                                </mat-tab>
+                            </mat-tab-group>
+
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <br><br><br><br><br>
-                        <div class="d-grid gap-2" >
-                            <div align="center">
-                            <button type="button" (click)="analizar()" class="btn btn-warning center">Ejecutar</button>
-                            <br><br>
-                            <button type="button" (click)="analizar()" class="btn btn-dark center">Tablas</button>
-                            <br><br>
-                            <button type="button" (click)="analizar()" class="btn btn-dark center">Arbol AST</button>
-                            <br><br>
-                            <button type="button" (click)="analizar()" class="btn btn-dark center">Abrir</button>
-                            <br><br>
-                            <button type="button" (click)="analizar()" class="btn btn-dark center">Guardar</button>
-                        </div></div>
-                    </div>
-                    <div class="col-md-5">
+                    <div class="col-md-7">
                         <div  class="card text-white bg-warning mb-3">
                             <div class="card-header">Consola</div>
-                                <div style="width: auto; height: 550px;">
+                                <div style="width: auto; height: 500px;">
                                     <ngx-monaco-editor 
                                         [formControl]="consola" [options]="consoleOptions"
                                         [(ngModel)]="console" (init)="editorInit($event)" aria-readonly="true">
@@ -109,6 +125,6 @@
                     </tr>
                 </tbody>
             </table>
-        </div></div>
+        </div>
 </div>
-
+</div>
