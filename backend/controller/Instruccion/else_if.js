@@ -10,6 +10,7 @@ function elseif (instruccion, _ambito,_Error,Simbol) {
     var hayreturn=false;
     var haycontinue=false;
     var valorR=null;
+    var yaentro=false;
     const primerif = Operacion(instruccion.expresion, _ambito,_Error,"Else If / Else",Simbol);
     const nuevoAmbito = new Ambito(_ambito);
     //console.log(primerif.tipo+"----"+TIPO_DATO.BANDERA)
@@ -19,14 +20,18 @@ function elseif (instruccion, _ambito,_Error,Simbol) {
             const Bloque = require('./Bloque')
             var ejec=Bloque(instruccion.instrucciones, nuevoAmbito,_Error,"Else If / Else",Simbol);
             haybreak= ejec.haybreak;
-            mensaje+=ejec.cadena
+            mensaje+=ejec.cadena;
+            hayreturn=ejec.hayreturn
+            valorR=ejec.retorno
+            haycontinue=ejec.haycontinue
+            yaentro=true;
         }else{
             instruccion.casos.forEach(caso => {
                 const Bloque = require('./Bloque')
                 if (caso.tipo === TIPO_INSTRUCCION.ELSEIF_OP){
                     const valorExpCase= Operacion(caso.expresion, nuevoAmbito,_Error,"Else If / Else",Simbol);
                     if(valorExpCase.tipo === TIPO_DATO.BANDERA){
-                        if (valorExpCase.valor && mensaje===""){
+                        if (valorExpCase.valor && mensaje==="" && !yaentro){
                             //console.log("case true")
                             var ejec=Bloque(caso.instrucciones, nuevoAmbito,_Error,"Else If / Else",Simbol);
                             haybreak= ejec.haybreak;
@@ -34,6 +39,7 @@ function elseif (instruccion, _ambito,_Error,Simbol) {
                             hayreturn=ejec.hayreturn
                             valorR=ejec.retorno
                             haycontinue=ejec.haycontinue
+                            yaentro=true;
                         }
                     }else{
                         var nuevo=new ERRORES(TIPO_ERROR.SEMANTICO,"No es una expresion de tipo BANDERA en la condicion",valorExpCase.linea, valorExpCase.columna);
@@ -42,13 +48,14 @@ function elseif (instruccion, _ambito,_Error,Simbol) {
                     }
                 }
                 if (caso.tipo === TIPO_INSTRUCCION.ELSEIF_ELSE){
-                    if(mensaje===""){  
+                    if(mensaje==="" && !yaentro){  
                         var ejec=Bloque(caso.instrucciones, nuevoAmbito,_Error,"Else If / Else",Simbol);
                             haybreak= ejec.haybreak;
                             mensaje+=ejec.cadena
                             hayreturn=ejec.hayreturn
                             valorR=ejec.retorno
                             haycontinue=ejec.haycontinue
+                            yaentro=true;
                     }
                 }
             });

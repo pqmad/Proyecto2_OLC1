@@ -1,124 +1,172 @@
 digraph mygraph { node [shape=box];
 "Raiz" [label= "Raiz"]; 
-"INST_DECLARACION_FUNCION11ackerman" [label= "INST_DECLARACION_FUNCION"]; 
-"INST_DECLARACION_FUNCION11ackerman_param" [label= "Parametros:
-( VAL_ENTERO,VAL_ENTERO, )"]; 
-"INST_DECLARACION_FUNCION11ackermanid" [label= "Id: ackerman"]; 
-"Raiz" -> "INST_DECLARACION_FUNCION11ackerman"
-"INST_DECLARACION_FUNCION11ackerman" -> "INST_DECLARACION_FUNCION11ackerman_param"
-"INST_DECLARACION_FUNCION11ackerman" -> "INST_DECLARACION_FUNCION11ackermanid"
-"INST_DECLARACION_FUNCION11ackerman" [label= "INST_DECLARACION_FUNCION"]; 
-"INST_IF35" [label= "INST_IF"]; 
-"INST_DECLARACION_FUNCION11ackerman" -> "INST_IF35"
-"INST_IF35" [label= "INST_IF"]; 
-"OR39undefinedundefined" [label= "OR\n||"]; 
-"INST_IF35" -> "OR39undefinedundefined"
-"OR39undefinedundefined" [label= "OR\n||"]; 
-"MENOR310n0" [label= "MENOR\n<"]; 
-"OR39undefinedundefined" -> "MENOR310n0"
-"MENOR310n0" [label= "MENOR\n<"]; 
-"VAL_IDENTIFICADOR310" [label= "VAL_IDENTIFICADOR\nn"]; 
-"MENOR310n0" -> "VAL_IDENTIFICADOR310"
-"MENOR310n0" [label= "MENOR\n<"]; 
-"VAL_ENTERO312" [label= "VAL_ENTERO\n0"]; 
-"MENOR310n0" -> "VAL_ENTERO312"
-"OR39undefinedundefined" [label= "OR\n||"]; 
-"MENOR319m0" [label= "MENOR\n<"]; 
-"OR39undefinedundefined" -> "MENOR319m0"
-"MENOR319m0" [label= "MENOR\n<"]; 
-"VAL_IDENTIFICADOR319" [label= "VAL_IDENTIFICADOR\nm"]; 
-"MENOR319m0" -> "VAL_IDENTIFICADOR319"
-"MENOR319m0" [label= "MENOR\n<"]; 
-"VAL_ENTERO321" [label= "VAL_ENTERO\n0"]; 
-"MENOR319m0" -> "VAL_ENTERO321"
-"INST_IF35" [label= "INST_IF"]; 
-"INST_PRINT59" [label= "INST_PRINT"]; 
-"INST_IF35" -> "INST_PRINT59"
-"INST_PRINT59" [label= "INST_PRINT"]; 
-"VAL_CADENA537" [label= "VAL_CADENA\nParametros no validos"]; 
-"INST_PRINT59" -> "VAL_CADENA537"
-"INST_DECLARACION_FUNCION11ackerman" [label= "INST_DECLARACION_FUNCION"]; 
-"INST_IF75" [label= "INST_IF"]; 
-"INST_DECLARACION_FUNCION11ackerman" -> "INST_IF75"
-"INST_IF75" [label= "INST_IF"]; 
-"IGUALIGUAL78m0" [label= "IGUALIGUAL\n=="]; 
-"INST_IF75" -> "IGUALIGUAL78m0"
-"IGUALIGUAL78m0" [label= "IGUALIGUAL\n=="]; 
-"VAL_IDENTIFICADOR78" [label= "VAL_IDENTIFICADOR\nm"]; 
-"IGUALIGUAL78m0" -> "VAL_IDENTIFICADOR78"
-"IGUALIGUAL78m0" [label= "IGUALIGUAL\n=="]; 
-"VAL_ENTERO711" [label= "VAL_ENTERO\n0"]; 
-"IGUALIGUAL78m0" -> "VAL_ENTERO711"
-"INST_IF75" [label= "INST_IF"]; 
-"INST_RETURN99" [label= "INST_RETURN"]; 
-"INST_IF75" -> "INST_RETURN99"
-"INST_RETURN99" [label= "INST_RETURN"]; 
-"SUMA917n1" [label= "SUMA\n+"]; 
-"INST_RETURN99" -> "SUMA917n1"
-"SUMA917n1" [label= "SUMA\n+"]; 
-"VAL_IDENTIFICADOR917" [label= "VAL_IDENTIFICADOR\nn"]; 
-"SUMA917n1" -> "VAL_IDENTIFICADOR917"
-"SUMA917n1" [label= "SUMA\n+"]; 
-"VAL_ENTERO919" [label= "VAL_ENTERO\n1"]; 
-"SUMA917n1" -> "VAL_ENTERO919"
-"INST_DECLARACION_FUNCION11ackerman" [label= "INST_DECLARACION_FUNCION"]; 
-"INST_IF115" [label= "INST_IF"]; 
-"INST_DECLARACION_FUNCION11ackerman" -> "INST_IF115"
-"INST_IF115" [label= "INST_IF"]; 
-"IGUALIGUAL118n0" [label= "IGUALIGUAL\n=="]; 
-"INST_IF115" -> "IGUALIGUAL118n0"
-"IGUALIGUAL118n0" [label= "IGUALIGUAL\n=="]; 
-"VAL_IDENTIFICADOR118" [label= "VAL_IDENTIFICADOR\nn"]; 
-"IGUALIGUAL118n0" -> "VAL_IDENTIFICADOR118"
-"IGUALIGUAL118n0" [label= "IGUALIGUAL\n=="]; 
-"VAL_ENTERO1111" [label= "VAL_ENTERO\n0"]; 
-"IGUALIGUAL118n0" -> "VAL_ENTERO1111"
-"INST_IF115" [label= "INST_IF"]; 
+"INST_DECLARACION_FUNCION11fibonacci" [label= "INST_DECLARACION_FUNCION"]; 
+"INST_DECLARACION_FUNCION11fibonacci_param" [label= "Parametros:
+( VAL_ENTERO, )"]; 
+"INST_DECLARACION_FUNCION11fibonacciid" [label= "Id: fibonacci"]; 
+"Raiz" -> "INST_DECLARACION_FUNCION11fibonacci"
+"INST_DECLARACION_FUNCION11fibonacci" -> "INST_DECLARACION_FUNCION11fibonacci_param"
+"INST_DECLARACION_FUNCION11fibonacci" -> "INST_DECLARACION_FUNCION11fibonacciid"
+"INST_DECLARACION_FUNCION11fibonacci" [label= "INST_DECLARACION_FUNCION"]; 
+"INST_ELSE-IF_IF35" [label= "INST_ELSE-IF_IF"]; 
+"INST_DECLARACION_FUNCION11fibonacci" -> "INST_ELSE-IF_IF35"
+"INST_ELSE-IF_IF35" [label= "INST_ELSE-IF_IF"]; 
+"MAYOR39n1" [label= "MAYOR\n>"]; 
+"INST_ELSE-IF_IF35" -> "MAYOR39n1"
+"MAYOR39n1" [label= "MAYOR\n>"]; 
+"VAL_IDENTIFICADOR39" [label= "VAL_IDENTIFICADOR\nn"]; 
+"MAYOR39n1" -> "VAL_IDENTIFICADOR39"
+"MAYOR39n1" [label= "MAYOR\n>"]; 
+"VAL_ENTERO311" [label= "VAL_ENTERO\n1"]; 
+"MAYOR39n1" -> "VAL_ENTERO311"
+"INST_ELSE-IF_IF35" [label= "INST_ELSE-IF_IF"]; 
+"INST_RETURN48" [label= "INST_RETURN"]; 
+"INST_ELSE-IF_IF35" -> "INST_RETURN48"
+"INST_RETURN48" [label= "INST_RETURN"]; 
+"SUMA415undefinedundefined" [label= "SUMA\n+"]; 
+"INST_RETURN48" -> "SUMA415undefinedundefined"
+"SUMA415undefinedundefined" [label= "SUMA\n+"]; 
+"INST_LLAMADA415fibonaccifibonacci" [label= "Id: fibonacci"]; 
+"INST_LLAMADA415fibonacci" [label= "INST_LLAMADA"]; 
+"SUMA415undefinedundefined" -> "INST_LLAMADA415fibonacci"
+"INST_LLAMADA415fibonacci" -> "INST_LLAMADA415fibonaccifibonacci"
+"SUMA415undefinedundefined" [label= "SUMA\n+"]; 
+"INST_LLAMADA432fibonaccifibonacci" [label= "Id: fibonacci"]; 
+"INST_LLAMADA432fibonacci" [label= "INST_LLAMADA"]; 
+"SUMA415undefinedundefined" -> "INST_LLAMADA432fibonacci"
+"INST_LLAMADA432fibonacci" -> "INST_LLAMADA432fibonaccifibonacci"
+"lista35" [label= "Lista\nElse-If"]; 
+"INST_ELSE-IF(CASO)65" [label= "INST_ELSE-IF(CASO)"]; 
+"lista35" -> "INST_ELSE-IF(CASO)65"
+"INST_ELSE-IF(CASO)65" [label= "INST_ELSE-IF(CASO)"]; 
+"IGUALIGUAL614n1" [label= "IGUALIGUAL\n=="]; 
+"INST_ELSE-IF(CASO)65" -> "IGUALIGUAL614n1"
+"IGUALIGUAL614n1" [label= "IGUALIGUAL\n=="]; 
+"VAL_IDENTIFICADOR614" [label= "VAL_IDENTIFICADOR\nn"]; 
+"IGUALIGUAL614n1" -> "VAL_IDENTIFICADOR614"
+"IGUALIGUAL614n1" [label= "IGUALIGUAL\n=="]; 
+"VAL_ENTERO617" [label= "VAL_ENTERO\n1"]; 
+"IGUALIGUAL614n1" -> "VAL_ENTERO617"
+"INST_ELSE-IF(CASO)65" [label= "INST_ELSE-IF(CASO)"]; 
+"INST_RETURN79" [label= "INST_RETURN"]; 
+"INST_ELSE-IF(CASO)65" -> "INST_RETURN79"
+"INST_RETURN79" [label= "INST_RETURN"]; 
+"VAL_ENTERO716" [label= "VAL_ENTERO\n1"]; 
+"INST_RETURN79" -> "VAL_ENTERO716"
+"lista35" [label= "Lista\nElse-If"]; 
+"INST_ELSE-IF(CASO)95" [label= "INST_ELSE-IF(CASO)"]; 
+"lista35" -> "INST_ELSE-IF(CASO)95"
+"INST_ELSE-IF(CASO)95" [label= "INST_ELSE-IF(CASO)"]; 
+"IGUALIGUAL914n0" [label= "IGUALIGUAL\n=="]; 
+"INST_ELSE-IF(CASO)95" -> "IGUALIGUAL914n0"
+"IGUALIGUAL914n0" [label= "IGUALIGUAL\n=="]; 
+"VAL_IDENTIFICADOR914" [label= "VAL_IDENTIFICADOR\nn"]; 
+"IGUALIGUAL914n0" -> "VAL_IDENTIFICADOR914"
+"IGUALIGUAL914n0" [label= "IGUALIGUAL\n=="]; 
+"VAL_ENTERO917" [label= "VAL_ENTERO\n0"]; 
+"IGUALIGUAL914n0" -> "VAL_ENTERO917"
+"INST_ELSE-IF(CASO)95" [label= "INST_ELSE-IF(CASO)"]; 
+"INST_RETURN109" [label= "INST_RETURN"]; 
+"INST_ELSE-IF(CASO)95" -> "INST_RETURN109"
+"INST_RETURN109" [label= "INST_RETURN"]; 
+"VAL_ENTERO1016" [label= "VAL_ENTERO\n0"]; 
+"INST_RETURN109" -> "VAL_ENTERO1016"
+"INST_ELSE-IF_IF35" [label= "INST_ELSE-IF_IF"]; 
+"INST_ELSE125" [label= "INST_ELSE"]; 
+"INST_ELSE-IF_IF35" -> "INST_ELSE125"
+"INST_ELSE125" [label= "INST_ELSE"]; 
 "INST_RETURN139" [label= "INST_RETURN"]; 
-"INST_IF115" -> "INST_RETURN139"
+"INST_ELSE125" -> "INST_RETURN139"
 "INST_RETURN139" [label= "INST_RETURN"]; 
-"INST_LLAMADA1316ackermanackerman" [label= "Id: ackerman"]; 
-"INST_LLAMADA1316ackerman" [label= "INST_LLAMADA"]; 
-"INST_RETURN139" -> "INST_LLAMADA1316ackerman"
-"INST_LLAMADA1316ackerman" -> "INST_LLAMADA1316ackermanackerman"
-"INST_DECLARACION_FUNCION11ackerman" [label= "INST_DECLARACION_FUNCION"]; 
-"INST_RETURN155" [label= "INST_RETURN"]; 
-"INST_DECLARACION_FUNCION11ackerman" -> "INST_RETURN155"
-"INST_RETURN155" [label= "INST_RETURN"]; 
-"INST_LLAMADA1512ackermanackerman" [label= "Id: ackerman"]; 
-"INST_LLAMADA1512ackerman" [label= "INST_LLAMADA"]; 
-"INST_RETURN155" -> "INST_LLAMADA1512ackerman"
-"INST_LLAMADA1512ackerman" -> "INST_LLAMADA1512ackermanackerman"
+"NEGACION131611" [label= "NEGACION\n-"]; 
+"INST_RETURN139" -> "NEGACION131611"
+"NEGACION131611" [label= "NEGACION\n-"]; 
+"VAL_ENTERO1317" [label= "VAL_ENTERO\n1"]; 
+"NEGACION131611" -> "VAL_ENTERO1317"
+"lista35" [label= "Lista\nElse-If"]; 
+"INST_ELSE-IF_IF35" -> "lista35"
 "Raiz" [label= "Raiz"]; 
-"INST_DECLARACION_METODO191main" [label= "INST_DECLARACION_METODO"]; 
-"INST_DECLARACION_METODO191main_param" [label= "Parametros:
-(  )"]; 
-"INST_DECLARACION_METODO191mainid" [label= "Id: main"]; 
-"Raiz" -> "INST_DECLARACION_METODO191main"
-"INST_DECLARACION_METODO191main" -> "INST_DECLARACION_METODO191main_param"
-"INST_DECLARACION_METODO191main" -> "INST_DECLARACION_METODO191mainid"
-"INST_DECLARACION_METODO191main" [label= "INST_DECLARACION_METODO"]; 
-"INST_DECLARACION202a" [label= "Id: a"]; 
-"INST_DECLARACION202" [label= "INST_DECLARACION"]; 
-"INST_DECLARACION202VAL_ENTERO" [label= "VAL_ENTERO"]; 
-"INST_DECLARACION_METODO191main" -> "INST_DECLARACION202"
-"INST_DECLARACION202" -> "INST_DECLARACION202VAL_ENTERO"
-"INST_DECLARACION202" -> "INST_DECLARACION202a"
-"INST_DECLARACION202" [label= "INST_DECLARACION"]; 
-"INST_LLAMADA2010ackermanackerman" [label= "Id: ackerman"]; 
-"INST_LLAMADA2010ackerman" [label= "INST_LLAMADA"]; 
-"INST_DECLARACION202" -> "INST_LLAMADA2010ackerman"
-"INST_LLAMADA2010ackerman" -> "INST_LLAMADA2010ackermanackerman"
-"INST_DECLARACION_METODO191main" [label= "INST_DECLARACION_METODO"]; 
-"INST_PRINT211" [label= "INST_PRINT"]; 
-"INST_DECLARACION_METODO191main" -> "INST_PRINT211"
-"INST_PRINT211" [label= "INST_PRINT"]; 
-"VAL_IDENTIFICADOR217" [label= "VAL_IDENTIFICADOR\na"]; 
-"INST_PRINT211" -> "VAL_IDENTIFICADOR217"
+"INST_DECLARACION_METODO161mostrarSerie" [label= "INST_DECLARACION_METODO"]; 
+"INST_DECLARACION_METODO161mostrarSerie_param" [label= "Parametros:
+( VAL_ENTERO, )"]; 
+"INST_DECLARACION_METODO161mostrarSerieid" [label= "Id: mostrarSerie"]; 
+"Raiz" -> "INST_DECLARACION_METODO161mostrarSerie"
+"INST_DECLARACION_METODO161mostrarSerie" -> "INST_DECLARACION_METODO161mostrarSerie_param"
+"INST_DECLARACION_METODO161mostrarSerie" -> "INST_DECLARACION_METODO161mostrarSerieid"
+"INST_DECLARACION_METODO161mostrarSerie" [label= "INST_DECLARACION_METODO"]; 
+"INST_PRINT175" [label= "INST_PRINT"]; 
+"INST_DECLARACION_METODO161mostrarSerie" -> "INST_PRINT175"
+"INST_PRINT175" [label= "INST_PRINT"]; 
+"SUMA1732undefined:" [label= "SUMA\n+"]; 
+"INST_PRINT175" -> "SUMA1732undefined:"
+"SUMA1732undefined:" [label= "SUMA\n+"]; 
+"SUMA1732Fibonacci de tamaño tam" [label= "SUMA\n+"]; 
+"SUMA1732undefined:" -> "SUMA1732Fibonacci de tamaño tam"
+"SUMA1732Fibonacci de tamaño tam" [label= "SUMA\n+"]; 
+"VAL_CADENA1732" [label= "VAL_CADENA\nFibonacci de tamaño "]; 
+"SUMA1732Fibonacci de tamaño tam" -> "VAL_CADENA1732"
+"SUMA1732Fibonacci de tamaño tam" [label= "SUMA\n+"]; 
+"VAL_IDENTIFICADOR1734" [label= "VAL_IDENTIFICADOR\ntam"]; 
+"SUMA1732Fibonacci de tamaño tam" -> "VAL_IDENTIFICADOR1734"
+"SUMA1732undefined:" [label= "SUMA\n+"]; 
+"VAL_CADENA1740" [label= "VAL_CADENA\n:"]; 
+"SUMA1732undefined:" -> "VAL_CADENA1740"
+"INST_DECLARACION_METODO161mostrarSerie" [label= "INST_DECLARACION_METODO"]; 
+"INST_FOR185" [label= "INST_FOR"]; 
+"condicion185" [label= "Condicion\ndel for"]; 
+"INST_DECLARACION_METODO161mostrarSerie" -> "INST_FOR185"
+"INST_FOR185" -> "condicion185"
+"condicion185" [label= "Condicion\ndel for"]; 
+"INST_DECLARACION1810i" [label= "Id: i"]; 
+"INST_DECLARACION1810" [label= "INST_DECLARACION"]; 
+"INST_DECLARACION1810VAL_ENTERO" [label= "VAL_ENTERO"]; 
+"condicion185" -> "INST_DECLARACION1810"
+"INST_DECLARACION1810" -> "INST_DECLARACION1810VAL_ENTERO"
+"INST_DECLARACION1810" -> "INST_DECLARACION1810i"
+"INST_DECLARACION1810" [label= "INST_DECLARACION"]; 
+"VAL_ENTERO1818" [label= "VAL_ENTERO\n0"]; 
+"INST_DECLARACION1810" -> "VAL_ENTERO1818"
+"condicion185" [label= "Condicion\ndel for"]; 
+"MENOR1821itam" [label= "MENOR\n<"]; 
+"condicion185" -> "MENOR1821itam"
+"MENOR1821itam" [label= "MENOR\n<"]; 
+"VAL_IDENTIFICADOR1821" [label= "VAL_IDENTIFICADOR\ni"]; 
+"MENOR1821itam" -> "VAL_IDENTIFICADOR1821"
+"MENOR1821itam" [label= "MENOR\n<"]; 
+"VAL_IDENTIFICADOR1825" [label= "VAL_IDENTIFICADOR\ntam"]; 
+"MENOR1821itam" -> "VAL_IDENTIFICADOR1825"
+"condicion185" [label= "Condicion\ndel for"]; 
+"INST_ASIGNACION1830SUMA" [label= "Id: i"]; 
+"INST_ASIGNACION1830" [label= "INST_ASIGNACION"]; 
+"condicion185" -> "INST_ASIGNACION1830"
+"INST_ASIGNACION1830" -> "INST_ASIGNACION1830SUMA"
+"INST_ASIGNACION1830" [label= "INST_ASIGNACION"]; 
+"SUMA1830i1" [label= "SUMA\n+"]; 
+"INST_ASIGNACION1830" -> "SUMA1830i1"
+"SUMA1830i1" [label= "SUMA\n+"]; 
+"VAL_IDENTIFICADOR1830" [label= "VAL_IDENTIFICADOR\ni"]; 
+"SUMA1830i1" -> "VAL_IDENTIFICADOR1830"
+"SUMA1830i1" [label= "SUMA\n+"]; 
+"VAL_ENTERO1830" [label= "VAL_ENTERO\n1"]; 
+"SUMA1830i1" -> "VAL_ENTERO1830"
+"INST_FOR185" [label= "INST_FOR"]; 
+"INST_PRINT199" [label= "INST_PRINT"]; 
+"INST_FOR185" -> "INST_PRINT199"
+"INST_PRINT199" [label= "INST_PRINT"]; 
+"SUMA1915undefined " [label= "SUMA\n+"]; 
+"INST_PRINT199" -> "SUMA1915undefined "
+"SUMA1915undefined " [label= "SUMA\n+"]; 
+"INST_LLAMADA1915fibonaccifibonacci" [label= "Id: fibonacci"]; 
+"INST_LLAMADA1915fibonacci" [label= "INST_LLAMADA"]; 
+"SUMA1915undefined " -> "INST_LLAMADA1915fibonacci"
+"INST_LLAMADA1915fibonacci" -> "INST_LLAMADA1915fibonaccifibonacci"
+"SUMA1915undefined " [label= "SUMA\n+"]; 
+"VAL_CADENA1930" [label= "VAL_CADENA\n "]; 
+"SUMA1915undefined " -> "VAL_CADENA1930"
 "Raiz" [label= "Raiz"]; 
-"INST_EXEC241mainmain" [label= "Id: main"]; 
-"INST_EXEC241main" [label= "INST_EXEC"]; 
-"Raiz" -> "INST_EXEC241main"
-"INST_EXEC241main" -> "INST_EXEC241mainmain"
+"INST_EXEC221mostrarSeriemostrarSerie" [label= "Id: mostrarSerie"]; 
+"INST_EXEC221mostrarSerie" [label= "INST_EXEC"]; 
+"Raiz" -> "INST_EXEC221mostrarSerie"
+"INST_EXEC221mostrarSerie" -> "INST_EXEC221mostrarSeriemostrarSerie"
 
 }
