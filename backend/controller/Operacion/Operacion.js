@@ -9,9 +9,6 @@ const ternario = require("./Ternario");
 const FuncionesN = require("./FuncionesN");
 
 function Operacion(_expresion, _ambito,_Error, _entorno,Simbol){
-  /*console.log("OPERACION----------------------------1")
-    console.log(_expresion)
-    console.log("OPERACION----------------------------2")*/
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.ENTERO 
         || _expresion.tipo === TIPO_VALOR.BANDERA || _expresion.tipo === TIPO_VALOR.CARACTER
         || _expresion.tipo === TIPO_VALOR.CADENA || _expresion.tipo === TIPO_VALOR.IDENTIFICADOR){

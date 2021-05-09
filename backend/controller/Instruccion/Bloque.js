@@ -20,10 +20,6 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
     var valorR=null;
     var haycontinue=false;
     
-    //console.log("******************************************************")
-    //console.log(_instrucciones)
-    //console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++")
-    
     _instrucciones.forEach(instruccion => {
         //console.log("valuando..."+instruccion.tipo)
         if(haybreak){
@@ -70,21 +66,12 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
             //console.log("Simbol---------------------------------print 22222222-----------------")
             //console.log(Simbol)
         }
-        
         else if(instruccion.tipo === TIPO_INSTRUCCION.CASTEO){
             var mensaje = casteo(instruccion, _ambito,_Error,Simbol)
             if(mensaje!=null){
                 cadena+=mensaje+'\n'
             }
         }
-        /*else if(instruccion.tipo === TIPO_INSTRUCCION.ACCESO_V){
-            const av = require("../Operacion/AccesoVector");
-            var mensaje = av(instruccion, _ambito,_Error,Simbol)
-            if(mensaje!=null){
-                cadena+=mensaje+'\n'
-            }
-        }*/
-
         else if(instruccion.tipo === TIPO_INSTRUCCION.ASIGNACION){
             var inst=instruccion
             if(instruccion.expresion.tipo===TIPO_INSTRUCCION.CASTEO){
@@ -102,7 +89,6 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
                 cadena+=mensaje+'\n'
             }
         }
-
         else if(instruccion.tipo === TIPO_INSTRUCCION.MODIFICAR_V || instruccion.tipo === TIPO_INSTRUCCION.MODIFICAR_L){
             var inst=instruccion
             if(instruccion.valor.tipo===TIPO_INSTRUCCION.CASTEO){
@@ -121,7 +107,6 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
                 cadena+=mensaje+'\n'
             }
         }
-
         else if(instruccion.tipo === TIPO_INSTRUCCION.AGREGAR_VAL_LISTA){
             var inst=instruccion
             if(instruccion.valor.tipo===TIPO_INSTRUCCION.CASTEO){
@@ -139,7 +124,6 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
                 cadena+=mensaje+'\n'
             }
         }
-
         else if(instruccion.tipo === TIPO_INSTRUCCION.WHILE){ // break
             var ejec = CicloWhile(instruccion, _ambito,_Error,Simbol)
             var mensaje=ejec.cadena
@@ -151,7 +135,6 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
                 cadena+=mensaje
             }
         }
-
         else if(instruccion.tipo === TIPO_INSTRUCCION.DO_WHILE){
             var ejec = CicloDo_While(instruccion, _ambito,_Error,Simbol)
             var mensaje=ejec.cadena
@@ -163,7 +146,6 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
                 cadena+=mensaje
             }
         }
-
         else if(instruccion.tipo === TIPO_INSTRUCCION.IF){ // break
             var ejec = Sentencia_if(instruccion, _ambito,_Error,Simbol)
             var mensaje=ejec.cadena
@@ -175,7 +157,6 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
                 cadena+=mensaje
             }
         }
-        
         else if(instruccion.tipo === TIPO_INSTRUCCION.ELSEIF){
             var ejec = sentencia_elseif(instruccion, _ambito,_Error,Simbol)
             var mensaje=ejec.cadena
@@ -198,7 +179,6 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
                 cadena+=mensaje
             }
         }
-
         else if (instruccion.tipo === TIPO_INSTRUCCION.SWITCH) {
             var ejec = procesarSwitch(instruccion, _ambito,_Error,Simbol);
             var mensaje=ejec.cadena
@@ -228,7 +208,7 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
             }
         }
         else if(instruccion.tipo===TIPO_INSTRUCCION.CONTINUE){
-            console.log("ENTRA AL CONTINUE")
+            //console.log("ENTRA AL CONTINUE")
             haycontinue=true;
             return{
                 haybreak: haybreak,
@@ -270,10 +250,6 @@ function Bloque(_instrucciones, _ambito,_Error,_entorno,Simbol){
                 
         }
     });
-    /*console.log("-------------------------------------------------------------------------------")
-    console.log(cadena)
-    console.log("-------------------------------------------------------------------------------")*/
-    //return cadena
     return{
         haybreak: haybreak,
         cadena: cadena,

@@ -9,14 +9,6 @@ const ERRORES = require("../Ambito/S_Error")
 
 
 function Aritmetica(_expresion, _ambito,_Error, _entorno,Simbol){
-    /*console.log("Aritmetica----------------------------1")
-    console.log(_entorno)
-    console.log(Simbol)
-    console.log(_expresion)
-    console.log("Aritmetica----------------------------2")*/
-    //console.log("1---------------------------------------------------------------------")
-    //console.log(_expresion)
-    //console.log("2---------------------------------------------------------------------")
     if(_expresion.tipo === TIPO_VALOR.DECIMAL || _expresion.tipo === TIPO_VALOR.BANDERA ||
         _expresion.tipo === TIPO_VALOR.CADENA || _expresion.tipo === TIPO_VALOR.IDENTIFICADOR
         || _expresion.tipo === TIPO_VALOR.ENTERO || _expresion.tipo === TIPO_VALOR.CARACTER

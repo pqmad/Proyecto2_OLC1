@@ -4,9 +4,6 @@ const TIPO_OPERACION = require("../Enums/TipoOperacion");
 
 function GDot(instruccion, padre,label_padre){
     var cadena = ""
-   // console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{_instrucciones")
-    //console.log(instruccion)
-    //console.log("--------------------------------------------------------------")
     if(instruccion!=null){
         if(instruccion.tipo === TIPO_INSTRUCCION.DECLARACION_M || instruccion.tipo === TIPO_INSTRUCCION.DECLARACION_F){
             const nodopadre=padre
