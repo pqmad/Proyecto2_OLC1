@@ -151,6 +151,16 @@ const Instruccion = {
             columna: _columna
         }
     },
+    nuevaPARAMETRO_LV: function(_id, tVL,_tipo, _linea, _columna){
+        return{
+            tipo: TIPO_INSTRUCCION.DECLARACION,
+            id: _id,
+            tipo_dato: tVL,    //vector o lista
+            tipo_VL:  _tipo, // string, int, double..... etc
+            linea: _linea,
+            columna: _columna
+        }
+    },
 
     Exec: function(_id,_parametros, _linea, _columna){
         return {

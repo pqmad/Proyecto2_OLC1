@@ -176,6 +176,8 @@ LISTAPARAMETROS: LISTAPARAMETROS coma  PARAMETROS {$1.push($3); $$ = $1;}
 ;
 
 PARAMETROS: TIPO identificador {$$ = INSTRUCCION.nuevaPARAMETRO($2,$1, this._$.first_line, (this._$.first_column+1));}
+        |TIPO corcheteA corcheteC identificador {$$ = INSTRUCCION.nuevaPARAMETRO_LV($4,TIPO_VALOR.VECTOR, $1, this._$.first_line, (this._$.first_column+1));}
+        |list menor TIPO mayor identificador {$$ = INSTRUCCION.nuevaPARAMETRO_LV($5,TIPO_VALOR.LISTA, $3, this._$.first_line, (this._$.first_column+1));}
 ;
 
 //---------------------------------CUERPO DE LOS METODOS Y FUNCIONES
